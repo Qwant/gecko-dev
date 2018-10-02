@@ -14,8 +14,21 @@
 <!ENTITY aboutPage.privacyPolicy.label          "Privacy Policy">
 <!ENTITY aboutPage.rights.label                 "Know Your Rights">
 <!ENTITY aboutPage.relNotes.label               "Release Notes">
-<!ENTITY aboutPage.credits.label                "Credits">
-<!ENTITY aboutPage.license.label                "Licensing Information">
+<!ENTITY aboutPage.credits.label                "OSEF TEST">
+<!ENTITY aboutPage.license.label                "Licenses">
 
 <!-- LOCALIZATION NOTE (aboutPage.logoTrademark): The message is explicitly about the word "Firefox" being trademarked, that's why we use it, instead of brandShortName. -->
 <!ENTITY aboutPage.logoTrademark                "Firefox and the Firefox logos are trademarks of the Mozilla Foundation.">
+
+
+
+
+
+    <!ENTITY aboutPage.desc.l1                      "&brandShortName; Mobile is &brandShortName;’s mobile browser that respects your privacy. It allows you to browse and search the web without advertising and behavioral tracking.">
+    <!-- <!ENTITY aboutPage.desc.l2                      "By default, protections against tracking are activated."> -->
+    <!ENTITY aboutPage.link.more.url                "https://about.qwant.com/?client=qwantbrowser">
+    <!ENTITY aboutPage.link.more.label              "More about &brandShortName;">
+    <!ENTITY aboutPage.link.privacypolicy.url       "https://about.qwant.com/legal/privacy/?client=qwantbrowser">
+    <!ENTITY aboutPage.link.privacypolicy.label     "Privacy policy">
+    <!ENTITY aboutPage.link.licenses.label          "Licenses">
+    <!ENTITY aboutPage.justAtest          "just a test">

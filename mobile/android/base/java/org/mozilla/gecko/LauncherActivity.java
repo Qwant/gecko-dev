@@ -211,7 +211,7 @@ public class LauncherActivity extends Activity {
                     final Intent changeDefaultApps = new Intent("android.settings.MANAGE_DEFAULT_APPS_SETTINGS");
                     startActivity(changeDefaultApps);
                 } else {
-                    dispatchUrlIntent(SUMO_DEFAULT_BROWSER);
+                    dispatchUrlIntent(getResources().getString(R.string.qwant_defaultbrowser_link));
                 }
                 break;
             case LINK_SAVE_AS_PDF:

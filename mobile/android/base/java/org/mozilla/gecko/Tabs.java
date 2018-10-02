@@ -1291,9 +1291,9 @@ public class Tabs implements BundleEventListener {
     @NonNull
     private static String getHomepageForNewTab(Context context) {
         final SharedPreferences preferences = GeckoSharedPrefs.forApp(context);
-        final boolean forEveryNewTab = preferences.getBoolean(GeckoPreferences.PREFS_HOMEPAGE_FOR_EVERY_NEW_TAB, false);
+        final boolean forEveryNewTab = preferences.getBoolean(GeckoPreferences.PREFS_HOMEPAGE_FOR_EVERY_NEW_TAB, true);
 
-        return forEveryNewTab ? getHomepageForStartupTab(context) : AboutPages.HOME;
+        return forEveryNewTab ? getHomepageForStartupTab(context) : "https://www.qwant.com?client=qwantbrowser";
     }
 
     /**
@@ -1308,7 +1308,7 @@ public class Tabs implements BundleEventListener {
     @Nullable
     public static String getHomepage(Context context) {
         final SharedPreferences preferences = GeckoSharedPrefs.forProfile(context);
-        final String homepagePreference = preferences.getString(GeckoPreferences.PREFS_HOMEPAGE, AboutPages.HOME);
+        final String homepagePreference = preferences.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
 
         final boolean readFromPartnerProvider = preferences.getBoolean(
                 GeckoPreferences.PREFS_READ_PARTNER_CUSTOMIZATIONS_PROVIDER, false);

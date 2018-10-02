@@ -43,7 +43,7 @@ class PrivateTabsPanel extends RelativeLayout implements CloseAllPanelView {
         final View emptyTabsFrame = findViewById(R.id.private_tabs_empty);
         tabsLayout.setEmptyView(emptyTabsFrame);
 
-        final TextView learnMoreView = (TextView) findViewById(R.id.learn_more_link);
+        /* final TextView learnMoreView = (TextView) findViewById(R.id.learn_more_link);
         learnMoreView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +54,7 @@ class PrivateTabsPanel extends RelativeLayout implements CloseAllPanelView {
                 final GeckoApp geckoApp = (GeckoApp) context;
                 geckoApp.autoHideTabs();
             }
-        });
+        }); */
     }
 
     @Override

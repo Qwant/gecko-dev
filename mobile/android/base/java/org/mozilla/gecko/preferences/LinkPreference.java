@@ -19,10 +19,18 @@ class LinkPreference extends Preference {
     public LinkPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         mUrl = attrs.getAttributeValue(null, "url");
+        if (mUrl != null && mUrl.startsWith("qwant_") && mUrl.endsWith("_link")) {
+            int resId = context.getResources().getIdentifier(mUrl, "string", context.getPackageName());
+            if (resId != 0) mUrl = context.getString(resId);
+        }
     }
     public LinkPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mUrl = attrs.getAttributeValue(null, "url");
+        if (mUrl != null && mUrl.startsWith("qwant_") && mUrl.endsWith("_link")) {
+            int resId = context.getResources().getIdentifier(mUrl, "string", context.getPackageName());
+            if (resId != 0) mUrl = context.getString(resId);
+        }
     }
 
     public void setUrl(String url) {

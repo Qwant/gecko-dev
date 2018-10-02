@@ -45,6 +45,24 @@
 
   <string name="firstrun_welcome_restricted">&onboard_start_restricted1;</string>
 
+
+
+  <string name="firstrun_button_notnow">&firstrun_button_notnow;</string>
+
+  <string name="firstrun_panel_title_welcome2">&firstrun_panel_title_welcome2;</string>
+  <string name="firstrun_welcome2_message">&firstrun_welcome2_message;</string>
+  <string name="firstrun_welcome2_subtext">&firstrun_welcome2_subtext;</string>
+
+  <string name="firstrun_panel_title_privacy2">&firstrun_panel_title_privacy2;</string>
+  <string name="firstrun_privacy2_message">&firstrun_privacy2_message;</string>
+  <string name="firstrun_privacy2_subtext">&firstrun_privacy2_subtext;</string>
+
+  <string name="firstrun_panel_title_efficiency">&firstrun_panel_title_efficiency;</string>
+  <string name="firstrun_efficiency_message">&firstrun_efficiency_message;</string>
+  <string name="firstrun_efficiency_subtext">&firstrun_efficiency_subtext;</string>
+
+
+
   <string name="bookmarks_title">&bookmarks_title;</string>
   <string name="history_title">&history_title;</string>
 
@@ -312,7 +330,7 @@
   <string name="pref_vendor_feedback">&pref_vendor_feedback;</string>
   <!-- https://input.mozilla.org/feedback/android/%VERSION%/%CHANNEL%/?utm_source=feedback-settings
        This should be kept in sync with the "app.feedbackURL" pref defined in mobile.js -->
-  <string name="feedback_link">https://input.mozilla.org/feedback/android/&formatS1;/&formatS2;/?utm_source=feedback-settings</string>
+  <string name="feedback_link">http://0.0.0.0/feedback_link</string>
 
   <string name="pref_dialog_set_default">&pref_dialog_set_default;</string>
   <string name="pref_default">&pref_dialog_default;</string>
@@ -478,7 +496,7 @@
   <!-- Default bookmarks. We used to use bookmark titles shared with XUL from mobile's
        profile/bookmarks.inc (see bug 964946). Don't expose the URLs to L10N. -->
   <string name="bookmarkdefaults_title_aboutfirefox">&bookmarks_about_browser;</string>
-  <string name="bookmarkdefaults_url_aboutfirefox">about:firefox</string>
+  <string name="bookmarkdefaults_url_aboutfirefox">about:qwant</string>
 
   <!-- Icon is automatically generated from R.drawable.bookmarkdefaults_favicon_addons -->
   <string name="bookmarkdefaults_title_addons">&bookmarks_addons;</string>
@@ -601,7 +619,10 @@
 
   <string name="unsupported_sdk_version">&unsupported_sdk_version;</string>
   <string name="corrupt_apk">&corrupt_apk;</string>
+  <string name="eol_notification_title">&eol_notification_title2;</string>
+  <string name="eol_notification_summary">&eol_notification_summary;</string>
   <!-- https://support.mozilla.org/1/mobile/%VERSION%/%OS%/%LOCALE%/honeycomb -->
+  <string name="eol_notification_url">https://support.mozilla.org/1/mobile/&formatS1;/&formatS2;/&formatS3;/unsupported-version</string>
 
   <string name="whatsnew_notification_title">&whatsnew_notification_title;</string>
   <string name="whatsnew_notification_summary">&whatsnew_notification_summary;</string>
@@ -655,4 +676,15 @@
   <string name="leanplum_default_notifications_channel">&leanplum_default_notifications_channel;</string>
   <string name="updater_notification_channel">&updater_notification_channel;</string>
   <string name="synced_tabs_notification_channel">&synced_tabs_notification_channel;</string>
+
+  <string name="qwant_defaultbrowser_link">&qwant_defaultbrowser_link;</string>
+  <string name="qwant_help_link">&qwant_help_link;</string>
+  <string name="qwant_dnt_link">&qwant_dnt_link;</string>
+  <string name="qwant_trackingprotection_link">&qwant_trackingprotection_link;</string>
+  <string name="qwant_faq_link">&qwant_faq_link;</string>
+
+  <string name="qwant_widget_text">&qwant_widget_text;</string>
+
+  <string name="qwant_preferences_persistentnotification">&qwant_preferences_persistentnotification;</string>
+  <string name="qwant_preferences_persistentnotification_summary">&qwant_preferences_persistentnotification_summary;</string>
 </resources>

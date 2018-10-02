@@ -6330,7 +6330,7 @@ var ExternalApps = {
 
     let mediaElement = this._getMediaContentElement(contentDocument);
 
-    this._pageActionId = PageActions.add({
+    /* this._pageActionId = PageActions.add({
       title: Strings.browser.GetStringFromName("openInApp.pageAction"),
       icon: "drawable://icon_openinapp",
       useTint: true,
@@ -6366,7 +6366,7 @@ var ExternalApps = {
           apps[0].launch(this._pageActionUri);
         }
       }
-    });
+    }); */
   },
 
   clearPageAction: function clearPageAction() {

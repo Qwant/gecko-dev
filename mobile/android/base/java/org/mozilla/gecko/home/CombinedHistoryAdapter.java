@@ -172,7 +172,7 @@ public class CombinedHistoryAdapter extends RecyclerView.Adapter<CombinedHistory
     @UiThread
     // Number of smart folders for determining practical empty state.
     public int getNumVisibleSmartFolders() {
-        int visibleFolders = 1; // Synced devices folder is always visible.
+        int visibleFolders = 0; // Synced devices folder is always visible.
 
         if (isRecentTabsFolderVisible()) {
             visibleFolders += 1;
@@ -183,9 +183,9 @@ public class CombinedHistoryAdapter extends RecyclerView.Adapter<CombinedHistory
 
     @UiThread
     private int getSyncedDevicesSmartFolderIndex() {
-        return isRecentTabsFolderVisible() ?
+        return 1000000; /* isRecentTabsFolderVisible() ?
                 RECENT_TABS_SMARTFOLDER_INDEX + 1 :
-                RECENT_TABS_SMARTFOLDER_INDEX;
+                RECENT_TABS_SMARTFOLDER_INDEX; */
     }
 
     @Override
@@ -199,6 +199,9 @@ public class CombinedHistoryAdapter extends RecyclerView.Adapter<CombinedHistory
             case RECENT_TABS:
             case SYNCED_DEVICES:
                 view = inflater.inflate(R.layout.home_smartfolder, viewGroup, false);
+                if (itemType == CombinedHistoryItem.ItemType.SYNCED_DEVICES) {
+                    view.setVisibility(View.GONE);
+                }
                 return new CombinedHistoryItem.SmartFolder(view);
 
             case SECTION_HEADER:
