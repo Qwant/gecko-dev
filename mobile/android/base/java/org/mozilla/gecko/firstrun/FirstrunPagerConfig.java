@@ -26,19 +26,18 @@ public class FirstrunPagerConfig {
 
    public static List<FirstrunPanelConfig> getDefault(Context context) {
         final List<FirstrunPanelConfig> panels = new LinkedList<>();
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.CUSTOMIZE, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.SYNC, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME2, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY2, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.EFFICIENCY, useLocalValues));
 
         return panels;
     }
 
     public static List<FirstrunPanelConfig> forFxAUser(Context context) {
         final List<FirstrunPanelConfig> panels = new LinkedList<>();
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.LAST_CUSTOMIZE, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME2, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY2, useLocalValues));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.EFFICIENCY, useLocalValues));
 
         return panels;
     }
@@ -86,15 +85,5 @@ public class FirstrunPagerConfig {
         public Bundle getArgs() {
             return args;
         }
-    }
-
-    private static class SimplePanelConfigs {
-        public static final FirstrunPanelConfig welcomePanelConfig = new FirstrunPanelConfig(FirstrunPanel.class.getName(), R.string.firstrun_panel_title_welcome, R.drawable.firstrun_welcome, R.string.firstrun_urlbar_message, R.string.firstrun_urlbar_subtext);
-        public static final FirstrunPanelConfig privatePanelConfig = new FirstrunPanelConfig(FirstrunPanel.class.getName(), R.string.firstrun_panel_title_privacy, R.drawable.firstrun_private, R.string.firstrun_privacy_message, R.string.firstrun_privacy_subtext);
-        public static final FirstrunPanelConfig customizePanelConfig = new FirstrunPanelConfig(FirstrunPanel.class.getName(), R.string.firstrun_panel_title_customize, R.drawable.firstrun_data, R.string.firstrun_customize_message, R.string.firstrun_customize_subtext);
-        public static final FirstrunPanelConfig customizeLastPanelConfig = new FirstrunPanelConfig(LastPanel.class.getName(), R.string.firstrun_panel_title_customize, R.drawable.firstrun_data, R.string.firstrun_customize_message, R.string.firstrun_customize_subtext);
-
-        public static final FirstrunPanelConfig syncPanelConfig = new FirstrunPanelConfig(SyncPanel.class.getName(), R.string.firstrun_sync_title, R.drawable.firstrun_sync, R.string.firstrun_sync_message, R.string.firstrun_sync_subtext);
-
     }
 }

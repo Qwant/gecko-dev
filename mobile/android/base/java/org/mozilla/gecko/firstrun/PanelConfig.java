@@ -10,7 +10,7 @@ package org.mozilla.gecko.firstrun;
  */
 public class PanelConfig {
     public enum TYPE {
-        WELCOME, PRIVACY, CUSTOMIZE, LAST_CUSTOMIZE, SYNC
+        WELCOME, PRIVACY, CUSTOMIZE, LAST_CUSTOMIZE, SYNC, WELCOME2, PRIVACY2, EFFICIENCY
     }
 
     private final TYPE type;

@@ -36,11 +36,26 @@ public class LocalFirstRunPanelProvider implements FirstRunPanelConfigProviderSt
                         resources.getString(R.string.firstrun_sync_message),
                         resources.getString(R.string.firstrun_sync_subtext),
                         R.drawable.firstrun_sync);
+            case WELCOME2:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_welcome2_title),
+                        resources.getString(R.string.firstrun_welcome2_message),
+                        resources.getString(R.string.firstrun_welcome2_subtext),
+                        R.drawable.firstrun_welcome2);
+            case PRIVACY2:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_privacy2_title),
+                        resources.getString(R.string.firstrun_privacy2_message),
+                        resources.getString(R.string.firstrun_privacy2_subtext),
+                        R.drawable.firstrun_privacy);
+            case EFFICIENCY:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_efficiency_title),
+                        resources.getString(R.string.firstrun_efficiency_message),
+                        resources.getString(R.string.firstrun_efficiency_subtext),
+                        R.drawable.firstrun_efficiency);
             default:    // This will also be the case for "WELCOME"
-                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_welcome),
-                        resources.getString(R.string.firstrun_urlbar_message),
-                        resources.getString(R.string.firstrun_urlbar_subtext),
-                        R.drawable.firstrun_welcome);
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_welcome2),
+                        resources.getString(R.string.firstrun_welcome2_message),
+                        resources.getString(R.string.firstrun_welcome2_subtext),
+                        R.drawable.firstrun_welcome2);
         }
     }
 }
