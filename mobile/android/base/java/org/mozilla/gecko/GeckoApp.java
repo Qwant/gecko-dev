@@ -129,6 +129,7 @@ public abstract class GeckoApp extends GeckoActivity
     public static final String ACTION_INIT_PW              = "org.mozilla.gecko.INIT_PW";
     public static final String ACTION_SWITCH_TAB           = "org.mozilla.gecko.SWITCH_TAB";
     public static final String ACTION_SHUTDOWN             = "org.mozilla.gecko.SHUTDOWN";
+    public static final String ACTION_QWANT_WIDGET         = "com.qwant.WIDGET";
 
     public static final String INTENT_REGISTER_STUMBLER_LISTENER = "org.mozilla.gecko.STUMBLER_REGISTER_LOCAL_LISTENER";
 
@@ -253,32 +254,34 @@ public abstract class GeckoApp extends GeckoActivity
             flags |= (tabObject.optBoolean("desktopMode") ? Tabs.LOADURL_DESKTOP : 0);
             flags |= (tabObject.optBoolean("isPrivate") ? Tabs.LOADURL_PRIVATE : 0);
 
-            final Tab tab = Tabs.getInstance().loadUrl(sessionTab.getUrl(), flags);
+            if (sessionTab.getUrl() != null && !sessionTab.getUrl().equals("null")) {
+                final Tab tab = Tabs.getInstance().loadUrl(sessionTab.getUrl(), flags);
 
-            if (selectNextTab) {
-                // We did not restore the selected tab previously. Now let's select this tab.
-                Tabs.getInstance().selectTab(tab.getId());
-                selectNextTab = false;
-            }
-
-            ThreadUtils.postToUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    tab.updateTitle(sessionTab.getTitle());
+                if (selectNextTab) {
+                    // We did not restore the selected tab previously. Now let's select this tab.
+                    Tabs.getInstance().selectTab(tab.getId());
+                    selectNextTab = false;
                 }
-            });
 
-            try {
-                int oldTabId = tabObject.optInt("tabId", INVALID_TAB_ID);
-                int newTabId = tab.getId();
-                tabObject.put("tabId", newTabId);
-                if  (oldTabId >= 0) {
-                    tabIdMap.put(oldTabId, newTabId);
+                ThreadUtils.postToUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tab.updateTitle(sessionTab.getTitle());
+                    }
+                });
+
+                try {
+                    int oldTabId = tabObject.optInt("tabId", INVALID_TAB_ID);
+                    int newTabId = tab.getId();
+                    tabObject.put("tabId", newTabId);
+                    if (oldTabId >= 0) {
+                        tabIdMap.put(oldTabId, newTabId);
+                    }
+                } catch (JSONException e) {
+                    Log.e(LOGTAG, "JSON error", e);
                 }
-            } catch (JSONException e) {
-                Log.e(LOGTAG, "JSON error", e);
+                tabs.put(tabObject);
             }
-            tabs.put(tabObject);
         }
 
         @Override
@@ -1392,8 +1395,16 @@ public abstract class GeckoApp extends GeckoActivity
                 // to the Recent Tabs folder of the Combined History panel.
                 Tabs.getInstance().loadUrl(AboutPages.getURLForBuiltinPanelType(PanelType.DEPRECATED_RECENT_TABS), flags);
             } else {
-                Tabs.getInstance().loadUrl(Tabs.getHomepageForStartupTab(this), flags);
+                Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&lb=" + Locale.getDefault().getLanguage(), flags);
             }
+        } else if (GeckoApp.ACTION_QWANT_WIDGET.equals(action)) {
+            Tab t = Tabs.getInstance().loadUrl("about:home", Tabs.LOADURL_NEW_TAB |  Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL | Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN ); // getString(R.string.qwant_widget_text)
+            Tabs.getInstance().selectTab(t.getId());
+
+            // Tabs.TabEvents.OPENED_FROM_TABS_TRAY
+                    // TabsPanel tabpanel;
+            // t.setIsEditing(true);
+
         }
     }
 
@@ -1623,16 +1634,24 @@ public abstract class GeckoApp extends GeckoActivity
 
         if (tabs.length() > 0) {
             try {
+                JSONArray valid_tabs = new JSONArray();
+                for (int i = 0; i < tabs.length(); i++) {
+                    String url = tabs.getJSONObject(i).getJSONArray("entries").getJSONObject(0).getString("url");
+                    if (url != null && !url.equals("null") && !url.startsWith("https://www.qwant.com/?q=null")) {
+                        valid_tabs.put(tabs.getJSONObject(i));
+                    } else {
+                        parser.tabsWereSkipped = true;
+                    }
+                }
+
                 // Update all parent tab IDs ...
-                parser.updateParentId(tabs);
-                windowObject.put("tabs", tabs);
-                // ... and for recently closed tabs as well (if we've got any).
-                final JSONArray closedTabs = windowObject.optJSONArray("closedTabs");
-                parser.updateParentId(closedTabs);
-                windowObject.putOpt("closedTabs", closedTabs);
+                parser.updateParentId(valid_tabs);
+                windowObject.put("tabs", valid_tabs);
 
                 sessionString = new JSONObject().put(
                         "windows", new JSONArray().put(windowObject)).toString();
+
+                mShouldRestore = false;
             } catch (final JSONException e) {
                 throw new SessionRestoreException(e);
             }
@@ -1852,6 +1871,19 @@ public abstract class GeckoApp extends GeckoActivity
             // Copy extras.
             settingsIntent.putExtras(intent.getUnsafe());
             startActivity(settingsIntent);
+        } else if (ACTION_QWANT_WIDGET.equals(action)) {
+            autoHideTabs();
+            processActionViewIntent(new Runnable() {
+                @Override
+                public void run() {
+                    int flags = Tabs.LOADURL_NEW_TAB |  Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL;
+                    if (isFirstTab) {
+                        flags |= Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN;
+                    }
+                    Tabs.getInstance().loadUrlWithIntentExtras("", intent, flags);
+                }
+            });
+
         }
 
         recordStartupActionTelemetry(passedUri, action);

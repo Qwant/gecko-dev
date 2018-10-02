@@ -76,12 +76,12 @@ android {
             debug configureMinifyClosure
         }
 
-        def isDebuggable = (!mozconfig.substs.MOZILLA_OFFICIAL) || (mozconfig.substs.NIGHTLY_BUILD && mozconfig.substs.MOZ_DEBUG)
+        def isDebuggable = false // (!mozconfig.substs.MOZILLA_OFFICIAL) || (mozconfig.substs.NIGHTLY_BUILD && mozconfig.substs.MOZ_DEBUG)
         debug {
-            debuggable isDebuggable 
+            debuggable false // isDebuggable
         }
         release {
-            debuggable isDebuggable
+            debuggable false // isDebuggable
         }
     }
 

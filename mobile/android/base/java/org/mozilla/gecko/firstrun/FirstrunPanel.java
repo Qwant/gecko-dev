@@ -25,7 +25,7 @@ import org.mozilla.gecko.TelemetryContract;
 public class FirstrunPanel extends Fragment {
 
     public static final int TITLE_RES = -1;
-    protected boolean showBrowserHint = true;
+    protected boolean showBrowserHint = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
@@ -46,6 +46,13 @@ public class FirstrunPanel extends Fragment {
             public void onClick(View v) {
                 Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-next");
                 next();
+            }
+        });
+
+        root.findViewById(R.id.firstrun_notnow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pagerNavigation.finish();
             }
         });
 

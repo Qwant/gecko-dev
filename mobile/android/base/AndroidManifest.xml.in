@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="@ANDROID_VERSION_CODE@"
-      android:versionName="@MOZ_APP_VERSION@"
+      android:versionCode="17248"
+      android:versionName="2.0.3"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
 #endif
@@ -73,7 +73,7 @@
             <!-- android:priority ranges between -1000 and 1000.  We never want
                  another activity to usurp the MAIN action, so we ratchet our
                  priority up. -->
-            <intent-filter android:priority="999">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
@@ -211,6 +211,14 @@
           <intent-filter>
             <action android:name="android.intent.action.GET_RESTRICTION_ENTRIES" />
           </intent-filter>
+        </receiver>
+
+        <receiver android:name="org.mozilla.gecko.widget.QwantAppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/qwant_appwidget_info" />
         </receiver>
 
         <!-- Masquerade as the Resolver so that we can be opened from the Marketplace. -->
@@ -432,7 +440,7 @@
             </intent-filter>
         </service>
 
-#include ../services/manifests/FxAccountAndroidManifest_services.xml.in
+
 
         <service
             android:name="org.mozilla.gecko.tabqueue.TabReceivedService"

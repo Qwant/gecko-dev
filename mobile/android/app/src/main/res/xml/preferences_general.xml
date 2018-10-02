@@ -43,5 +43,10 @@
                       android:summary="@string/pref_custom_tabs_summary"
                       android:defaultValue="true"/>
 
+    <SwitchPreference android:key="qwant.persistentnotification.enabled"
+        android:title="@string/qwant_preferences_persistentnotification"
+        android:summary="@string/qwant_preferences_persistentnotification_summary"
+        android:persistent="true" />
+
 </PreferenceScreen>
 

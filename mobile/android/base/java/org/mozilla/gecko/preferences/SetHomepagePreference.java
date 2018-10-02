@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,7 +23,7 @@ import android.widget.RadioGroup;
 
 
 public class SetHomepagePreference extends DialogPreference {
-    private static final String DEFAULT_HOMEPAGE = AboutPages.HOME;
+    private static final String DEFAULT_HOMEPAGE = "about:home";
 
     private final SharedPreferences prefs;
 
@@ -57,7 +58,7 @@ public class SetHomepagePreference extends DialogPreference {
         userAddressRadio = (RadioButton) view.findViewById(R.id.radio_user_address);
         homepageEditText = (EditText) view.findViewById(R.id.edittext_user_address);
 
-        storedUrl = prefs.getString(GeckoPreferences.PREFS_HOMEPAGE, DEFAULT_HOMEPAGE);
+        storedUrl = prefs.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
 
         homepageLayout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -124,12 +125,13 @@ public class SetHomepagePreference extends DialogPreference {
             final String homePageEditTextValue = homepageEditText.getText().toString();
             final String newPrefValue;
             if (homepageLayout.getCheckedRadioButtonId() == R.id.radio_distribution) {
-                newPrefValue = prefs.getString(GeckoPreferences.PREFS_DIST_HOMEPAGE, "");
+                newPrefValue = prefs.getString(GeckoPreferences.PREFS_DIST_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
                 editor.putString(GeckoPreferences.PREFS_HOMEPAGE, newPrefValue);
             } else if (homepageLayout.getCheckedRadioButtonId() == R.id.radio_default ||
                        isUrlDefaultHomepage(homePageEditTextValue)) {
-                newPrefValue = "";
-                editor.remove(GeckoPreferences.PREFS_HOMEPAGE);
+                newPrefValue = DEFAULT_HOMEPAGE;
+                editor.putString(GeckoPreferences.PREFS_HOMEPAGE, newPrefValue);
+                // editor.remove(GeckoPreferences.PREFS_HOMEPAGE);
             } else {
                 newPrefValue = homePageEditTextValue;
                 editor.putString(GeckoPreferences.PREFS_HOMEPAGE, newPrefValue);

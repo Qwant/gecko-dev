@@ -22,10 +22,11 @@ public class PwaUtils {
      */
     @CheckResult
     public static boolean shouldAddPwaShortcut(Tab tab) {
-        final boolean secure = tab.getSiteIdentity().isSecure();
+        // final boolean secure = tab.getSiteIdentity().isSecure();
         // This tab is safe for pwa only when the site is absolutely secure.
         // so no exception is allowed
-        final boolean exception = tab.getSiteIdentity().isSecurityException();
-        return !tab.isPrivate() && secure && !exception;
+        // final boolean exception = tab.getSiteIdentity().isSecurityException();
+        // return !tab.isPrivate() && secure && !exception;
+        return false;
     }
 }

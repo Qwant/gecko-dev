@@ -483,12 +483,12 @@ public class Tab {
             return;
         }
 
-        if (mManifestUrl != null) {
+        /* if (mManifestUrl != null) {
             showPwaBadge();
 
         } else {
             clearPwaPageAction();
-        }
+        } */
     }
 
     public void setHasOpenSearch(boolean hasOpenSearch) {

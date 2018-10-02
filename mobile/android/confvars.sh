@@ -1,13 +1,14 @@
+#@IgnoreInspection BashAddShebang
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-MOZ_APP_BASENAME=Fennec
-MOZ_APP_VENDOR=Mozilla
+MOZ_APP_BASENAME=Qwant
+MOZ_APP_VENDOR=Qwant
 
 MOZ_APP_VERSION=$FIREFOX_VERSION
 MOZ_APP_VERSION_DISPLAY=$FIREFOX_VERSION_DISPLAY
-MOZ_APP_UA_NAME=Firefox
+MOZ_APP_UA_NAME="Firefox/59.0 QwantBrowser"
 
 MOZ_BRANDING_DIRECTORY=mobile/android/branding/unofficial
 MOZ_OFFICIAL_BRANDING_DIRECTORY=mobile/android/branding/official
@@ -31,6 +32,10 @@ MOZ_ANDROID_BROWSER_INTENT_CLASS=org.mozilla.gecko.BrowserApp
 MOZ_NO_SMART_CARDS=1
 
 MOZ_XULRUNNER=
+MOZ_SERVICES_HEALTHREPORT=
+MOZ_SERVICES_SYNC=
+MOZ_UPDATER=
+MOZ_TELEMETRY_REPORTING=
 
 MOZ_CAPTURE=1
 MOZ_RAW=1

@@ -41,6 +41,13 @@ public class LastPanel extends FirstrunPanel {
             }
         });
 
+        root.findViewById(R.id.firstrun_notnow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               close();
+            }
+        });
+
 
         return root;
     }

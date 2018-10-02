@@ -85,6 +85,7 @@ import org.mozilla.gecko.util.HardwareUtils;
 import org.mozilla.gecko.util.InputOptionsUtils;
 import org.mozilla.gecko.util.ThreadUtils;
 import org.mozilla.gecko.util.ViewUtil;
+import org.mozilla.gecko.delegates.PersistentNotificationDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,6 +161,7 @@ public class GeckoPreferences
     public static final String PREFS_SET_AS_HOMEPAGE = NON_PREF_PREFIX + "distribution.set_as_homepage";
     public static final String PREFS_DIST_HOMEPAGE = NON_PREF_PREFIX + "distribution.homepage";
     public static final String PREFS_DIST_HOMEPAGE_NAME = NON_PREF_PREFIX + "distribution.homepage.name";
+    public static final String PREFS_QWANT_PERSISTENT_NOTIFICATION = "qwant.persistentnotification.enabled";
 
     private static final String ACTION_STUMBLER_UPLOAD_PREF = "STUMBLER_PREF";
 
@@ -740,11 +742,11 @@ public class GeckoPreferences
                     continue;
                 } else if (PREFS_SYNC.equals(key)) {
                     // Don't show sync prefs while in guest mode.
-                    if (!Restrictions.isAllowed(this, Restrictable.MODIFY_ACCOUNTS)) {
+                    // if (!Restrictions.isAllowed(this, Restrictable.MODIFY_ACCOUNTS)) {
                         preferences.removePreference(pref);
                         i--;
                         continue;
-                    }
+                    // }
                 } else if (PREFS_SEARCH_RESTORE_DEFAULTS.equals(key)) {
                     pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
@@ -795,16 +797,16 @@ public class GeckoPreferences
                         continue;
                     }
                 } else if (PREFS_HOMEPAGE.equals(key)) {
-                        String setUrl = GeckoSharedPrefs.forProfile(getBaseContext()).getString(PREFS_HOMEPAGE, AboutPages.HOME);
+                        String setUrl = GeckoSharedPrefs.forProfile(getBaseContext()).getString(PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
                         setHomePageSummary(pref, setUrl);
                         pref.setOnPreferenceChangeListener(this);
                 } else if (PREFS_FAQ_LINK.equals(key)) {
                     // Format the FAQ link
-                    final String VERSION = AppConstants.MOZ_APP_VERSION;
+                    /* final String VERSION = AppConstants.MOZ_APP_VERSION;
                     final String OS = AppConstants.OS_TARGET;
-                    final String LOCALE = Locales.getLanguageTag(Locale.getDefault());
+                    final String LOCALE = Locales.getLanguageTag(Locale.getDefault()); */
 
-                    final String url = getResources().getString(R.string.faq_link, VERSION, OS, LOCALE);
+                    final String url = getResources().getString(R.string.qwant_faq_link);
                     ((LinkPreference) pref).setUrl(url);
                 } else if (PREFS_FEEDBACK_LINK.equals(key)) {
                     // Format the feedback link. We can't easily use this "app.feedbackURL"
@@ -838,6 +840,9 @@ public class GeckoPreferences
                         ((SwitchPreference) pref).setChecked(isHealthReportEnabled);
                         pref.setEnabled(isHealthReportEnabled);
                     }
+                } else if (PREFS_NOTIFICATIONS_WHATS_NEW.equals(key)) {
+                    pref.setDefaultValue(false);
+                    pref.setEnabled(false);
                 }
 
                 // Some Preference UI elements are not actually preferences,
@@ -857,7 +862,7 @@ public class GeckoPreferences
         if (!TextUtils.isEmpty(value)) {
             pref.setSummary(value);
         } else {
-            pref.setSummary(AboutPages.HOME);
+            pref.setSummary("https://www.qwant.com?client=qwantbrowser");
         }
     }
 
@@ -1159,6 +1164,14 @@ public class GeckoPreferences
             // Tell Gecko to transmit the current search engine data again, so
             // BrowserSearch is notified immediately about the new enabled state.
             EventDispatcher.getInstance().dispatch("SearchEngines:GetVisible", null);
+        } else if (PREFS_QWANT_PERSISTENT_NOTIFICATION.equals(prefName)) {
+            final Boolean newBooleanValue = (Boolean) newValue;
+            if (newBooleanValue) {
+                PersistentNotificationDelegate.initSearchNotification(this);
+            } else {
+                PersistentNotificationDelegate.cancelSearchNotification(this);
+            }
+
         }
 
         // Send Gecko-side pref changes to Gecko

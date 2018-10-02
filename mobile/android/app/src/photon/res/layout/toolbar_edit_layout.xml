@@ -53,12 +53,4 @@
         android:contentDescription="@string/url_bar_qrcode_text"
         gecko:showLWTBackground="true"/>
 
-    <org.mozilla.gecko.toolbar.ToolbarRoundButton
-        android:id="@+id/mic"
-        style="@style/UrlBar.ImageButton"
-        android:background="@drawable/url_bar_action_button"
-        android:src="@drawable/ic_mic"
-        android:contentDescription="@string/url_bar_mic_text"
-        gecko:showLWTBackground="true"/>
-
 </merge>
