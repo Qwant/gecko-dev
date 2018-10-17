@@ -68,6 +68,16 @@
   <string name="firstrun_efficiency_message">&firstrun_efficiency_message;</string>
   <string name="firstrun_efficiency_subtext">&firstrun_efficiency_subtext;</string>
 
+  <string name="qwant_defaultbrowser_link">&qwant_defaultbrowser_link;</string>
+  <string name="qwant_help_link">&qwant_help_link;</string>
+  <string name="qwant_dnt_link">&qwant_dnt_link;</string>
+  <string name="qwant_trackingprotection_link">&qwant_trackingprotection_link;</string>
+  <string name="qwant_faq_link">&qwant_faq_link;</string>
+
+  <string name="qwant_widget_text">&qwant_widget_text;</string>
+  <string name="qwant_preferences_persistentnotification">&qwant_preferences_persistentnotification;</string>
+  <string name="qwant_preferences_persistentnotification_summary">&qwant_preferences_persistentnotification_summary;</string>
+
 
 
   <string name="bookmarks_title">&bookmarks_title;</string>
