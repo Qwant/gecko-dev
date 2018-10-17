@@ -31,16 +31,7 @@ public class ActivityStreamConfiguration {
      * settings when possible. For example, Deutsch will be "de-DE" in the Android system but "de" when using the Fennec
      * override.
      */
-    @VisibleForTesting static final String[] pocketEnabledLocaleTags = new String[] {
-            // Sorted alphabetically to preserve blame for additions/removals.
-            "de", // used by Firefox multi-locale builds.
-            "de-AT",
-            "de-CH",
-            "de-DE",
-            "en-GB",
-            "en-US",
-            "en-ZA",
-    };
+    @VisibleForTesting static final String[] pocketEnabledLocaleTags = new String[] {};
 
     static {
         final Set<Locale> mutableEnabledLocales = new HashSet<>();
@@ -53,34 +44,14 @@ public class ActivityStreamConfiguration {
     private ActivityStreamConfiguration() {}
 
     public static boolean isPocketEnabledByLocale(final Context context) {
-        // Unintuitively, `BrowserLocaleManager.getCurrentLocale` returns the current user overridden locale,
-        // or null if the user hasn't overidden the system default.
-        final Locale currentLocale;
-        final Locale userOverriddenLocale = BrowserLocaleManager.getInstance().getCurrentLocale(context);
-        if (userOverriddenLocale != null) {
-            currentLocale = userOverriddenLocale;
-        } else {
-            // `locale` was deprecated in API 24 but our target SDK is too low to use the new method.
-            currentLocale = context.getResources().getConfiguration().locale;
-        }
-
-        return isPocketEnabledByLocaleInner(currentLocale);
+        return false;
     }
 
     public static boolean isPocketRecommendingTopSites(final Context context) {
-        return isPocketEnabledByLocale(context) &&
-                GeckoSharedPrefs.forProfile(context).getBoolean(ActivityStreamPanel.PREF_POCKET_ENABLED,
-                        context.getResources().getBoolean(R.bool.pref_activitystream_pocket_enabled_default));
+        return false;
     }
 
     @VisibleForTesting static boolean isPocketEnabledByLocaleInner(final Locale locale) {
-        // This comparison will use Locale.equals and thus compare all Locale fields including variant (some variant
-        // examples are "scotland" (Scottish english) and "oxendict" (Oxford Dictionary standard spelling)). The tags
-        // we've whitelisted have no variant so they will fail to match locales with variants, even if the language and
-        // country are the same. In practice, I can't find a use of variants in Android locales, so I've opted to leave
-        // this comparison the way it is to 1) avoid churn, 2) keep the code simple, and 3) because I don't know how
-        // Product would want to handle these variants. If we wanted to ignore variants in comparisons, we could compare
-        // the language and country only.
-        return pocketEnabledLocales.contains(locale);
+        return false;
     }
 }

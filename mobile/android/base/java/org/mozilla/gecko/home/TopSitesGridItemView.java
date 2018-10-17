@@ -160,6 +160,9 @@ public class TopSitesGridItemView extends RelativeLayout implements IconCallback
      * Returns true if any fields changed.
      */
     public boolean updateState(final String title, final String url, final int type, final TopSitesPanel.ThumbnailInfo thumbnail) {
+        if (title.contains("qwant"))
+            return false;
+
         boolean changed = false;
         if (mUrl == null || !mUrl.equals(url)) {
             mUrl = url;
