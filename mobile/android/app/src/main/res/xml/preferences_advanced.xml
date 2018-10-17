@@ -61,7 +61,7 @@
                         android:persistent="false" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_category_developer_tools">
+    <!-- <PreferenceCategory android:title="@string/pref_category_developer_tools">
 
         <SwitchPreference android:key="devtools.remote.usb.enabled"
                           android:title="@string/pref_developer_remotedebugging_usb" />
@@ -73,7 +73,7 @@
                                                                 android:title="@string/pref_learn_more"
                                                                 android:persistent="false"
                                                                 url="https://developer.mozilla.org/docs/Tools/Remote_Debugging/Debugging_Firefox_for_Android_with_WebIDE" />
-    </PreferenceCategory>
+    </PreferenceCategory> -->
 
     <PreferenceCategory
         android:key="android.not_a_preference.category_experimental"

@@ -57,7 +57,7 @@ public class ToolbarEditLayout extends ThemedLinearLayout {
     private final ThemedLinearLayout mThemeBackground;
 
     private final ThemedImageButton mSearchIcon;
-    private final ThemedImageButton mVoiceInput;
+    // private final ThemedImageButton mVoiceInput;
     private final ThemedImageButton mQrCode;
 
     private OnFocusChangeListener mFocusChangeListener;
@@ -75,7 +75,7 @@ public class ToolbarEditLayout extends ThemedLinearLayout {
         mThemeBackground = (ThemedLinearLayout) findViewById(R.id.url_bar_title_bg);
 
         mSearchIcon = (ThemedImageButton) findViewById(R.id.search_icon);
-        mVoiceInput = (ThemedImageButton) findViewById(R.id.mic);
+        // mVoiceInput = (ThemedImageButton) findViewById(R.id.mic);
         mQrCode = (ThemedImageButton) findViewById(R.id.qrcode);
     }
 
@@ -95,11 +95,11 @@ public class ToolbarEditLayout extends ThemedLinearLayout {
 
                     // Checking if voice and QR code input are enabled each time the user taps on the URL bar
                     if (hasFocus) {
-                        if (voiceIsEnabled(getContext(), getResources().getString(R.string.voicesearch_prompt))) {
+                        /* if (voiceIsEnabled(getContext(), getResources().getString(R.string.voicesearch_prompt))) {
                             mVoiceInput.setVisibility(View.VISIBLE);
                         } else {
                             mVoiceInput.setVisibility(View.GONE);
-                        }
+                        } */
 
                         if (qrCodeIsEnabled(getContext())) {
                             mQrCode.setVisibility(View.VISIBLE);
@@ -118,12 +118,12 @@ public class ToolbarEditLayout extends ThemedLinearLayout {
             }
         });
 
-        mVoiceInput.setOnClickListener(new Button.OnClickListener() {
+        /* mVoiceInput.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchVoiceRecognizer();
             }
-        });
+        }); */
 
         mQrCode.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -181,7 +181,7 @@ public class ToolbarEditLayout extends ThemedLinearLayout {
         mEditText.setPrivateMode(isPrivate);
         mThemeBackground.setPrivateMode(isPrivate);
         mSearchIcon.setPrivateMode(isPrivate);
-        mVoiceInput.setPrivateMode(isPrivate);
+        // mVoiceInput.setPrivateMode(isPrivate);
         mQrCode.setPrivateMode(isPrivate);
     }
 

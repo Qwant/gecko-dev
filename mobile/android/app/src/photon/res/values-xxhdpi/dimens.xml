@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="firstrun_background_padding_top">7dp</dimen>
+    <dimen name="firstrun_image_padding_top">90dp</dimen>
+    <dimen name="firstrun_image_padding_bottom">25dp</dimen>
+</resources>

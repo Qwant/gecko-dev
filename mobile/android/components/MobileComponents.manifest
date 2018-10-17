@@ -2,7 +2,7 @@
 component {322ba47e-7047-4f71-aebf-cb7d69325cd9} AboutRedirector.js
 contract @mozilla.org/network/protocol/about;1?what= {322ba47e-7047-4f71-aebf-cb7d69325cd9}
 contract @mozilla.org/network/protocol/about;1?what=fennec {322ba47e-7047-4f71-aebf-cb7d69325cd9}
-contract @mozilla.org/network/protocol/about;1?what=firefox {322ba47e-7047-4f71-aebf-cb7d69325cd9}
+contract @mozilla.org/network/protocol/about;1?what=qwant {322ba47e-7047-4f71-aebf-cb7d69325cd9}
 contract @mozilla.org/network/protocol/about;1?what=empty {322ba47e-7047-4f71-aebf-cb7d69325cd9}
 contract @mozilla.org/network/protocol/about;1?what=rights {322ba47e-7047-4f71-aebf-cb7d69325cd9}
 contract @mozilla.org/network/protocol/about;1?what=certerror {322ba47e-7047-4f71-aebf-cb7d69325cd9}
