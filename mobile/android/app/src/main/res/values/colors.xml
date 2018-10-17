@@ -39,18 +39,18 @@
     <color name="photon_content_bg_private_pressed">#1A272727</color>
 
     <color name="photon_tabs_tray_bg">#272727</color>
-    <color name="photon_highlight">#0A84FF</color>
-    <color name="photon_highlight_private">#AC39FF</color>
-    <color name="photon_loading_indicator_light">#00DCFC</color>
-    <color name="photon_loading_indicator_light_private">#FF1AD9</color>
-    <color name="photon_loading_indicator_dark">#00A2FE</color>
-    <color name="photon_loading_indicator_dark_private">#9400FF</color>
+    <color name="photon_highlight">#259ed0</color>
+    <color name="photon_highlight_private">#9a2b9a</color>
+    <color name="photon_loading_indicator_light">#9a2b9a</color>
+    <color name="photon_loading_indicator_light_private">#259ed0</color>
+    <color name="photon_loading_indicator_dark">#259ed0</color>
+    <color name="photon_loading_indicator_dark_private">#9a2b9a</color>
     <color name="photon_icon">#272727</color>
     <color name="photon_icon_disabled">#33272727</color>
     <color name="photon_icon_private">#FFFFFF</color>
     <color name="photon_icon_private_disabled">#33FFFFFF</color>
 
-    <color name="photon_notification_bg">#0096DD</color>
+    <color name="photon_notification_bg">#259ed0</color>
 
     <!-- opacity: 20% -->
     <color name="photon_notification_bg_pressed">#33000000</color>
