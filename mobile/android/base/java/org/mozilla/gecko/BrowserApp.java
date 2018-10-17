@@ -42,6 +42,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -62,6 +63,7 @@ import android.view.Window;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.ViewFlipper;
 
 import org.mozilla.gecko.AppConstants.Versions;
@@ -83,6 +85,7 @@ import org.mozilla.gecko.delegates.BookmarkStateChangeDelegate;
 import org.mozilla.gecko.delegates.BrowserAppDelegate;
 import org.mozilla.gecko.delegates.OfflineTabStatusDelegate;
 import org.mozilla.gecko.delegates.ScreenshotDelegate;
+import org.mozilla.gecko.delegates.PersistentNotificationDelegate;
 import org.mozilla.gecko.distribution.Distribution;
 import org.mozilla.gecko.distribution.DistributionStoreCallback;
 import org.mozilla.gecko.dlc.DlcStudyService;
@@ -184,6 +187,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import static android.app.Notification.PRIORITY_MIN;
 import static org.mozilla.gecko.Tabs.TabEvents.THUMBNAIL;
 import static org.mozilla.gecko.mma.MmaDelegate.INTERACT_WITH_SEARCH_WIDGET_URL_AREA;
 import static org.mozilla.gecko.mma.MmaDelegate.NEW_TAB;
@@ -328,7 +332,8 @@ public class BrowserApp extends GeckoApp
             mTelemetryCorePingDelegate,
             mTelemetryActivationPingDelegate,
             new OfflineTabStatusDelegate(),
-            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate)
+            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate),
+            new PersistentNotificationDelegate()
     ));
 
     @NonNull
@@ -1044,6 +1049,7 @@ public class BrowserApp extends GeckoApp
         }
     }
 
+
     @Override
     protected void processTabQueue() {
         if (TabQueueHelper.TAB_QUEUE_ENABLED && mInitialized) {
@@ -1206,6 +1212,7 @@ public class BrowserApp extends GeckoApp
                     // have been shown.
                     GuestSession.hideNotification(BrowserApp.this);
                 }
+
 
                 // It'd be better to launch this once, in onCreate, but there's ambiguity for when the
                 // profile is created so we run here instead. Don't worry, call start short-circuits pretty fast.
@@ -2160,7 +2167,7 @@ public class BrowserApp extends GeckoApp
      * @return true if this package is the default browser on this device, false otherwise.
      */
     private boolean isDefaultBrowser(String action) {
-        final Intent viewIntent = new Intent(action, Uri.parse("http://www.mozilla.org"));
+        final Intent viewIntent = new Intent(action, Uri.parse("https://www.qwant.com"));
         final ResolveInfo info = getPackageManager().resolveActivity(viewIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (info == null) {
             // No default is set
@@ -2902,7 +2909,7 @@ public class BrowserApp extends GeckoApp
             }
 
             // Don't show the banner in guest mode.
-            if (!Restrictions.isUserRestricted()) {
+            /* if (!Restrictions.isUserRestricted()) {
                 final ViewStub homeBannerStub = (ViewStub) findViewById(R.id.home_banner_stub);
                 final HomeBanner homeBanner = (HomeBanner) homeBannerStub.inflate();
                 mHomeScreen.setBanner(homeBanner);
@@ -2915,7 +2922,7 @@ public class BrowserApp extends GeckoApp
                         mHomeScreenContainer.removeView(homeBanner);
                     }
                 });
-            }
+            } */
         }
 
         mHomeScreenContainer.setVisibility(View.VISIBLE);
@@ -3435,19 +3442,19 @@ public class BrowserApp extends GeckoApp
         }
 
         if (SwitchBoard.isInExperiment(this, Experiments.TOP_ADDONS_MENU)) {
-            MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, true);
-            GeckoMenuItem item = (GeckoMenuItem) aMenu.findItem(R.id.addons_top_level);
-            if (item != null && mExtensionPermissionsHelper != null) {
+            MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, false);
+            /* GeckoMenuItem item = (GeckoMenuItem) aMenu.findItem(R.id.addons_top_level);
+            if (item != null) {
                 if (mExtensionPermissionsHelper.getShowUpdateIcon()) {
                     item.setIcon(R.drawable.ic_addon_update);
                 } else {
                     item.setIcon(null);
                 }
-            }
+            } */
             MenuUtils.safeSetVisible(aMenu, R.id.addons, false);
         } else {
             MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, false);
-            MenuUtils.safeSetVisible(aMenu, R.id.addons, true);
+            MenuUtils.safeSetVisible(aMenu, R.id.addons, false);
         }
 
         if (!Restrictions.isAllowed(this, Restrictable.INSTALL_EXTENSION)) {
@@ -3635,17 +3642,17 @@ public class BrowserApp extends GeckoApp
         }
 
         if (itemId == R.id.help) {
-            final String VERSION = AppConstants.MOZ_APP_VERSION;
+            /* final String VERSION = AppConstants.MOZ_APP_VERSION;
             final String OS = AppConstants.OS_TARGET;
-            final String LOCALE = Locales.getLanguageTag(Locale.getDefault());
+            final String LOCALE = Locales.getLanguageTag(Locale.getDefault()); */
 
-            final String URL = getResources().getString(R.string.help_link, VERSION, OS, LOCALE);
+            final String URL = getResources().getString(R.string.qwant_help_link);
             Tabs.getInstance().loadUrlInTab(URL);
             return true;
         }
 
         if (itemId == R.id.addons || itemId == R.id.addons_top_level) {
-            Tabs.getInstance().loadUrlInTab(AboutPages.ADDONS);
+            // Tabs.getInstance().loadUrlInTab(AboutPages.ADDONS);
             return true;
         }
 

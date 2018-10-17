@@ -346,10 +346,10 @@ pref("privacy.item.passwords", true);
 pref("privacy.item.sessions", true);
 pref("privacy.item.geolocation", true);
 pref("privacy.item.siteSettings", true);
-pref("privacy.item.syncAccount", true);
+pref("privacy.item.syncAccount", false);
 
 // enable geo
-pref("geo.enabled", true);
+pref("geo.enabled", false);
 
 // content sink control -- controls responsiveness during page load
 // see https://bugzilla.mozilla.org/show_bug.cgi?id=481566#c9
@@ -725,8 +725,8 @@ pref("dom.phonenumber.substringmatching.VE", 7);
 pref("gfx.canvas.azure.backends", "skia");
 
 // See ua-update.json.in for the packaged UA override list
-pref("general.useragent.updates.enabled", true);
-pref("general.useragent.updates.url", "https://dynamicua.cdn.mozilla.net/0/%APP_ID%");
+pref("general.useragent.updates.enabled", false);
+pref("general.useragent.updates.url", "http://0.0.0.0/general.useragent.updates.url");
 pref("general.useragent.updates.interval", 604800); // 1 week
 pref("general.useragent.updates.retry", 86400); // 1 day
 
@@ -739,7 +739,7 @@ pref("snav.enabled", true);
 // The mode of home provider syncing.
 // 0: Sync always
 // 1: Sync only when on wifi
-pref("home.sync.updateMode", 0);
+pref("home.sync.updateMode", 1);
 
 // How frequently to check if we should sync home provider data.
 pref("home.sync.checkIntervalSecs", 3600);
@@ -816,24 +816,24 @@ pref("dom.serviceWorkers.disable_open_click_delay", 5000);
 pref("dom.push.debug", false);
 // The upstream autopush endpoint must have the Google API key corresponding to
 // the App's sender ID; we bake this assumption directly into the URL.
-pref("dom.push.serverURL", "https://updates.push.services.mozilla.com/v1/gcm/@MOZ_ANDROID_GCM_SENDERID@");
+pref("dom.push.serverURL", "http://0.0.0.0+dom.push.serverURL");
 pref("dom.push.maxRecentMessageIDsPerSubscription", 0);
 
 #ifdef MOZ_ANDROID_GCM
-pref("dom.push.enabled", true);
+pref("dom.push.enabled", false);
 #endif
 
 // The remote content URL where FxAccountsWebChannel messages originate.  Must use HTTPS.
-pref("identity.fxaccounts.remote.webchannel.uri", "https://accounts.firefox.com");
+pref("identity.fxaccounts.remote.webchannel.uri", "http://0.0.0.0/dentity.fxaccounts.remote.webchannel.uri");
 
 // The remote URL of the Firefox Account profile server.
-pref("identity.fxaccounts.remote.profile.uri", "https://profile.accounts.firefox.com/v1");
+pref("identity.fxaccounts.remote.profile.uri", "http://0.0.0.0/identity.fxaccounts.remote.profile.uri");
 
 // The remote URL of the Firefox Account oauth server.
-pref("identity.fxaccounts.remote.oauth.uri", "https://oauth.accounts.firefox.com/v1");
+pref("identity.fxaccounts.remote.oauth.uri", "http://0.0.0.0/identity.fxaccounts.remote.oauth.uri");
 
 // Token server used by Firefox Account-authenticated Sync.
-pref("identity.sync.tokenserver.uri", "https://token.services.mozilla.com/1.0/sync/1.5");
+pref("identity.sync.tokenserver.uri", "http://0.0.0.0/identity.sync.tokenserver.uri");
 
 #ifndef RELEASE_OR_BETA
 // Enable Presentation API on Nightly
@@ -867,4 +867,11 @@ pref("browser.tabs.remote.separatePrivilegedContentProcess", false);
 
 // Allow Web Authentication
 pref("security.webauth.webauthn_enable_android_fido2", true);
+
+
+pref("privacy.trackingprotection.enabled", true);
+pref("privacy.trackingprotection.value", 2);
+pref("privacy.donottrackheader.enabled", true);
+
+pref("qwant.persistentnotification.enabled", true);
 
