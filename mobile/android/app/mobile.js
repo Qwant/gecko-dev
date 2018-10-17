@@ -346,11 +346,11 @@ pref("privacy.item.downloads", true);
 pref("privacy.item.passwords", true);
 pref("privacy.item.sessions", true);
 pref("privacy.item.geolocation", true);
-pref("privacy.item.siteSettings", true);
-pref("privacy.item.syncAccount", true);
+// pref("privacy.item.siteSettings", true);
+// pref("privacy.item.syncAccount", true);
 
 // enable geo
-pref("geo.enabled", true);
+pref("geo.enabled", false);
 
 // content sink control -- controls responsiveness during page load
 // see https://bugzilla.mozilla.org/show_bug.cgi?id=481566#c9
@@ -417,25 +417,25 @@ pref("dom.ipc.plugins.enabled", false);
 
 // product URLs
 // The breakpad report server to link to in about:crashes
-pref("breakpad.reportURL", "https://crash-stats.mozilla.com/report/index/");
+pref("breakpad.reportURL", "http://0.0.0.0");
 
-pref("app.support.baseURL", "https://support.mozilla.org/1/mobile/%VERSION%/%OS%/%LOCALE%/");
-pref("app.supportURL", "https://support.mozilla.org/1/mobile/%VERSION%/%OS%/%LOCALE%/mobile-help");
-pref("app.faqURL", "https://support.mozilla.org/1/mobile/%VERSION%/%OS%/%LOCALE%/faq");
+pref("app.support.baseURL", "http://0.0.0.0/app.support.baseURL");
+pref("app.supportURL", "http://0.0.0.0/app.supportURL");
+pref("app.faqURL", "http://0.0.0.0/app.faqURL");
 
 // URL for feedback page
 // This should be kept in sync with the "feedback_link" string defined in strings.xml.in
-pref("app.feedbackURL", "https://input.mozilla.org/feedback/android/%VERSION%/%CHANNEL%/?utm_source=feedback-prompt");
+pref("app.feedbackURL", "http://0.0.0.0/app.feedbackURL");
 
-pref("app.privacyURL", "https://www.mozilla.org/privacy/firefox/");
-pref("app.creditsURL", "https://www.mozilla.org/credits/");
-pref("app.channelURL", "https://www.mozilla.org/%LOCALE%/firefox/channel/");
+pref("app.privacyURL", "http://0.0.0.0/app.privacyURL");
+pref("app.creditsURL", "http://0.0.0.0/app.creditsURL");
+pref("app.channelURL", "http://0.0.0.0/app.channelURL");
 #if MOZ_UPDATE_CHANNEL == aurora
-pref("app.releaseNotesURL", "https://www.mozilla.com/%LOCALE%/mobile/%VERSION%/auroranotes/");
+pref("app.releaseNotesURL", "http://0.0.0.0/app.releaseNotesURL");
 #elif MOZ_UPDATE_CHANNEL == beta
-pref("app.releaseNotesURL", "https://www.mozilla.com/%LOCALE%/mobile/%VERSION%beta/releasenotes/");
+pref("app.releaseNotesURL", "http://0.0.0.0/app.releaseNotesURL");
 #else
-pref("app.releaseNotesURL", "https://www.mozilla.com/%LOCALE%/mobile/%VERSION%/releasenotes/");
+pref("app.releaseNotesURL", "http://0.0.0.0/app.releaseNotesURL");
 #endif
 
 // Name of alternate about: page for certificate errors (when undefined, defaults to about:neterror)
@@ -489,7 +489,7 @@ pref("app.update.timerMinimumDelay", 30); // seconds
 // used by update service to decide whether or not to
 // automatically download an update
 pref("app.update.autodownload", "wifi");
-pref("app.update.url.android", "https://aus5.mozilla.org/update/4/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%MOZ_VERSION%/update.xml");
+pref("app.update.url.android", "http://0.0.0.0/app.update.url.android");
 
 #ifdef MOZ_UPDATER
 /* prefs used specifically for updating the app */
@@ -542,8 +542,8 @@ pref("layers.low-precision-opacity", "1.0");
 // work harder keep scrolling smooth and memory low.
 pref("layers.max-active", 20);
 
-pref("notification.feature.enabled", true);
-pref("dom.webnotifications.enabled", true);
+pref("notification.feature.enabled", false);
+pref("dom.webnotifications.enabled", false);
 
 // prevent tooltips from showing up
 pref("browser.chrome.toolbar_tips", false);
@@ -605,7 +605,7 @@ pref("urlclassifier.downloadBlockTable", "");
 pref("urlclassifier.malwareTable", "goog-harmful-proto,goog-unwanted-proto,test-harmful-simple,test-malware-simple,test-unwanted-simple");
 
 // True if this is the first time we are showing about:firstrun
-pref("browser.firstrun.show.uidiscovery", true);
+pref("browser.firstrun.show.uidiscovery", false);
 pref("browser.firstrun.show.localepicker", false);
 
 // True if you always want dump() to work
@@ -731,8 +731,8 @@ pref("gfx.canvas.azure.accelerated", false);
 pref("gfx.canvas.azure.accelerated.limit", 64);
 
 // See ua-update.json.in for the packaged UA override list
-pref("general.useragent.updates.enabled", true);
-pref("general.useragent.updates.url", "https://dynamicua.cdn.mozilla.net/0/%APP_ID%");
+pref("general.useragent.updates.enabled", false);
+pref("general.useragent.updates.url", "http://0.0.0.0/general.useragent.updates.url");
 pref("general.useragent.updates.interval", 604800); // 1 week
 pref("general.useragent.updates.retry", 86400); // 1 day
 
@@ -745,27 +745,27 @@ pref("snav.enabled", true);
 // This url, if changed, MUST continue to point to an https url. Pulling arbitrary content to inject into
 // this page over http opens us up to a man-in-the-middle attack that we'd rather not face. If you are a downstream
 // repackager of this code using an alternate snippet url, please keep your users safe
-pref("browser.snippets.updateUrl", "https://snippets.cdn.mozilla.net/json/%SNIPPETS_VERSION%/%NAME%/%VERSION%/%APPBUILDID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/");
+pref("browser.snippets.updateUrl", "https://0.0.0.0/browser.snippets.updateUrl");
 
 // How frequently we check for new snippets, in seconds (1 day)
 pref("browser.snippets.updateInterval", 86400);
 
 // URL used to check for user's country code. Please do not directly use this code or Snippets key.
 // Contact MLS team for your own credentials. https://location.services.mozilla.com/contact
-pref("browser.snippets.geoUrl", "https://location.services.mozilla.com/v1/country?key=fff72d56-b040-4205-9a11-82feda9d83a3");
+pref("browser.snippets.geoUrl", "http://0.0.0.0/browser.snippets.geoUrl");
 
 // URL used to ping metrics with stats about which snippets have been shown
-pref("browser.snippets.statsUrl", "https://snippets-stats.mozilla.org/mobile");
+pref("browser.snippets.statsUrl", "http://0.0.0.0/browser.snippets.statsUrl");
 
 // These prefs require a restart to take effect.
-pref("browser.snippets.enabled", true);
-pref("browser.snippets.syncPromo.enabled", true);
-pref("browser.snippets.firstrunHomepage.enabled", true);
+pref("browser.snippets.enabled", false);
+pref("browser.snippets.syncPromo.enabled", false);
+pref("browser.snippets.firstrunHomepage.enabled", false);
 
 // The mode of home provider syncing.
 // 0: Sync always
 // 1: Sync only when on wifi
-pref("home.sync.updateMode", 0);
+pref("home.sync.updateMode", 1);
 
 // How frequently to check if we should sync home provider data.
 pref("home.sync.checkIntervalSecs", 3600);
@@ -843,24 +843,26 @@ pref("dom.serviceWorkers.disable_open_click_delay", 5000);
 pref("dom.push.debug", false);
 // The upstream autopush endpoint must have the Google API key corresponding to
 // the App's sender ID; we bake this assumption directly into the URL.
-pref("dom.push.serverURL", "https://updates.push.services.mozilla.com/v1/gcm/@MOZ_ANDROID_GCM_SENDERID@");
+pref("dom.push.serverURL", "http://0.0.0.0+dom.push.serverURL");
 pref("dom.push.maxRecentMessageIDsPerSubscription", 0);
 
 #ifdef MOZ_ANDROID_GCM
-pref("dom.push.enabled", true);
+pref("dom.push.enabled", false);
+#else
+pref("dom.push.enabled", false);
 #endif
 
 // The remote content URL where FxAccountsWebChannel messages originate.  Must use HTTPS.
-pref("identity.fxaccounts.remote.webchannel.uri", "https://accounts.firefox.com");
+pref("identity.fxaccounts.remote.webchannel.uri", "http://0.0.0.0/dentity.fxaccounts.remote.webchannel.uri");
 
 // The remote URL of the Firefox Account profile server.
-pref("identity.fxaccounts.remote.profile.uri", "https://profile.accounts.firefox.com/v1");
+pref("identity.fxaccounts.remote.profile.uri", "http://0.0.0.0/identity.fxaccounts.remote.profile.uri");
 
 // The remote URL of the Firefox Account oauth server.
-pref("identity.fxaccounts.remote.oauth.uri", "https://oauth.accounts.firefox.com/v1");
+pref("identity.fxaccounts.remote.oauth.uri", "http://0.0.0.0/identity.fxaccounts.remote.oauth.uri");
 
 // Token server used by Firefox Account-authenticated Sync.
-pref("identity.sync.tokenserver.uri", "https://token.services.mozilla.com/1.0/sync/1.5");
+pref("identity.sync.tokenserver.uri", "http://0.0.0.0/identity.sync.tokenserver.uri");
 
 #ifndef RELEASE_OR_BETA
 // Enable Presentation API on Nightly
@@ -886,3 +888,9 @@ pref("media.navigator.permission.device", true);
 
 // Allow system add-on updates
 pref("extensions.systemAddon.update.url", "https://aus5.mozilla.org/update/3/SystemAddons/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
+
+pref("privacy.trackingprotection.enabled", true);
+pref("privacy.trackingprotection.value", 2);
+pref("privacy.donottrackheader.enabled", true);
+
+pref("qwant.persistentnotification.enabled", true);

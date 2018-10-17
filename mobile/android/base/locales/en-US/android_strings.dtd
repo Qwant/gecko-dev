@@ -23,8 +23,36 @@
 <!ENTITY firstrun_signin_message "Get connected, get started">
 <!ENTITY firstrun_signin_button "Sign in to Sync">
 <!ENTITY  onboard_start_button_browser "Start Browsing">
-<!ENTITY firstrun_button_notnow "Not right now">
+<!ENTITY firstrun_button_notnow "Skip">
 <!ENTITY firstrun_button_next "Next">
+
+
+
+<!ENTITY firstrun_panel_title_welcome2 "Welcome">
+<!ENTITY firstrun_welcome2_message "Welcome to Qwant mobile">
+<!ENTITY firstrun_welcome2_subtext "With Qwant mobile, search the web efficiently with total privacy.">
+
+<!ENTITY firstrun_panel_title_privacy2 "Privacy">
+<!ENTITY firstrun_privacy2_message "Your private life stays private">
+<!ENTITY firstrun_privacy2_subtext "Qwant doesn’t look at the searches you do or the websites you visit. We don’t collect or sell your data and we stand against ad tracking.">
+
+<!ENTITY firstrun_panel_title_efficiency "Efficiency">
+<!ENTITY firstrun_efficiency_message "Experience fast &amp; efficient searches">
+<!ENTITY firstrun_efficiency_subtext "Qwant gives you the best results instantly in total neutrality. News, music, social network or videos: search everything with total freedom.">
+
+<!ENTITY qwant_defaultbrowser_link "https://help.qwant.com/help/qwant-mobile/make-qwant-the-default-browser-on-android/?client=qwantbrowser">
+<!ENTITY qwant_help_link "https://help.qwant.com/help/qwant-mobile/?client=qwantbrowser">
+<!ENTITY qwant_dnt_link "https://help.qwant.com/help/qwant-mobile/about-do-not-track-dnt/?client=qwantbrowser">
+<!ENTITY qwant_trackingprotection_link "https://help.qwant.com/help/qwant-mobile/about-tracking-protection/?client=qwantbrowser">
+<!ENTITY qwant_faq_link "https://help.qwant.com/help/qwant-mobile/frequently-asked-questions/?client=qwantbrowser">
+
+<!ENTITY qwant_widget_text "What are you looking for ?">
+
+<!ENTITY qwant_preferences_persistentnotification "Persistent notification">
+<!ENTITY qwant_preferences_persistentnotification_summary "Search directly from the notification panel">
+
+
+<!ENTITY pwa_onboarding_sumo "You can easily add this website to your Home screen to have instant access and browse faster with an app-like experience.">
 
 <!ENTITY firstrun_tabqueue_title "Links">
 
@@ -183,11 +211,11 @@
 <!ENTITY pref_category_search3 "Search">
 <!ENTITY pref_category_search_summary2 "Add, set default, show suggestions">
 <!ENTITY pref_category_accessibility "Accessibility">
-<!ENTITY pref_category_accessibility_summary2 "Text size, zoom, voice input">
+<!ENTITY pref_category_accessibility_summary2 "Text size, zoom">
 <!ENTITY pref_category_privacy_short "Privacy">
 <!ENTITY pref_category_privacy_summary4 "Tracking, logins, data choices">
-<!ENTITY pref_category_vendor2 "&vendorShortName; &brandShortName;">
-<!ENTITY pref_category_vendor_summary2 "About &brandShortName;, FAQs, feedback">
+<!ENTITY pref_category_vendor2 "&brandShortName;">
+<!ENTITY pref_category_vendor_summary2 "About &brandShortName;, FAQs">
 <!ENTITY pref_category_datareporting "Data choices">
 <!ENTITY pref_category_logins "Logins">
 <!ENTITY pref_learn_more "Learn more">
@@ -206,7 +234,7 @@
 <!-- Localization note (pref_category_advanced_summary3): “data saver” in this
      context means consuming less data, e.g. by not loading images, not
      “storing data”. -->
-<!ENTITY pref_category_advanced_summary3 "Restore tabs, data saver, developer tools">
+<!ENTITY pref_category_advanced_summary3 "Restore tabs, data saver">
 <!ENTITY pref_category_notifications "Notifications">
 <!ENTITY pref_category_notifications_summary2 "New features, product tips">
 <!ENTITY pref_developer_remotedebugging_usb "Remote debugging via USB">
@@ -870,9 +898,9 @@ is simply hidden from the Activity Stream panel. -->
 <!ENTITY activity_stream_remove "Remove">
 <!ENTITY activity_stream_delete_history "Delete from History">
 
-<!ENTITY private_tab_panel_title "Private Browsing + Tracking Protection">
-<!ENTITY private_tab_panel_description "&brandShortName; blocks parts of the pages that may track your browsing activity.">
-<!ENTITY private_tab_panel_description2 "We won\'t remember any history, but downloaded files and new bookmarks will still be saved to your device.">
+<!ENTITY private_tab_panel_title "You are in a Private Browsing tab">
+<!ENTITY private_tab_panel_description "In this mode, the webpages you visit aren’t added to your browser history and cookies are automatically deleted when you close the tab.">
+<!ENTITY private_tab_panel_description2 "However, note that downloaded files and bookmarks will still be stored on your mobile device even after you close the tab.">
 <!ENTITY private_tab_learn_more "Want to learn more?">
 
 <!ENTITY fullscreen_warning "Entered full screen">

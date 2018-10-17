@@ -22,55 +22,29 @@
 </head>
 
 <body dir="&locale.dir;">
-  <div id="header" dir="ltr">
-    <div id="wordmark"></div>
-#expand <p id="version">__MOZ_APP_VERSION_DISPLAY__</p>
-  </div>
 
-  <div id="banner">
-    <div id="logo"/>
-#ifdef MOZ_UPDATER
-    <div id="updateBox">
-      <a id="updateLink" href="">&aboutPage.checkForUpdates.link;</a>
-      <span id="update-message-checking">&aboutPage.checkForUpdates.checking;</span>
-      <span id="update-message-none">&aboutPage.checkForUpdates.none;</span>
-      <span id="update-message-found">&aboutPage.checkForUpdates.available2;</span>
-      <span id="update-message-downloading">&aboutPage.checkForUpdates.downloading;</span>
-      <span id="update-message-downloaded">&aboutPage.checkForUpdates.downloaded2;</span>
-    </div>
+#ifdef SHOULD_NOT_BE_DEFINED
+    Should not be displayed (used for compiling compatibility)
 #endif
 
-    <div id="messages">
-      <p id="distributionAbout" hidden="true"/>
-      <p id="distributionID" hidden="true"/>
-      <p id="telemetry" hidden="true">
-        &aboutPage.warningVersion;
-      </p>
+    <div id="back-link-div">
+        <!-- <a href=""><img id="back-link-img" alt="back" src="images/icon_about_return.png" /></a> -->
+        <p>&aboutPage.title;</p>
     </div>
-
-  </div>
-
-    <ul id="aboutLinks">
-      <div class="top-border"></div>
-      <li><a id="faqURL">&aboutPage.faq.label;</a></li>
-      <li><a id="supportURL">&aboutPage.support.label;</a></li>
-      <li><a id="privacyURL">&aboutPage.privacyPolicy.label;</a></li>
-      <li><a href="about:rights">&aboutPage.rights.label;</a></li>
-#ifndef NIGHTLY_BUILD
-      <li><a id="releaseNotesURL">&aboutPage.relNotes.label;</a></li>
-#endif
-      <li><a id="creditsURL">&aboutPage.credits.label;</a></li>
-      <li><a href="about:license">&aboutPage.license.label;</a></li>
-      <div class="bottom-border"></div>
-    </ul>
-
-#ifdef RELEASE_OR_BETA
-    <div id="aboutDetails">
-      <p>&aboutPage.logoTrademark;</p>
+    <div id="logo-div">
+        <img id="logo-img" alt="qwant-logo" src="chrome://browser/skin/images/logo-hdpi.png" />
     </div>
-#endif
-
-    <script type="application/javascript" src="chrome://browser/content/about.js" />
-
+    <div id="desc">
+        <p>v2.2.0</p>
+        <p>&aboutPage.desc.l1;</p>
+        <!-- <p>&aboutPage.desc.l2;</p> -->
+    </div>
+    <div id="links-list">
+        <ul>
+            <li class="first"><a href="&aboutPage.link.more.url;">&aboutPage.link.more.label;</a></li>
+            <li><a href="&aboutPage.link.privacypolicy.url;">&aboutPage.link.privacypolicy.label;</a></li>
+            <li><a href="about:license">&aboutPage.link.licenses.label;</a></li>
+        </ul>
+    </div>
 </body>
 </html>
