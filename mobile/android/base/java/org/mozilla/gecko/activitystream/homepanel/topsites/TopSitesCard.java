@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Log;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.activitystream.homepanel.model.TopSite;
 import org.mozilla.gecko.activitystream.homepanel.stream.TopPanelRow;
@@ -109,7 +110,10 @@ import java.util.concurrent.Future;
         // We use page titles with distributions because that's what the creators of those distributions expect to
         // be shown. Also, we need a valid URI for our preferred case so we stop here if we don't have one.
         final String pageTitle = topSite.getTitle();
-        if (isInvalidURI || isSiteSuggestedFromDistribution) {
+        if (pageTitle.startsWith("Qwant")) {
+            // Default qwant suggested sites
+            setTopSiteTitleHelper(title, pageTitle);
+        } else if (isInvalidURI || isSiteSuggestedFromDistribution) {
             final String updateText = !TextUtils.isEmpty(pageTitle) ? pageTitle : topSite.getUrl();
             setTopSiteTitleHelper(title, updateText); // See comment below regarding setCenteredText.
 

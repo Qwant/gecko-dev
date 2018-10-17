@@ -255,14 +255,22 @@ public class LocalBrowserDB extends BrowserDB {
             }
 
             try {
-                if (Restrictions.isRestrictedProfile(context)) {
+                final String about = "bookmarkdefaults_title_aboutfirefox";
+                final String addons = "bookmarkdefaults_title_addons";
+                final String regularSumo = "bookmarkdefaults_title_support";
+                if (name.equals(about) || name.equals(addons) || name.equals(regularSumo)) {
+                    continue;
+                }
+
+                /* if (Restrictions.isRestrictedProfile(context)) {
                     // matching on variable name from strings.xml.in
                     final String addons = "bookmarkdefaults_title_addons";
                     final String regularSumo = "bookmarkdefaults_title_support";
                     if (name.equals(addons) || name.equals(regularSumo)) {
                         continue;
                     }
-                }
+                } */
+
                 if (!Restrictions.isRestrictedProfile(context)) {
                     // if we're not in kidfox, skip the kidfox specific bookmark(s)
                     if (name.startsWith("bookmarkdefaults_title_restricted")) {
