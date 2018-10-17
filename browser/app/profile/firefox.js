@@ -89,7 +89,7 @@ pref("browser.dictionaries.download.url", "https://addons.mozilla.org/%LOCALE%/f
 
 // At startup, should we check to see if the installation
 // date is older than some threshold
-pref("app.update.checkInstallTime", true);
+pref("app.update.checkInstallTime", false);
 
 // The number of days a binary is permitted to be old without checking is defined in
 // firefox-branding.js (app.update.checkInstallTime.days)
@@ -158,8 +158,8 @@ pref("app.update.silent", false);
 // app.update.badgeWaitTime is in branding section
 
 // If set to true, the Update Service will apply updates in the background
-// when it finishes downloading them.
-pref("app.update.staging.enabled", true);
+// when it finishes downloading them. Disabled in bug 1397562.
+pref("app.update.staging.enabled", false);
 
 // Update service URL:
 pref("app.update.url", "https://aus5.mozilla.org/update/6/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%SYSTEM_CAPABILITIES%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
@@ -174,7 +174,7 @@ pref("app.update.idletime", 60);
 
 // Whether or not to attempt using the service for updates.
 #ifdef MOZ_MAINTENANCE_SERVICE
-pref("app.update.service.enabled", true);
+pref("app.update.service.enabled", false);
 #endif
 
 #ifdef MOZ_BITS_DOWNLOAD
@@ -204,7 +204,7 @@ pref("browser.eme.ui.enabled", false);
 #endif
 
 // UI tour experience.
-pref("browser.uitour.enabled", true);
+pref("browser.uitour.enabled", false);
 pref("browser.uitour.loglevel", "Error");
 pref("browser.uitour.requireSecure", true);
 pref("browser.uitour.themeOrigin", "https://addons.mozilla.org/%LOCALE%/firefox/themes/");
@@ -965,28 +965,28 @@ pref("browser.zoom.siteSpecific", true);
 pref("browser.zoom.updateBackgroundTabs", true);
 
 // The breakpad report server to link to in about:crashes
-pref("breakpad.reportURL", "https://crash-stats.mozilla.org/report/index/");
+pref("breakpad.reportURL", "http://0.0.0.0");
 
 // URL for "Learn More" for DataCollection
 pref("toolkit.datacollection.infoURL",
-     "https://www.mozilla.org/legal/privacy/firefox.html");
+     "http://0.0.0.0");
 
 // URL for "Learn More" for Crash Reporter
 pref("toolkit.crashreporter.infoURL",
-     "https://www.mozilla.org/legal/privacy/firefox.html#crash-reporter");
+     "http://0.0.0.0");
 
 // base URL for web-based support pages
-pref("app.support.baseURL", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/");
+pref("app.support.baseURL", "http://0.0.0.0");
 
 // base url for web-based feedback pages
 #ifdef MOZ_DEV_EDITION
-pref("app.feedback.baseURL", "https://input.mozilla.org/%LOCALE%/feedback/firefoxdev/%VERSION%/");
+pref("app.feedback.baseURL", "http://0.0.0.0");
 #else
-pref("app.feedback.baseURL", "https://input.mozilla.org/%LOCALE%/feedback/%APP%/%VERSION%/");
+pref("app.feedback.baseURL", "http://0.0.0.0");
 #endif
 
 // base URL for web-based marketing pages
-pref("app.productInfo.baseURL", "https://www.mozilla.org/firefox/features/");
+pref("app.productInfo.baseURL", "http://0.0.0.0");
 
 // Name of alternate about: page for certificate errors (when undefined, defaults to about:neterror)
 pref("security.alternate_certificate_error_page", "certerror");
@@ -1394,24 +1394,21 @@ pref("dom.debug.propagate_gesture_events_through_content", false);
 
 // All the Geolocation preferences are here.
 //
-#ifndef EARLY_BETA_OR_EARLIER
-pref("geo.wifi.uri", "https://www.googleapis.com/geolocation/v1/geolocate?key=%GOOGLE_LOCATION_SERVICE_API_KEY%");
-#else
-// Use MLS on Nightly and early Beta.
-pref("geo.wifi.uri", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
-#endif
+pref("geo.wifi.uri", "http://0.0.0.0");
+// MLS URL:
+// pref("geo.wifi.uri", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
 
 #ifdef XP_MACOSX
-pref("geo.provider.use_corelocation", true);
+pref("geo.provider.use_corelocation", false);
 #endif
 
 // Set to false if things are really broken.
 #ifdef XP_WIN
-pref("geo.provider.ms-windows-location", true);
+pref("geo.provider.ms-windows-location", false);
 #endif
 
 #if defined(MOZ_WIDGET_GTK) && defined(MOZ_GPSD)
-pref("geo.provider.use_gpsd", true);
+pref("geo.provider.use_gpsd", false);
 #endif
 
 // CustomizableUI debug logging.
@@ -1664,7 +1661,7 @@ pref("browser.tabs.remote.warmup.maxTabs", 3);
 pref("browser.tabs.remote.warmup.unloadDelayMs", 2000);
 
 // For the about:tabcrashed page
-pref("browser.tabs.crashReporting.sendReport", true);
+pref("browser.tabs.crashReporting.sendReport", false);
 pref("browser.tabs.crashReporting.includeURL", false);
 pref("browser.tabs.crashReporting.requestEmail", false);
 pref("browser.tabs.crashReporting.emailMe", false);
@@ -1693,7 +1690,7 @@ pref("dom.ipc.processPriorityManager.enabled", true);
 // debugger is attached.
 pref("dom.ipc.reportProcessHangs", false);
 #else
-pref("dom.ipc.reportProcessHangs", true);
+pref("dom.ipc.reportProcessHangs", false);
 #endif
 
 // Don't limit how many nodes we care about on desktop:
@@ -1732,7 +1729,7 @@ pref("browser.migrate.chrome.history.maxAgeInDays", 180);
 pref("dom.mozBrowserFramesEnabled", true);
 
 pref("extensions.pocket.api", "api.getpocket.com");
-pref("extensions.pocket.enabled", true);
+pref("extensions.pocket.enabled", false);
 pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
 pref("extensions.pocket.site", "getpocket.com");
 
@@ -1819,7 +1816,7 @@ pref("browser.chrome.errorReporter.infoURL",
 // Normandy client preferences
 pref("app.normandy.api_url", "https://normandy.cdn.mozilla.net/api/v1");
 pref("app.normandy.dev_mode", false);
-pref("app.normandy.enabled", true);
+pref("app.normandy.enabled", false);
 pref("app.normandy.first_run", true);
 pref("app.normandy.logging.level", 50); // Warn
 pref("app.normandy.run_interval_seconds", 21600); // 6 hours

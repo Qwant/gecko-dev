@@ -76,6 +76,13 @@ public class FirstrunPanel extends Fragment {
             close();
         });
 
+        root.findViewById(R.id.firstrun_notnow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pagerNavigation.finish();
+            }
+        });
+
         return root;
     }
 

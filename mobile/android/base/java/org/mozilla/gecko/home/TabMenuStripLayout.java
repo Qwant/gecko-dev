@@ -51,7 +51,7 @@ class TabMenuStripLayout extends ThemedLinearLayout
     private float prevProgress;
     private final int tabContentStart;
     private final boolean titlebarFill;
-    private final int activeTextColor;
+    private final ColorStateList activeTextColor;
     private final ColorStateList inactiveTextColor;
     private final ColorStateList stripColor;
 
@@ -63,8 +63,7 @@ class TabMenuStripLayout extends ThemedLinearLayout
 
         titlebarFill = a.getBoolean(R.styleable.TabMenuStrip_titlebarFill, false);
         tabContentStart = a.getDimensionPixelSize(R.styleable.TabMenuStrip_tabsMarginLeft, 0);
-        activeTextColor = a.getColor(R.styleable.TabMenuStrip_activeTextColor,
-                                     ResourcesCompat.getColor(getResources(), R.color.text_and_tabs_tray_grey, null));
+        activeTextColor = a.getColorStateList(R.styleable.TabMenuStrip_activeTextColor);
         inactiveTextColor = a.getColorStateList(R.styleable.TabMenuStrip_inactiveTextColor);
         stripColor = a.getColorStateList(R.styleable.TabMenuStrip_stripColor);
         a.recycle();
