@@ -73,10 +73,6 @@
     <!-- Small favicon used in about:home(TopsitesPanel, BookmarksPanel, CombinedHistoryPanel and BrowserSearch) -->
     <dimen name="favicon_small_size">24dp</dimen>
 
-    <dimen name="firstrun_content_width">300dp</dimen>
-    <dimen name="firstrun_min_height">120dp</dimen>
-    <dimen name="firstrun_background_height">120dp</dimen>
-
     <dimen name="overlay_prompt_content_width">260dp</dimen>
     <dimen name="overlay_prompt_button_width">148dp</dimen>
     <dimen name="overlay_prompt_container_width">@dimen/match_parent</dimen>
@@ -259,4 +255,14 @@
 
     <!-- Preferences -->
     <dimen name="preference_panel_text_size">15dp</dimen>
+
+
+    <!-- First run -->
+    <dimen name="firstrun_content_width">300dp</dimen>
+    <dimen name="firstrun_min_height">120dp</dimen>
+    <dimen name="firstrun_background_height">120dp</dimen>
+
+    <dimen name="firstrun_background_padding_top">7dp</dimen>
+    <dimen name="firstrun_image_padding_top">10dp</dimen>
+    <dimen name="firstrun_image_padding_bottom">5dp</dimen>
 </resources>

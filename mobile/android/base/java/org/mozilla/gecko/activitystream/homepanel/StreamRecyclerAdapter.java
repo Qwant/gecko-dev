@@ -59,7 +59,7 @@ public class StreamRecyclerAdapter extends RecyclerView.Adapter<StreamViewHolder
 
     // Content sections available on the Activity Stream page. These may be hidden if the sections are disabled.
     private final RowItemType[] ACTIVITY_STREAM_SECTIONS =
-            { RowItemType.TOP_PANEL, RowItemType.TOP_STORIES_TITLE, RowItemType.HIGHLIGHTS_TITLE, RowItemType.LEARN_MORE_LINK };
+            { RowItemType.TOP_PANEL, RowItemType.TOP_STORIES_TITLE, RowItemType.HIGHLIGHTS_TITLE };
     public static final int MAX_TOP_STORIES = 3;
     private static final String LINK_MORE_POCKET = "https://getpocket.com/explore/trending?src=ff_android&cdn=0";
 
@@ -211,8 +211,7 @@ public class StreamRecyclerAdapter extends RecyclerView.Adapter<StreamViewHolder
             setViewVisible(bookmarksEnabled || visitedEnabled, holder.itemView);
         } else if (type == RowItemType.TOP_STORIES_TITLE.getViewType()) {
             final Context context = holder.itemView.getContext();
-            final boolean pocketEnabled = ActivityStreamConfiguration.isPocketRecommendingTopSites(context);
-            setViewVisible(pocketEnabled, holder.itemView);
+            setViewVisible(false, holder.itemView); // hiding pocket top stories
         }
     }
 
