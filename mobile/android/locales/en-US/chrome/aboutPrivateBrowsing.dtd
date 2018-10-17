@@ -14,12 +14,13 @@
 <!ENTITY privatebrowsingpage.title.normal1 "You are not in Private Browsing">
 
 <!ENTITY privatebrowsingpage.description.trackingProtection "&brandShortName; blocks parts of the pages that may track your browsing activity.">
-<!ENTITY privatebrowsingpage.description.privateDetails "We won't remember any history, but downloaded files and new bookmarks will still be saved to your device.">
+<!ENTITY privatebrowsingpage.description.privateDetails "In this mode, the webpages you visit aren’t added to your browser history and cookies are automatically deleted when you close the tab. However, note that downloaded files and bookmarks will still be stored on your mobile device even after you close the tab.">
 
 <!-- Localization note (privatebrowsingpage.description.normal2): "Private
      Browsing is capitalized in English to be consistent with our existing uses
      of the term. -->
-<!ENTITY privatebrowsingpage.description.normal2 "In Private Browsing, we won't keep any of your browsing history or cookies. Bookmarks you add and files you download will still be saved on your device.">
+<!ENTITY privatebrowsingpage.description.normal2 "Tracking Protection is activated. However, you must use Private Browsing if you want to visit websites without leaving traces (history &amp; cookies) on your browser.">
 
 <!ENTITY privatebrowsingpage.link.private "Want to learn more?">
 <!ENTITY privatebrowsingpage.link.normal "Open a new private tab">
+

@@ -11,6 +11,6 @@
         android:layout_width="116dp"
         android:layout_height="121dp"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/firefox_logo_svg"/>
+        app:srcCompat="@drawable/flat_icon"/>
 
 </org.mozilla.gecko.widget.SplashScreen>

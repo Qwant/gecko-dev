@@ -19,7 +19,7 @@
         <SwitchPreference
             android:key="android.not_a_preference.newtab.load_homepage"
             android:title="@string/home_homepage_every_new_tab"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:persistent="true"/>
 
     </PreferenceCategory>
