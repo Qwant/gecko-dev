@@ -23,21 +23,22 @@ class FirstrunPagerConfig {
     static final String KEY_ENTRYPOINT = "panelFxaEntrypoint";
 
     static List<FirstrunPanelConfig> getDefault(Context context, final boolean useLocalValues) {
-        final List<FirstrunPanelConfig> panels = new LinkedList<>();
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME, useLocalValues));
-        if (!OnboardingResources.getInstance(context).useNewOnboarding()) {
-            panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.CUSTOMIZE, useLocalValues));
-        }
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.SYNC, useLocalValues));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.SEND_TAB, useLocalValues));
+        return FirstrunPagerConfig.forQwant(context);
+    }
 
-        return panels;
+    static List<FirstrunPanelConfig> forFxAUser(Context context, final boolean useLocalValues) {
+        return FirstrunPagerConfig.forQwant(context);
     }
 
     static List<FirstrunPanelConfig> getRestricted(Context context) {
+        return FirstrunPagerConfig.forQwant(context);
+    }
+
+    static List<FirstrunPanelConfig> forQwant(Context context) {
         final List<FirstrunPanelConfig> panels = new LinkedList<>();
-        panels.add(new FirstrunPanelConfig(RestrictedWelcomePanel.class.getName(),
-                context.getString(RestrictedWelcomePanel.TITLE_RES)));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME2, true));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY2, true));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.EFFICIENCY, true));
         return panels;
     }
 
