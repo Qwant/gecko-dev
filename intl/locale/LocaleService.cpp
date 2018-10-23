@@ -117,9 +117,7 @@ ReadRequestedLocales(nsTArray<nsCString>& aRetVal)
       SplitLocaleListStringIntoArray(str, aRetVal);
     }
   } else {
-    nsAutoCString defaultLocale;
-    LocaleService::GetInstance()->GetDefaultLocale(defaultLocale);
-    aRetVal.AppendElement(defaultLocale);
+    OSPreferences::GetInstance()->GetSystemLocales(aRetVal);
   }
 
   // Last fallback locale is a locale for the requested locale chain.
