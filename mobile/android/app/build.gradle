@@ -87,7 +87,7 @@ android {
             debug configureMinifyClosure
         }
 
-        def isDebuggable = (!mozconfig.substs.MOZILLA_OFFICIAL) || (mozconfig.substs.NIGHTLY_BUILD && mozconfig.substs.MOZ_DEBUG)
+        def isDebuggable = false
         debug {
             debuggable isDebuggable 
             multiDexKeepProguard file("${topsrcdir}/mobile/android/config/proguard/debug-robocop-keeps.cfg")
