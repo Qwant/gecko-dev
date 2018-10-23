@@ -490,7 +490,7 @@ pref("app.update.timerMinimumDelay", 30); // seconds
 
 // used by update service to decide whether or not to
 // automatically download an update
-pref("app.update.autodownload", "wifi");
+pref("app.update.autodownload", false);
 pref("app.update.url.android", "http://0.0.0.0/app.update.url.android");
 
 #ifdef MOZ_UPDATER
