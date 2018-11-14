@@ -1229,14 +1229,6 @@ public class GeckoPreferences
             // Tell Gecko to transmit the current search engine data again, so
             // BrowserSearch is notified immediately about the new enabled state.
             EventDispatcher.getInstance().dispatch("SearchEngines:GetVisible", null);
-        } else if (PREFS_QWANT_PERSISTENT_NOTIFICATION.equals(prefName)) {
-            final Boolean newBooleanValue = (Boolean) newValue;
-            if (newBooleanValue) {
-                PersistentNotificationDelegate.initSearchNotification(this);
-            } else {
-                PersistentNotificationDelegate.cancelSearchNotification(this);
-            }
-
         }
 
         // Send Gecko-side pref changes to Gecko
