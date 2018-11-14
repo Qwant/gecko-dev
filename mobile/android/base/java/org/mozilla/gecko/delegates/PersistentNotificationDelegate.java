@@ -1,7 +1,6 @@
 
 package org.mozilla.gecko.delegates;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.content.Context;
 import android.content.Intent;
@@ -12,28 +11,52 @@ import android.app.NotificationManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
-import android.content.res.Resources;
 
+import org.mozilla.gecko.AppConstants;
+import org.mozilla.gecko.R;
 import org.mozilla.gecko.BrowserApp;
 import org.mozilla.gecko.GeckoApp;
-import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.GeckoSharedPrefs;
+import org.mozilla.gecko.PrefsHelper;
 import org.mozilla.gecko.preferences.GeckoPreferences;
-import org.mozilla.gecko.R;
 
-public class PersistentNotificationDelegate extends BrowserAppDelegate {
-    public static final String QWANT_NOTIFICATION_ID = "qwantpersistentnotification";
+
+public class PersistentNotificationDelegate extends BrowserAppDelegate implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String QWANT_NOTIFICATION_ID = "qwantpersistentnotification";
+
+    private Context context;
 
     @Override
-    public void onCreate(BrowserApp browserApp, Bundle savedInstanceState) {
-        super.onCreate(browserApp, savedInstanceState);
+    public void onStart(BrowserApp browserApp) {
+        super.onStart(browserApp);
+
+        this.context = browserApp;
+        final PersistentNotificationDelegate self = this;
+
+        PrefsHelper.getPref(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, new PrefsHelper.PrefHandlerBase() {
+            @Override public void prefValue(String pref, boolean value) {
+                if (value) {
+                    self.initSearchNotification(context);
+                }
+            }
+        });
+
         final SharedPreferences prefs = GeckoSharedPrefs.forApp(browserApp);
-        if (prefs.getBoolean(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, true)) {
-            PersistentNotificationDelegate.initSearchNotification(browserApp);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION)) {
+            if (GeckoSharedPrefs.forApp(context).getBoolean(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, false)) {
+                this.initSearchNotification(context);
+            } else {
+                this.cancelSearchNotification(context);
+            }
         }
     }
 
-    public static void initSearchNotification(Context context) {
+    private void initSearchNotification(Context context) {
         final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
         intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
         intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser"));
@@ -52,7 +75,7 @@ public class PersistentNotificationDelegate extends BrowserAppDelegate {
         notificationManager.notify(QWANT_NOTIFICATION_ID.hashCode(), notification);
     }
 
-    public static void cancelSearchNotification(Context context) {
+    private void cancelSearchNotification(Context context) {
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(QWANT_NOTIFICATION_ID.hashCode());
     }
