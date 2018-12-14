@@ -27,14 +27,14 @@ public class PersistentNotificationDelegate extends BrowserAppDelegate {
     @Override
     public void onCreate(BrowserApp browserApp, Bundle savedInstanceState) {
         super.onCreate(browserApp, savedInstanceState);
-        final SharedPreferences prefs = GeckoSharedPrefs.forApp(browserApp);
+        /* final SharedPreferences prefs = GeckoSharedPrefs.forApp(browserApp);
         if (prefs.getBoolean(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, true)) {
             PersistentNotificationDelegate.initSearchNotification(browserApp);
-        }
+        } */
     }
 
     public static void initSearchNotification(Context context) {
-        final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
+        /* final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
         intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
         intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser"));
         final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -49,11 +49,11 @@ public class PersistentNotificationDelegate extends BrowserAppDelegate {
                 .setPriority(Notification.PRIORITY_MIN)
                 .build();
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(QWANT_NOTIFICATION_ID.hashCode(), notification);
+        notificationManager.notify(QWANT_NOTIFICATION_ID.hashCode(), notification); */
     }
 
     public static void cancelSearchNotification(Context context) {
-        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(QWANT_NOTIFICATION_ID.hashCode());
+        /* final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(QWANT_NOTIFICATION_ID.hashCode()); */
     }
 }

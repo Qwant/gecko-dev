@@ -329,8 +329,8 @@ public class BrowserApp extends GeckoApp
             new PostUpdateHandler(),
             mTelemetryCorePingDelegate,
             new OfflineTabStatusDelegate(),
-            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate),
-            new PersistentNotificationDelegate()
+            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate)// ,
+            // new PersistentNotificationDelegate()
     ));
 
     @NonNull

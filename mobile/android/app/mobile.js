@@ -893,4 +893,4 @@ pref("privacy.trackingprotection.enabled", true);
 pref("privacy.trackingprotection.value", 2);
 pref("privacy.donottrackheader.enabled", true);
 
-pref("qwant.persistentnotification.enabled", true);
+pref("qwant.persistentnotification.enabled", false);
