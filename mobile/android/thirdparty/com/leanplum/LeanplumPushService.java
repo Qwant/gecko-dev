@@ -364,10 +364,10 @@ public class LeanplumPushService {
     // Try to put a notification on top of the notification area. This method was deprecated in API
     // level 26. For API level 26 and above we must use setImportance(int) for each notification
     // channel, not for each notification message.
-    if (Build.VERSION.SDK_INT >= 16 && !BuildUtil.isNotificationChannelSupported(context)) {
+    /* if (Build.VERSION.SDK_INT >= 16 && !BuildUtil.isNotificationChannelSupported(context)) {
       //noinspection deprecation
       notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
-    }
+    } */
     notificationCompatBuilder.setAutoCancel(true);
     notificationCompatBuilder.setContentIntent(contentIntent);
 

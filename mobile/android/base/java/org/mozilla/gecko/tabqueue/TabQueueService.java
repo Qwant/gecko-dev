@@ -257,7 +257,7 @@ public class TabQueueService extends Service {
                 .setStyle(style)
                 .setSmallIcon(R.drawable.ic_status_logo)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                // .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setAutoCancel(true)
                 .addAction(R.drawable.ic_action_settings, getString(R.string.tab_queue_prompt_settings_button), pendingIntent);
 
