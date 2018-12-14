@@ -44,8 +44,8 @@
 <!ENTITY firstrun_welcome2_subtext "With Qwant mobile, search the web efficiently with total privacy.">
 
 <!ENTITY firstrun_panel_title_privacy2 "Privacy">
-<!ENTITY firstrun_privacy2_message "Your private life stays private">
-<!ENTITY firstrun_privacy2_subtext "Qwant doesn’t look at the searches you do or the websites you visit. We don’t collect or sell your data and we stand against ad tracking.">
+<!ENTITY firstrun_privacy2_message "Your private life remains private">
+<!ENTITY firstrun_privacy2_subtext "Qwant doesn't look at your queries or the sites you visit. The search engine you use is neutral and blocks tracking.">
 
 <!ENTITY firstrun_panel_title_efficiency "Efficiency">
 <!ENTITY firstrun_efficiency_message "Experience fast &amp; efficient searches">
