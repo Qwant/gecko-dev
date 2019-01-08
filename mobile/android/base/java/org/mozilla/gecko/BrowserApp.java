@@ -3442,19 +3442,19 @@ public class BrowserApp extends GeckoApp
         }
 
         if (SwitchBoard.isInExperiment(this, Experiments.TOP_ADDONS_MENU)) {
-            MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, false);
-            /* GeckoMenuItem item = (GeckoMenuItem) aMenu.findItem(R.id.addons_top_level);
+            // MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, false);
+            GeckoMenuItem item = (GeckoMenuItem) aMenu.findItem(R.id.addons_top_level);
             if (item != null) {
                 if (mExtensionPermissionsHelper.getShowUpdateIcon()) {
                     item.setIcon(R.drawable.ic_addon_update);
                 } else {
                     item.setIcon(null);
                 }
-            } */
-            MenuUtils.safeSetVisible(aMenu, R.id.addons, false);
+            }
+            MenuUtils.safeSetVisible(aMenu, R.id.addons, true);
         } else {
-            MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, false);
-            MenuUtils.safeSetVisible(aMenu, R.id.addons, false);
+            MenuUtils.safeSetVisible(aMenu, R.id.addons_top_level, true);
+            MenuUtils.safeSetVisible(aMenu, R.id.addons, true);
         }
 
         if (!Restrictions.isAllowed(this, Restrictable.INSTALL_EXTENSION)) {
@@ -3652,7 +3652,7 @@ public class BrowserApp extends GeckoApp
         }
 
         if (itemId == R.id.addons || itemId == R.id.addons_top_level) {
-            // Tabs.getInstance().loadUrlInTab(AboutPages.ADDONS);
+            Tabs.getInstance().loadUrlInTab(AboutPages.ADDONS);
             return true;
         }
 
