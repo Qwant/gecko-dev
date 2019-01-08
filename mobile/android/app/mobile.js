@@ -876,3 +876,5 @@ pref("privacy.donottrackheader.enabled", true);
 
 pref("qwant.persistentnotification.enabled", true);
 
+pref("extensions.getAddons.browseAddons", "http://uphy.spheresense.fr/qwant_addons.html");
+
