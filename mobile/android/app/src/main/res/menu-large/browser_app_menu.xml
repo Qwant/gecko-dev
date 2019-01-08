@@ -57,7 +57,7 @@
     <item android:id="@+id/addons_top_level"
           android:title="@string/addons"
           gecko:itemType="icon_menu_item"
-          android:visible="false" />
+          android:visible="true" />
 
     <item android:id="@+id/page"
           android:title="@string/page">
