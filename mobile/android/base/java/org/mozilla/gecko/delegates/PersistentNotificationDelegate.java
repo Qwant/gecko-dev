@@ -21,10 +21,11 @@ import org.mozilla.gecko.PrefsHelper;
 import org.mozilla.gecko.preferences.GeckoPreferences;
 
 
-public class PersistentNotificationDelegate extends BrowserAppDelegate implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PersistentNotificationDelegate extends BrowserAppDelegate {
     private static final String QWANT_NOTIFICATION_ID = "qwantpersistentnotification";
 
     private Context context;
+    private boolean active = false;
 
     @Override
     public void onStart(BrowserApp browserApp) {
@@ -33,50 +34,45 @@ public class PersistentNotificationDelegate extends BrowserAppDelegate implement
         this.context = browserApp;
         final PersistentNotificationDelegate self = this;
 
-        PrefsHelper.getPref(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, new PrefsHelper.PrefHandlerBase() {
+        final String[] prefNames = new String[1];
+        prefNames[0] = GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION;
+        PrefsHelper.addObserver(prefNames, new PrefsHelper.PrefHandlerBase() {
             @Override public void prefValue(String pref, boolean value) {
                 if (value) {
                     self.initSearchNotification(context);
+                } else {
+                    self.cancelSearchNotification(context);
                 }
             }
         });
-
-        final SharedPreferences prefs = GeckoSharedPrefs.forApp(browserApp);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION)) {
-            if (GeckoSharedPrefs.forApp(context).getBoolean(GeckoPreferences.PREFS_QWANT_PERSISTENT_NOTIFICATION, false)) {
-                this.initSearchNotification(context);
-            } else {
-                this.cancelSearchNotification(context);
-            }
-        }
     }
 
     private void initSearchNotification(Context context) {
-        final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
-        intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
-        intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser"));
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (!this.active) {
+            final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
+            intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
+            intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser"));
+            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.custom_notification_widget);
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.custom_notification_widget);
 
-        final Notification notification = new NotificationCompat.Builder(context)
-                .setContent(contentView)
-                .setSmallIcon(android.R.color.transparent)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_MIN)
-                .build();
-        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(QWANT_NOTIFICATION_ID.hashCode(), notification);
+            final Notification notification = new NotificationCompat.Builder(context)
+                    .setContent(contentView)
+                    .setSmallIcon(android.R.color.transparent)
+                    .setContentIntent(pendingIntent)
+                    .setOngoing(true)
+                    .setPriority(Notification.PRIORITY_MIN)
+                    .build();
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(QWANT_NOTIFICATION_ID.hashCode(), notification);
+            this.active = true;
+        }
     }
 
     private void cancelSearchNotification(Context context) {
-        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(QWANT_NOTIFICATION_ID.hashCode());
+        if (this.active) {
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(QWANT_NOTIFICATION_ID.hashCode());
+        }
     }
 }
