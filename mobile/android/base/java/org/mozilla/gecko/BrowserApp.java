@@ -87,7 +87,6 @@ import org.mozilla.gecko.delegates.BookmarkStateChangeDelegate;
 import org.mozilla.gecko.delegates.BrowserAppDelegate;
 import org.mozilla.gecko.delegates.OfflineTabStatusDelegate;
 import org.mozilla.gecko.delegates.ScreenshotDelegate;
-import org.mozilla.gecko.delegates.PersistentNotificationDelegate;
 import org.mozilla.gecko.distribution.Distribution;
 import org.mozilla.gecko.distribution.DistributionStoreCallback;
 import org.mozilla.gecko.dlc.DlcStudyService;
@@ -336,8 +335,7 @@ public class BrowserApp extends GeckoApp
             mTelemetryCorePingDelegate,
             mTelemetryActivationPingDelegate,
             new OfflineTabStatusDelegate(),
-            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate),
-            new PersistentNotificationDelegate()
+            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate)
     ));
 
     @NonNull
