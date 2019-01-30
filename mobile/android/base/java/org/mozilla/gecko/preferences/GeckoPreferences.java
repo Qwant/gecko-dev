@@ -92,7 +92,6 @@ import org.mozilla.gecko.util.HardwareUtils;
 import org.mozilla.gecko.util.InputOptionsUtils;
 import org.mozilla.gecko.util.ThreadUtils;
 import org.mozilla.gecko.util.ViewUtil;
-import org.mozilla.gecko.delegates.PersistentNotificationDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
