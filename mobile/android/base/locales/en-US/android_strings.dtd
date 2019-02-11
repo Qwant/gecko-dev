@@ -45,7 +45,7 @@
 
 <!ENTITY firstrun_panel_title_privacy2 "Privacy">
 <!ENTITY firstrun_privacy2_message "Your private life remains private">
-<!ENTITY firstrun_privacy2_subtext "Qwant doesn't look at your queries or the sites you visit. The search engine you use is neutral and blocks tracking.">
+<!ENTITY firstrun_privacy2_subtext "Qwant does not look at your queries or the sites you visit. The search engine you use is neutral and blocks tracking.">
 
 <!ENTITY firstrun_panel_title_efficiency "Efficiency">
 <!ENTITY firstrun_efficiency_message "Experience fast &amp; efficient searches">
