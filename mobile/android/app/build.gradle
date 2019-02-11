@@ -83,9 +83,9 @@ android {
             testProguardFile "${topsrcdir}/mobile/android/config/proguard/proguard-robocop.cfg"
         }
         release configureMinifyClosure
-        if (mozconfig.substs.MOZILLA_OFFICIAL) {
-            debug configureMinifyClosure
-        }
+        // if (mozconfig.substs.MOZILLA_OFFICIAL) {
+        debug configureMinifyClosure
+        // }
 
         def isDebuggable = false
         debug {
