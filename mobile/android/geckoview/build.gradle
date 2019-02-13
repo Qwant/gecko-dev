@@ -292,7 +292,7 @@ apply plugin: 'maven-publish'
 
 version = computeVersionNumber()
 
-publishing {
+model { publishing {
     publications {
         android.libraryVariants.all { variant ->
             "${variant.name}"(MavenPublication) {
@@ -306,7 +306,7 @@ publishing {
                         artifactId = "geckoview-${mozconfig.substs.MOZ_UPDATE_CHANNEL}-${mozconfig.substs.ANDROID_CPU_ARCH}"
                     }
 
-                    // url = 'https://wiki.mozilla.org/Mobile/GeckoView'
+                    url = 'https://wiki.mozilla.org/Mobile/GeckoView'
 
                     licenses {
                         license {
@@ -353,7 +353,7 @@ publishing {
             url = "${project.buildDir}/maven"
         }
     }
-}
+}}
 
 // This is all related to the withGeckoBinaries approach; see
 // mobile/android/gradle/with_gecko_binaries.gradle.
