@@ -306,7 +306,7 @@ publishing {
                         artifactId = "geckoview-${mozconfig.substs.MOZ_UPDATE_CHANNEL}-${mozconfig.substs.ANDROID_CPU_ARCH}"
                     }
 
-                    url = 'https://wiki.mozilla.org/Mobile/GeckoView'
+                    // url = 'https://wiki.mozilla.org/Mobile/GeckoView'
 
                     licenses {
                         license {
