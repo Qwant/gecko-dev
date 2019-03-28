@@ -71,7 +71,10 @@
   <string name="qwant_preferences_persistentnotification">&qwant_preferences_persistentnotification;</string>
   <string name="qwant_preferences_persistentnotification_summary">&qwant_preferences_persistentnotification_summary;</string>
 
-
+  <string name="qwant_browse_addons">&qwant_browse_addons;</string>
+  <string name="qwant_manage_addons">&qwant_manage_addons;</string>
+  <string name="qwant_manage_addons_summary">&qwant_manage_addons_summary;</string>
+  <string name="qwant_manage_addons_link">&qwant_manage_addons_link;</string>
 
   <string name="bookmarks_title">&bookmarks_title;</string>
   <string name="history_title">&history_title;</string>
