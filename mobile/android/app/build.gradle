@@ -239,11 +239,11 @@ dependencies {
     }
 
     // Include LeakCanary in local builds, but not in official builds.
-    if (mozconfig.substs.MOZILLA_OFFICIAL) {
+    // if (mozconfig.substs.MOZILLA_OFFICIAL) {
         implementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta1'
-    } else {
-        implementation 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
-    }
+    // } else {
+    //     implementation 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
+    // }
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta1'
 
     implementation project(path: ':geckoview')
