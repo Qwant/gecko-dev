@@ -82,6 +82,10 @@ public class FirstrunPager extends RtlViewPager {
                 final int currentPage = FirstrunPager.this.getCurrentItem();
                 if (currentPage < FirstrunPager.this.getAdapter().getCount() - 1) {
                     FirstrunPager.this.setCurrentItem(currentPage + 1);
+                } else {
+                    if (onFinishListener != null) {
+                        onFinishListener.onFinish();
+                    }
                 }
             }
 
