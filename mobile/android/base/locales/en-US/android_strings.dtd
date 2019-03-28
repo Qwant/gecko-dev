@@ -51,6 +51,10 @@
 <!ENTITY qwant_preferences_persistentnotification "Persistent notification">
 <!ENTITY qwant_preferences_persistentnotification_summary "Search directly from the notification panel">
 
+<!ENTITY qwant_browse_addons "Browse/New addons">
+<!ENTITY qwant_manage_addons "My addons">
+<!ENTITY qwant_manage_addons_summary "Manage and configure your addons">
+<!ENTITY qwant_manage_addons_link "about:addons">
 
 <!ENTITY pwa_onboarding_sumo "You can easily add this website to your Home screen to have instant access and browse faster with an app-like experience.">
 

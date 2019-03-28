@@ -54,10 +54,10 @@
           android:title="@string/desktop_mode"
           android:checkable="true" />
 
-    <item android:id="@+id/addons_top_level"
-          android:title="@string/addons"
-          gecko:itemType="icon_menu_item"
-          android:visible="true" />
+    <item android:id="@+id/qwant_browse_addons"
+        android:title="@string/qwant_browse_addons"
+        gecko:itemType="icon_menu_item"
+        android:visible="true" />
 
     <item android:id="@+id/page"
           android:title="@string/page">
