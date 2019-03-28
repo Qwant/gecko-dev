@@ -773,6 +773,7 @@ public class Tabs implements BundleEventListener {
         MEDIA_PLAYING_CHANGE,
         MEDIA_PLAYING_RESUME,
         START_EDITING,
+        OPEN_WIDGET_TAB
     }
 
     public void notifyListeners(Tab tab, TabEvents msg) {

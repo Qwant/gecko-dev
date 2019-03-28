@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.util.Log;
 
 import org.mozilla.gecko.DynamicToolbar;
 import org.mozilla.gecko.R;
@@ -219,22 +220,22 @@ public class AnimatedProgressBar extends ThemedProgressBar {
     }
 
     public void pinDynamicToolbar() {
-        if (mDynamicToolbar == null) {
+        /* if (mDynamicToolbar == null) {
             return;
         }
         if (mDynamicToolbar.isEnabled()) {
             mDynamicToolbar.setPinned(true, DynamicToolbarAnimator.PinReason.PAGE_LOADING);
             mDynamicToolbar.setVisible(true, DynamicToolbar.VisibilityTransition.ANIMATE);
-        }
+        } */
     }
 
     public void unpinDynamicToolbar() {
-        if (mDynamicToolbar == null) {
+        /* if (mDynamicToolbar == null) {
             return;
         }
         if (mDynamicToolbar.isEnabled()) {
             mDynamicToolbar.setPinned(false, DynamicToolbarAnimator.PinReason.PAGE_LOADING);
-        }
+        } */
     }
 
     private void cancelAnimations() {

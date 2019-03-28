@@ -34,6 +34,7 @@ import android.nfc.NfcEvent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -48,6 +49,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
+import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -263,6 +265,7 @@ public class BrowserApp extends GeckoApp
     // show the snapshot causes the content to shift under the users finger.
     // See: Bug 1358554
     private boolean mShowingToolbarChromeForActionBar;
+    private boolean qwant_tabCreatedFromWidget = false;
 
     private SafeIntent safeStartingIntent;
     private Intent startingIntentAfterPip;
@@ -376,10 +379,13 @@ public class BrowserApp extends GeckoApp
         switch (msg) {
             case SELECTED:
                 if (Tabs.getInstance().isSelectedTab(tab) && mDynamicToolbar.isEnabled()) {
-                    final VisibilityTransition transition = (tab.getShouldShowToolbarWithoutAnimationOnFirstSelection()) ?
-                            VisibilityTransition.IMMEDIATE : VisibilityTransition.ANIMATE;
-                    mDynamicToolbar.setVisible(true, transition);
-
+                    if (qwant_tabCreatedFromWidget) {
+                        mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
+                    } else {
+                        final VisibilityTransition transition = (tab.getShouldShowToolbarWithoutAnimationOnFirstSelection()) ?
+                                VisibilityTransition.IMMEDIATE : VisibilityTransition.ANIMATE;
+                        mDynamicToolbar.setVisible(true, transition);
+                    }
                     // The first selection has happened - reset the state.
                     tab.setShouldShowToolbarWithoutAnimationOnFirstSelection(false);
                 }
@@ -389,7 +395,7 @@ public class BrowserApp extends GeckoApp
                     updateHomePagerForTab(tab);
                 }
 
-                if (mShowingToolbarChromeForActionBar) {
+                if (mShowingToolbarChromeForActionBar && !qwant_tabCreatedFromWidget) {
                     mDynamicToolbar.setVisible(true, VisibilityTransition.IMMEDIATE);
                     mShowingToolbarChromeForActionBar = false;
                 }
@@ -398,8 +404,12 @@ public class BrowserApp extends GeckoApp
                 if (Tabs.getInstance().isSelectedTab(tab)) {
                     invalidateOptionsMenu();
 
-                    if (mDynamicToolbar.isEnabled()) {
-                        mDynamicToolbar.setVisible(true, VisibilityTransition.ANIMATE);
+                    if (qwant_tabCreatedFromWidget) {
+                        mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
+                    } else {
+                        if (mDynamicToolbar.isEnabled()) {
+                            mDynamicToolbar.setVisible(true, VisibilityTransition.ANIMATE);
+                        }
                     }
                 }
                 break;
@@ -424,13 +434,65 @@ public class BrowserApp extends GeckoApp
             case START_EDITING:
                 enterEditingMode();
                 break;
+            case OPEN_WIDGET_TAB:;
+                qwant_openWidgetTab();
+                break;
         }
 
-        if (HardwareUtils.isTablet() && msg == TabEvents.SELECTED) {
-            updateEditingModeForTab(tab);
+        if (!qwant_tabCreatedFromWidget) {
+            if (HardwareUtils.isTablet() && msg == TabEvents.SELECTED) {
+                updateEditingModeForTab(tab);
+            }
         }
 
         super.onTabChanged(tab, msg, data);
+
+        if (qwant_tabCreatedFromWidget && msg == TabEvents.THUMBNAIL) {
+            qwant_tabCreatedFromWidget = false;
+            mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
+            mDynamicToolbar.setPinned(false, PinReason.DISABLED);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
+    }
+
+    private void qwant_openWidgetTab() {
+        /*
+            Commented code allow for showing keyboard without opening a new tab for each use of the widget
+            But this involve (for now) issues with the DynamicToolbar hiding. We need to find something for this.
+         */
+
+        Tabs tabs = Tabs.getInstance();
+        // boolean show_keyboard_delayed = false;
+
+        // Tab t = tabs.getFirstTabForUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true", false);
+        // if (t == null) {
+            qwant_tabCreatedFromWidget = true;
+            Tab t = tabs.loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true", null, null, Tabs.INVALID_TAB_ID, null, Tabs.LOADURL_NONE | Tabs.LOADURL_NEW_TAB);
+        /* } else {
+            show_keyboard_delayed = true;
+        } */
+
+        mBrowserToolbar.cancelEdit();
+        mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
+        mDynamicToolbar.setPinned(false, PinReason.DISABLED);
+        tabs.selectTab(t.getId());
+
+        /* if (show_keyboard_delayed) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("QWANT", "KEYBOARD & TOOLBAR SHOW DELAYED " + mDynamicToolbar.isEnabled());
+                    mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
+                    mDynamicToolbar.setPinned(false, PinReason.DISABLED);
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                }
+            }, 1500);
+        } */
     }
 
     private void updateEditingModeForTab(final Tab selectedTab) {
@@ -3583,6 +3645,11 @@ public class BrowserApp extends GeckoApp
 
         if (itemId == R.id.addons || itemId == R.id.addons_top_level) {
             Tabs.getInstance().loadUrlInTab(AboutPages.ADDONS);
+            return true;
+        }
+
+        if (itemId == R.id.qwant_browse_addons) {
+            Tabs.getInstance().loadUrlInTab("https://www.qwant.com/addons");
             return true;
         }
 

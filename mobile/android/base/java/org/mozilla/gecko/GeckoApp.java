@@ -113,6 +113,10 @@ import static org.mozilla.gecko.mma.MmaDelegate.DOWNLOAD_MEDIA_SAVED_IMAGE;
 import static org.mozilla.gecko.mma.MmaDelegate.READER_AVAILABLE;
 import static org.mozilla.gecko.util.JavaUtil.getBundleSizeInBytes;
 
+import org.mozilla.gecko.toolbar.BrowserToolbar;
+import org.mozilla.gecko.DynamicToolbar;
+import org.mozilla.gecko.DynamicToolbar.VisibilityTransition;
+
 public abstract class GeckoApp extends GeckoActivity
                                implements AnchoredPopup.OnVisibilityChangeListener,
                                           BundleEventListener,
@@ -1462,16 +1466,11 @@ public abstract class GeckoApp extends GeckoActivity
                 // to the Recent Tabs folder of the Combined History panel.
                 Tabs.getInstance().loadUrl(AboutPages.getURLForBuiltinPanelType(PanelType.DEPRECATED_RECENT_TABS), flags);
             } else {
-                Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&lb=" + Locale.getDefault().getLanguage(), flags);
+                Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true&lb=" + Locale.getDefault().getLanguage(), flags);
             }
         } else if (GeckoApp.ACTION_QWANT_WIDGET.equals(action)) {
-            Tab t = Tabs.getInstance().loadUrl("about:home", Tabs.LOADURL_NEW_TAB |  Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL | Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN ); // getString(R.string.qwant_widget_text)
-            Tabs.getInstance().selectTab(t.getId());
-
-            // Tabs.TabEvents.OPENED_FROM_TABS_TRAY
-                    // TabsPanel tabpanel;
-            // t.setIsEditing(true);
-
+            // We do the widget opening in BrowserApp to be able to hide urlbar, so we notify it now
+            Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         }
     }
 
@@ -1573,7 +1572,8 @@ public abstract class GeckoApp extends GeckoActivity
                 @Override
                 public void run() {
                     if (isAssistIntent) {
-                        Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
+                        Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
+                        // Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
                     } else if (isAboutHomeURL) {
                         // respect the user preferences for about:home from external intent calls
                         loadStartupTab(Tabs.LOADURL_NEW_TAB, action);
@@ -1918,8 +1918,7 @@ public abstract class GeckoApp extends GeckoActivity
                 }
             });
         } else if (Intent.ACTION_ASSIST.equals(action)) {
-            Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
-            autoHideTabs();
+            Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         } else if (ACTION_HOMESCREEN_SHORTCUT.equals(action)) {
             final GeckoBundle data = new GeckoBundle(2);
             data.putString("uri", uri);
@@ -1943,11 +1942,7 @@ public abstract class GeckoApp extends GeckoActivity
             processActionViewIntent(new Runnable() {
                 @Override
                 public void run() {
-                    int flags = Tabs.LOADURL_NEW_TAB |  Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL;
-                    if (isFirstTab) {
-                        flags |= Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN;
-                    }
-                    Tabs.getInstance().loadUrlWithIntentExtras("", intent, flags);
+                    Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
                 }
             });
 
