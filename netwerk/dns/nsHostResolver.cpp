@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #if defined(HAVE_RES_NINIT)
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
-#define RES_RETRY_ON_FAILURE
+#  include <sys/types.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#  include <arpa/nameser.h>
+#  include <resolv.h>
+#  define RES_RETRY_ON_FAILURE
 #endif
 
 #include <stdlib.h>
@@ -386,10 +386,10 @@ void AddrHostRecord::Cancel() {
 
 // Returns true if the entry can be removed, or false if it should be left.
 // Sets mResolveAgain true for entries being resolved right now.
-bool AddrHostRecord::RemoveOrRefresh() {
+bool AddrHostRecord::RemoveOrRefresh(bool aTrrToo) {
   // no need to flush TRRed names, they're not resolved "locally"
   MutexAutoLock lock(addr_info_lock);
-  if (addr_info && addr_info->IsTRR()) {
+  if (addr_info && !aTrrToo && addr_info->IsTRR()) {
     return false;
   }
   if (mNative) {
@@ -716,7 +716,7 @@ void nsHostResolver::ClearPendingQueue(
 // cache that have 'Resolve' set true but not 'onQueue' are being resolved
 // right now, so we need to mark them to get re-resolved on completion!
 
-void nsHostResolver::FlushCache() {
+void nsHostResolver::FlushCache(bool aTrrToo) {
   MutexAutoLock lock(mLock);
   mEvictionQSize = 0;
 
@@ -739,7 +739,7 @@ void nsHostResolver::FlushCache() {
     if (record->IsAddrRecord()) {
       RefPtr<AddrHostRecord> addrRec = do_QueryObject(record);
       MOZ_ASSERT(addrRec);
-      if (addrRec->RemoveOrRefresh()) {
+      if (addrRec->RemoveOrRefresh(aTrrToo)) {
         if (record->isInList()) {
           record->remove();
         }

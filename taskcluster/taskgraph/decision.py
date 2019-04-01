@@ -43,70 +43,63 @@ PER_PROJECT_PARAMETERS = {
 
     'ash': {
         'target_tasks_method': 'ash_tasks',
-        'optimize_target_tasks': True,
     },
 
     'cedar': {
         'target_tasks_method': 'cedar_tasks',
-        'optimize_target_tasks': True,
+    },
+
+    'oak': {
+        'target_tasks_method': 'nightly_desktop',
+        'release_type': 'nightly-oak',
     },
 
     'graphics': {
         'target_tasks_method': 'graphics_tasks',
-        'optimize_target_tasks': True,
     },
 
     'mozilla-central': {
         'target_tasks_method': 'default',
-        'optimize_target_tasks': True,
         'release_type': 'nightly',
     },
 
     'mozilla-beta': {
         'target_tasks_method': 'mozilla_beta_tasks',
-        'optimize_target_tasks': True,
         'release_type': 'beta',
     },
 
     'mozilla-release': {
         'target_tasks_method': 'mozilla_release_tasks',
-        'optimize_target_tasks': True,
         'release_type': 'release',
     },
 
     'mozilla-esr60': {
         'target_tasks_method': 'mozilla_esr60_tasks',
-        'optimize_target_tasks': True,
         'release_type': 'esr60',
     },
 
     'comm-central': {
         'target_tasks_method': 'default',
-        'optimize_target_tasks': True,
         'release_type': 'nightly',
     },
 
     'comm-beta': {
         'target_tasks_method': 'mozilla_beta_tasks',
-        'optimize_target_tasks': True,
         'release_type': 'beta',
     },
 
     'comm-esr60': {
         'target_tasks_method': 'mozilla_esr60_tasks',
-        'optimize_target_tasks': True,
         'release_type': 'release',
     },
 
     'pine': {
         'target_tasks_method': 'pine_tasks',
-        'optimize_target_tasks': True,
     },
 
     # the default parameters are used for projects that do not match above.
     'default': {
         'target_tasks_method': 'default',
-        'optimize_target_tasks': True,
     }
 }
 
@@ -140,6 +133,17 @@ def full_task_graph_to_runnable_jobs(full_task_json):
     return runnable_jobs
 
 
+def try_syntax_from_message(message):
+    """
+    Parse the try syntax out of a commit message, returning '' if none is
+    found.
+    """
+    try_idx = message.find('try:')
+    if try_idx == -1:
+        return ''
+    return message[try_idx:].split('\n', 1)[0]
+
+
 def taskgraph_decision(options, parameters=None):
     """
     Run the decision task.  This function implements `mach taskgraph decision`,
@@ -170,7 +174,6 @@ def taskgraph_decision(options, parameters=None):
     write_artifact('full-task-graph.json', full_task_json)
 
     # write out the public/runnable-jobs.json file
-    write_artifact('runnable-jobs.json.gz', full_task_graph_to_runnable_jobs(full_task_json))
     write_artifact('runnable-jobs.json', full_task_graph_to_runnable_jobs(full_task_json))
 
     # this is just a test to check whether the from_json() function is working
@@ -207,6 +210,7 @@ def get_decision_parameters(config, options):
         'owner',
         'level',
         'target_tasks_method',
+        'tasks_for',
     ] if n in options}
 
     for n in (
@@ -218,17 +222,20 @@ def get_decision_parameters(config, options):
         if n in options and options[n] is not None:
             parameters[n] = options[n]
 
+    commit_message = get_hg_commit_message(os.path.join(GECKO, product_dir))
+
     # Define default filter list, as most configurations shouldn't need
     # custom filters.
     parameters['filters'] = [
         'target_tasks_method',
     ]
+    parameters['optimize_target_tasks'] = True
     parameters['existing_tasks'] = {}
     parameters['do_not_optimize'] = []
     parameters['build_number'] = 1
     parameters['version'] = get_version(product_dir)
     parameters['app_version'] = get_app_version(product_dir)
-    parameters['message'] = get_hg_commit_message(GECKO)
+    parameters['message'] = try_syntax_from_message(commit_message)
     parameters['hg_branch'] = get_hg_revision_branch(GECKO, revision=parameters['head_rev'])
     parameters['next_version'] = None
     parameters['release_type'] = ''
@@ -269,6 +276,12 @@ def get_decision_parameters(config, options):
     if options.get('target_tasks_method'):
         parameters['target_tasks_method'] = options['target_tasks_method']
 
+    # ..but can be overridden by the commit message: if it contains the special
+    # string "DONTBUILD" and this is an on-push decision task, then use the
+    # special 'nothing' target task method.
+    if 'DONTBUILD' in commit_message and options['tasks_for'] == 'hg-push':
+        parameters['target_tasks_method'] = 'nothing'
+
     # If the target method is nightly, we should build partials. This means
     # knowing what has been released previously.
     # An empty release_history is fine, it just means no partials will be built
@@ -285,6 +298,9 @@ def get_decision_parameters(config, options):
     # load try settings
     if 'try' in project:
         set_try_config(parameters, task_config_file)
+
+    if options.get('optimize_target_tasks') is not None:
+        parameters['optimize_target_tasks'] = options['optimize_target_tasks']
 
     result = Parameters(**parameters)
     result.check()
@@ -307,7 +323,7 @@ def set_try_config(parameters, task_config_file):
         elif task_config_version == 2:
             validate_schema(
                 try_task_config_schema_v2, task_config,
-                "Invalid v1 `try_task_config.json`.",
+                "Invalid v2 `try_task_config.json`.",
             )
             parameters.update(task_config['parameters'])
             return

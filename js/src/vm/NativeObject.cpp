@@ -16,6 +16,7 @@
 #include "js/CharacterEncoding.h"
 #include "js/Value.h"
 #include "vm/Debugger.h"
+#include "vm/EqualityOperations.h"  // js::SameValue
 #include "vm/TypedArrayObject.h"
 #include "vm/UnboxedObject.h"
 
@@ -262,21 +263,6 @@ void js::NativeObject::initSlotRange(uint32_t start, const Value* vector,
   }
   for (HeapSlot* sp = slotsStart; sp < slotsEnd; sp++) {
     sp->init(this, HeapSlot::Slot, start++, *vector++);
-  }
-}
-
-void js::NativeObject::copySlotRange(uint32_t start, const Value* vector,
-                                     uint32_t length) {
-  HeapSlot* fixedStart;
-  HeapSlot* fixedEnd;
-  HeapSlot* slotsStart;
-  HeapSlot* slotsEnd;
-  getSlotRange(start, length, &fixedStart, &fixedEnd, &slotsStart, &slotsEnd);
-  for (HeapSlot* sp = fixedStart; sp < fixedEnd; sp++) {
-    sp->set(this, HeapSlot::Slot, start++, *vector++);
-  }
-  for (HeapSlot* sp = slotsStart; sp < slotsEnd; sp++) {
-    sp->set(this, HeapSlot::Slot, start++, *vector++);
   }
 }
 
@@ -1276,12 +1262,15 @@ void js::AddPropertyTypesAfterProtoChange(JSContext* cx, NativeObject* obj,
   MOZ_ASSERT(obj->group() != oldGroup);
   MOZ_ASSERT(!obj->group()->unknownProperties(sweepObjGroup));
 
-  // First copy the dynamic flags.
   AutoSweepObjectGroup sweepOldGroup(oldGroup);
+  if (oldGroup->unknownProperties(sweepOldGroup)) {
+    MarkObjectGroupUnknownProperties(cx, obj->group());
+    return;
+  }
+
+  // First copy the dynamic flags.
   MarkObjectGroupFlags(
-      cx, obj,
-      oldGroup->flags(sweepOldGroup) &
-          (OBJECT_FLAG_DYNAMIC_MASK & ~OBJECT_FLAG_UNKNOWN_PROPERTIES));
+      cx, obj, oldGroup->flags(sweepOldGroup) & OBJECT_FLAG_DYNAMIC_MASK);
 
   // Now update all property types. If the object has many properties, this
   // function may be slow so we mark all properties as unknown.

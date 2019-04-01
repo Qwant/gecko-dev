@@ -11,13 +11,13 @@
 #include "mozilla/layers/VideoBridgeChild.h"
 #include "mozilla/layers/ImageClient.h"
 #include "MediaInfo.h"
+#include "PDMFactory.h"
 #include "VideoDecoderManagerParent.h"
 #ifdef XP_WIN
-#include "WMFDecoderModule.h"
+#  include "WMFDecoderModule.h"
 #endif
 
 namespace mozilla {
-namespace dom {
 
 using base::Thread;
 using media::TimeUnit;
@@ -65,9 +65,11 @@ VideoDecoderParent::VideoDecoderParent(
   using Option = CreateDecoderParams::Option;
   using OptionSet = CreateDecoderParams::OptionSet;
 
+  // Ensure everything is properly initialized on the right thread.
+  PDMFactory::EnsureInit();
+
   // TODO: Ideally we wouldn't hardcode the WMF PDM, and we'd use the normal PDM
   // factory logic for picking a decoder.
-  WMFDecoderModule::Init();
   RefPtr<WMFDecoderModule> pdm(new WMFDecoderModule());
   pdm->Startup();
 
@@ -253,7 +255,9 @@ mozilla::ipc::IPCResult VideoDecoderParent::RecvSetSeekThreshold(
     const int64_t& aTime) {
   MOZ_ASSERT(!mDestroyed);
   MOZ_ASSERT(OnManagerThread());
-  mDecoder->SetSeekThreshold(TimeUnit::FromMicroseconds(aTime));
+  mDecoder->SetSeekThreshold(aTime == INT64_MIN
+                                 ? TimeUnit::Invalid()
+                                 : TimeUnit::FromMicroseconds(aTime));
   return IPC_OK();
 }
 
@@ -280,5 +284,4 @@ bool VideoDecoderParent::OnManagerThread() {
   return mParent->OnManagerThread();
 }
 
-}  // namespace dom
 }  // namespace mozilla
