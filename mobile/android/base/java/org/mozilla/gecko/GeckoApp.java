@@ -52,6 +52,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -1458,7 +1459,10 @@ public abstract class GeckoApp extends GeckoActivity
         }
 
         if (!mShouldRestore || Intent.ACTION_VIEW.equals(action)) {
-            if (mLastSessionCrashed) {
+            if (Intent.ACTION_WEB_SEARCH.equals(action)) {
+                final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + this.getIntent().getStringExtra(SearchManager.QUERY);
+                Tabs.getInstance().loadUrl(url, flags);
+            } else if (mLastSessionCrashed) {
                 // The Recent Tabs panel no longer exists, but BrowserApp will redirect us
                 // to the Recent Tabs folder of the Combined History panel.
                 Tabs.getInstance().loadUrl(AboutPages.getURLForBuiltinPanelType(PanelType.DEPRECATED_RECENT_TABS), flags);
@@ -1543,6 +1547,7 @@ public abstract class GeckoApp extends GeckoActivity
         final boolean intentHasURL = passedUri != null;
         final boolean isAboutHomeURL = intentHasURL && AboutPages.isDefaultHomePage(passedUri);
         final boolean isAssistIntent = Intent.ACTION_ASSIST.equals(action);
+        final boolean isWebSearchIntent = Intent.ACTION_WEB_SEARCH.equals(action);
         final boolean needsNewForegroundTab = intentHasURL || isAssistIntent;
 
         // Start migrating as early as possible, can do this in
@@ -1579,6 +1584,9 @@ public abstract class GeckoApp extends GeckoActivity
                     if (isAssistIntent) {
                         Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
                         // Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
+                    } else if (isWebSearchIntent) {
+                        final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getDataString();
+                        loadStartupTab(url, intent, getNewTabFlags());
                     } else if (isAboutHomeURL) {
                         // respect the user preferences for about:home from external intent calls
                         loadStartupTab(Tabs.LOADURL_NEW_TAB, action);
@@ -1924,6 +1932,14 @@ public abstract class GeckoApp extends GeckoActivity
             });
         } else if (Intent.ACTION_ASSIST.equals(action)) {
             Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
+        } else if (Intent.ACTION_WEB_SEARCH.equals(action)) {
+            final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getStringExtra(SearchManager.QUERY);
+            int flags = Tabs.LOADURL_NEW_TAB | Tabs.LOADURL_USER_ENTERED | Tabs.LOADURL_EXTERNAL;
+            if (isFirstTab) {
+                flags |= Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN;
+            }
+            Tabs.getInstance().loadUrlWithIntentExtras(url, intent, flags);
+            // Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         } else if (ACTION_HOMESCREEN_SHORTCUT.equals(action)) {
             final GeckoBundle data = new GeckoBundle(2);
             data.putString("uri", uri);
