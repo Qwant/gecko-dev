@@ -430,6 +430,7 @@
 <!ENTITY pref_private_data_siteSettings2 "Site settings">
 <!ENTITY pref_private_data_downloadFiles2 "Downloads">
 <!ENTITY pref_private_data_syncedTabs "Synced tabs">
+<!ENTITY pref_private_data_passwords "Passwords">
 
 <!ENTITY pref_default_browser "Make default browser">
 <!ENTITY pref_default_browser_mozilla_support_tablet "Visit Mozilla Support">
