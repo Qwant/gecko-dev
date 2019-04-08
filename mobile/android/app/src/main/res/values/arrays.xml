@@ -112,7 +112,8 @@
         <item>false</item>
         <item>false</item>
         <item>false</item>
-        <!-- <item>false</item> -->
+        <item>false</item>
+        <item>false</item>
         <item>false</item>
     </string-array>
     <string-array name="pref_restore_entries">
