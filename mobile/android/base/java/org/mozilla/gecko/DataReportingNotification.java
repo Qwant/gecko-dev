@@ -38,7 +38,7 @@ public class DataReportingNotification {
 
         if (currentVersion < 1) {
             // This is a first run, so notify user about data policy.
-            notifyDataPolicy(context, dataPrefs);
+            // notifyDataPolicy(context, dataPrefs);
 
             // If healthreport is enabled, set default preference value.
             if (AppConstants.MOZ_SERVICES_HEALTHREPORT) {
@@ -52,7 +52,7 @@ public class DataReportingNotification {
         if (currentVersion == 1) {
             // Redisplay notification only for Beta because version 2 updates Beta policy and update version.
             if (TextUtils.equals("beta", AppConstants.MOZ_UPDATE_CHANNEL)) {
-                notifyDataPolicy(context, dataPrefs);
+                // notifyDataPolicy(context, dataPrefs);
             } else {
                 // Silently update the version.
                 SharedPreferences.Editor editor = dataPrefs.edit();
