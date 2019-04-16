@@ -58,8 +58,6 @@ import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import org.mozilla.gecko.qwant.QwantDistributionCallback;
-
 /**
  * Handles distribution file loading and fetching,
  * and the corresponding hand-offs to Gecko.
@@ -230,8 +228,6 @@ public class Distribution {
     }
 
     private static Distribution init(final Distribution distribution) {
-        distribution.addOnDistributionReadyCallback(new QwantDistributionCallback(distribution.context));
-
         // Read/write preferences and files on the background thread.
         ThreadUtils.postToBackgroundThread(new Runnable() {
             @Override
