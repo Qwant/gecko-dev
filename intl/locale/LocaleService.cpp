@@ -100,9 +100,30 @@ static void ReadRequestedLocales(nsTArray<nsCString>& aRetVal) {
   // 1) The pref is not set - use default locale
   // 2) The pref is set to "" - use OS locales
   // 3) The pref is set to a value - parse the locale list and use it
+  /* if (NS_SUCCEEDED(rv)) {
+      OSPreferences::GetInstance()->GetSystemLocales(aRetVal);
+  } */
+
   if (NS_SUCCEEDED(rv)) {
+      if (str.Length() == 0) {
+        // If the pref string is empty, we'll take requested locales
+        // from the OS.
+        OSPreferences::GetInstance()->GetSystemLocales(aRetVal);
+      } else {
+        SplitLocaleListStringIntoArray(str, aRetVal);
+      }
+  } else {
       OSPreferences::GetInstance()->GetSystemLocales(aRetVal);
   }
+
+    // This will happen when either the pref is not set,
+    // or parsing of the pref didn't produce any usable
+    // result.
+    if (aRetVal.IsEmpty()) {
+      nsAutoCString defaultLocale;
+      LocaleService::GetInstance()->GetDefaultLocale(defaultLocale);
+      aRetVal.AppendElement(defaultLocale);
+    }
 }
 
 LocaleService::LocaleService(bool aIsServer) : mIsServer(aIsServer) {}
