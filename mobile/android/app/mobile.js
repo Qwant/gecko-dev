@@ -865,7 +865,7 @@ pref("browser.tabs.remote.allowLinkedWebInFileUriProcess", true);
 pref("browser.tabs.remote.separatePrivilegedContentProcess", false);
 
 pref("privacy.trackingprotection.enabled", true);
-pref("privacy.trackingprotection.value", 2);
+pref("privacy.trackingprotection.value", 1);
 pref("privacy.donottrackheader.enabled", true);
 
 pref("qwant.persistentnotification.enabled", false);
