@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="firstrun_welcome3_message">Willkommen an Bord!</string>
+    <string name="firstrun_welcome3_subtext">Qwant Junior Mobile ist ein unterhaltsames, sicheres und flüssiges Surferlebnis für Kinder.</string>
+    <string name="firstrun_privacy3_message">Schützen Sie Ihre Kinder, wenn sie im Internet surfen.</string>
+    <string name="firstrun_privacy3_subtext">Qwant Junior verbirgt unangemessene Inhalte wie Gewalt, Pornografie, Drogen, Hass und andere Suchmaschinen, die diese Inhalte anzeigen könnten.</string>
+    <string name="firstrun_efficiency3_message">Integrierter Nachverfolgungsschutz für besseren Datenschutz und weniger Werbung.</string>
+    <string name="firstrun_efficiency3_subtext">Weder erfasst, noch sammelt Qwant Junior Daten über Ihr Kind. Die Daten Ihres Kindes werden niemals verwendet, um Geld zu verdienen.</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="about3">Über Qwant Junior mobile</string>
+</resources>
