@@ -9,7 +9,7 @@
   <Url type="application/x-suggestions+json" method="GET" template="https://api.qwant.com/api/suggest/?client=opensearch&amp;q={searchTerms}" />
   <Url type="text/html" method="GET" template="https://www.qwant.com/">
     <Param name="q" value="{searchTerms}"/>
-    <Param name="client" value="qwantbrowser"/>
+    <Param name="client" value="qwantjuniorbrowser"/>
   </Url>
   <SearchForm>https://www.qwant.com/?client=qwantbrowser</SearchForm>
 </SearchPlugin>

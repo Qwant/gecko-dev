@@ -129,9 +129,9 @@ public class GeckoPreferenceFragment extends PreferenceFragment {
             return R.id.pref_header_search;
         }
 
-        if (res == R.xml.preferences_notifications) {
+        /*if (res == R.xml.preferences_notifications) {
             return R.id.pref_header_notifications;
-        }
+        }*/
 
         return HEADER_ID_UNDEFINED;
     }

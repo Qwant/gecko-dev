@@ -1,9 +1,9 @@
 {
   "default": {
-    "searchDefault": "Qwant",
-    "searchOrder": ["Qwant", "Qwant Junior"],
+    "searchDefault": "Qwant Junior",
+    "searchOrder": ["Qwant Junior", "Qwant"],
     "visibleDefaultEngines": [
-      "qwant", "qwant-junior"
+      "qwant-junior", "qwant"
     ]
   },
   "regionOverrides": {},

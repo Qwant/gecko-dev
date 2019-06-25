@@ -16,12 +16,14 @@ class RestBlacklistManager {
         void onTimeout();
     }
 
-    private static String baseURL = "https://mobile-secure.qwantjunior.com/api/qwant-junior-mobile";
+    private static String host = "mobile-secure.qwantjunior.com";
+    private static String baseURL = "https://" + host + "/api/qwant-junior-mobile";
     //qwant-junior-mobile-server2.eu-gb.mybluemix.net
     //mobile-secure.qwantjunior.com
 
-    public static boolean isQwantJuniorHost(String hostTesting) {
-        return hostTesting.equals("mobile-secure.qwantjunior.com");
+
+    public static String getQwantJuniorHost() {
+        return host;
     }
 
     public static void testPaths(String route, final String[] paths, final Listener listener) {

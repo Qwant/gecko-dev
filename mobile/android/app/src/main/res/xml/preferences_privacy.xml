@@ -9,9 +9,10 @@
                   android:enabled="false">
 
     <SwitchPreference android:key="privacy.donottrackheader.enabled"
-                      android:title="@string/pref_donottrack_title"
-                      android:summary="@string/pref_donottrack_summary"
-                      android:persistent="false" />
+        android:title="@string/pref_donottrack_title"
+        android:summary="@string/pref_donottrack_summary"
+        android:persistent="true"
+        android:defaultValue="true"/>
 
     <org.mozilla.gecko.preferences.AlignRightLinkPreference
             android:key="android.not_a_preference.donottrackheader.learn_more"
