@@ -22,20 +22,20 @@
             url="https://support.mozilla.org/kb/make-firefox-default-browser-android?utm_source=inproduct&amp;utm_medium=settings&amp;utm_campaign=mobileandroid" /> -->
 
     <PreferenceScreen android:title="@string/pref_category_general"
-                      android:summary="@string/pref_category_general_summary"
+                        android:summary="@string/pref_category_general_summary"
                       android:key="android.not_a_preference.general_screen"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment" >
         <extra android:name="resource"
                android:value="preferences_general"/>
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/pref_category_search"
+    <!-- <PreferenceScreen android:title="@string/pref_category_search"
                       android:summary="@string/pref_category_search_summary"
                       android:key="android.not_a_preference.search_screen"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment" >
         <extra android:name="resource"
                android:value="preferences_search"/>
-    </PreferenceScreen>
+    </PreferenceScreen> -->
 
     <PreferenceScreen android:title="@string/pref_category_privacy_short"
                       android:summary="@string/pref_category_privacy_summary"
@@ -44,26 +44,26 @@
                android:value="preferences_privacy" />
     </PreferenceScreen>
 
-    <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.qwant_manage_addons"
+    <!-- <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.qwant_manage_addons"
         android:title="@string/qwant_manage_addons"
         android:summary="@string/qwant_manage_addons_summary"
         android:persistent="false"
-        url="qwant_manage_addons_link"/>
+        url="qwant_manage_addons_link"/> -->
 
-    <PreferenceScreen android:title="@string/pref_category_accessibility"
+    <!-- <PreferenceScreen android:title="@string/pref_category_accessibility"
                       android:summary="@string/pref_category_accessibility_summary"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment" >
         <extra android:name="resource"
                android:value="preferences_accessibility" />
-    </PreferenceScreen>
+    </PreferenceScreen> -->
 
-    <PreferenceScreen android:title="@string/pref_category_advanced"
+    <!-- <PreferenceScreen android:title="@string/pref_category_advanced"
                       android:summary="@string/pref_category_advanced_summary"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
                       android:key="android.not_a_preference.advanced_screen" >
         <extra android:name="resource"
                android:value="preferences_advanced"/>
-    </PreferenceScreen>
+    </PreferenceScreen> -->
 
     <org.mozilla.gecko.preferences.PrivateDataPreference
             android:key="android.not_a_preference.privacy.clear"
@@ -75,11 +75,21 @@
             gecko:entryKeys="@array/pref_private_data_keys"
             gecko:initialValues="@array/pref_private_data_defaults" />
 
-    <PreferenceScreen android:title="@string/pref_category_vendor"
+    <!-- <PreferenceScreen android:title="@string/pref_category_vendor"
                       android:summary="@string/pref_category_vendor_summary"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment" >
         <extra android:name="resource"
                android:value="preferences_vendor"/>
-    </PreferenceScreen>
+    </PreferenceScreen> -->
+
+    <!-- <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.about.link"
+             android:title="@string/privacy_policy"
+             android:persistent="false"
+             url="https://about.qwant.com/legal/privacy/?client=qwantbrowser" />
+
+    <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.about.link"
+             android:title="@string/about3"
+             android:persistent="false"
+             url="https://help.qwant.com/fr/aide/qwant-junior/qwant-junior-mobile" /> -->
 
 </PreferenceScreen>

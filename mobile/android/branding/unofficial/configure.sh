@@ -2,8 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-ANDROID_PACKAGE_NAME=com.qwant.liberty
-MOZ_APP_DISPLAYNAME="Qwant"
+ANDROID_PACKAGE_NAME=com.qwantjunior.mobile
+MOZ_APP_DISPLAYNAME="Qwant Junior"
 MOZ_UPDATER=
 MOZ_ANDROID_ANR_REPORTER=
 MOZ_ANDROID_GCM_SENDERID=

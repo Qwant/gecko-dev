@@ -16,12 +16,12 @@
                android:value="preferences_general_tablet"/>
     </header>
 
-    <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
+    <!-- <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
             android:title="@string/pref_header_search"
             android:id="@+id/pref_header_search">
         <extra android:name="resource"
                android:value="preferences_search"/>
-    </header>
+    </header> -->
 
     <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
             android:title="@string/pref_header_privacy_short"
@@ -30,26 +30,33 @@
                android:value="preferences_privacy"/>
     </header>
 
-    <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
+    <!-- <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
             android:title="@string/pref_header_accessibility"
             android:id="@+id/pref_header_accessibility">
         <extra android:name="resource"
                android:value="preferences_accessibility"/>
-    </header>
+    </header> -->
 
+    <!--
     <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
         android:title="@string/pref_header_notifications"
-        android:id="@+id/pref_header_notifications">
+        android:id="@+id/pref_header_notifications"
+        android:visibility="gone"
+        >
         <extra android:name="resource"
             android:value="preferences_notifications"/>
     </header>
+    -->
 
-    <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
+    <!-- <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
             android:title="@string/pref_header_advanced"
-            android:id="@+id/pref_header_advanced">
+            android:id="@+id/pref_header_advanced"
+            android:visibility="gone"
+        >
         <extra android:name="resource"
                android:value="preferences_advanced"/>
     </header>
+    -->
 
     <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
         android:title="@string/pref_clear_private_data_now"
@@ -58,7 +65,7 @@
             android:value="preferences_privacy_clear_tablet"/>
     </header>
 
-    <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
+    <!-- <header android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment"
         android:title="@string/pref_default_browser"
         android:id="@+id/pref_header_default_browser">
         <extra android:name="resource"
@@ -70,6 +77,7 @@
             android:id="@+id/pref_header_vendor">
         <extra android:name="resource"
                android:value="preferences_vendor"/>
-    </header>
+    </header> -->
+
 
 </preference-headers>

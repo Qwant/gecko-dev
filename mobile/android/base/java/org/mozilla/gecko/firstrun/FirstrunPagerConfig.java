@@ -35,9 +35,9 @@ class FirstrunPagerConfig {
 
     static List<FirstrunPanelConfig> forQwant(Context context) {
         final List<FirstrunPanelConfig> panels = new LinkedList<>();
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME2, true));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY2, true));
-        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.EFFICIENCY, true));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.WELCOME_QJ, true));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.PRIVACY_QJ,true));
+        panels.add(FirstrunPanelConfig.getConfiguredPanel(context, PanelConfig.TYPE.EFFICIENCY_QJ, true));
         return panels;
     }
 

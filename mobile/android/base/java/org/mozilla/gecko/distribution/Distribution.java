@@ -230,7 +230,7 @@ public class Distribution {
     }
 
     private static Distribution init(final Distribution distribution) {
-        distribution.addOnDistributionReadyCallback(new QwantDistributionCallback(distribution.context));
+        // distribution.addOnDistributionReadyCallback(new QwantDistributionCallback(distribution.context));
 
         // Read/write preferences and files on the background thread.
         ThreadUtils.postToBackgroundThread(new Runnable() {

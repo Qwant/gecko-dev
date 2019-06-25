@@ -461,15 +461,15 @@ public class GeckoPreferences
             while (iterator.hasNext()) {
                 Header header = iterator.next();
 
-                if (header.id == R.id.pref_header_advanced && !Restrictions.isAllowed(this, Restrictable.ADVANCED_SETTINGS)) {
+                /*if (header.id == R.id.pref_header_advanced && !Restrictions.isAllowed(this, Restrictable.ADVANCED_SETTINGS)) {
                     iterator.remove();
-                } else if (header.id == R.id.pref_header_clear_private_data
+                } else*/ if (header.id == R.id.pref_header_clear_private_data
                            && !Restrictions.isAllowed(this, Restrictable.CLEAR_HISTORY)) {
                     iterator.remove();
-                } else if (header.id == R.id.pref_header_notifications
+                } /* else if (header.id == R.id.pref_header_notifications
                         && !haveNotificationsPreferences(this)) {
                     iterator.remove();
-                }
+                } */
             }
 
             mHeaders = target;
@@ -820,7 +820,7 @@ public class GeckoPreferences
                         continue;
                     }
                 } else if (PREFS_HOMEPAGE.equals(key)) {
-                        String setUrl = GeckoSharedPrefs.forProfile(getBaseContext()).getString(PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
+                        String setUrl = GeckoSharedPrefs.forProfile(getBaseContext()).getString(PREFS_HOMEPAGE, "https://www.qwantjunior.com?client=qwantjuniorbrowser");
                         setHomePageSummary(pref, setUrl);
                         pref.setOnPreferenceChangeListener(this);
                 } else if (PREFS_FAQ_LINK.equals(key)) {
@@ -918,7 +918,7 @@ public class GeckoPreferences
         if (!TextUtils.isEmpty(value)) {
             pref.setSummary(value);
         } else {
-            pref.setSummary("https://www.qwant.com?client=qwantbrowser");
+            pref.setSummary("https://www.qwantjunior.com?client=qwantjuniorbrowser");
         }
     }
 
