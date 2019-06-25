@@ -58,7 +58,7 @@ public class SetHomepagePreference extends DialogPreference {
         userAddressRadio = (RadioButton) view.findViewById(R.id.radio_user_address);
         homepageEditText = (EditText) view.findViewById(R.id.edittext_user_address);
 
-        storedUrl = prefs.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
+        storedUrl = prefs.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwantjunior.com?client=qwantbrowser");
 
         homepageLayout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -125,7 +125,7 @@ public class SetHomepagePreference extends DialogPreference {
             final String homePageEditTextValue = homepageEditText.getText().toString();
             final String newPrefValue;
             if (homepageLayout.getCheckedRadioButtonId() == R.id.radio_distribution) {
-                newPrefValue = prefs.getString(GeckoPreferences.PREFS_DIST_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
+                newPrefValue = prefs.getString(GeckoPreferences.PREFS_DIST_HOMEPAGE, "https://www.qwantjunior.com?client=qwantbrowser");
                 editor.putString(GeckoPreferences.PREFS_HOMEPAGE, newPrefValue);
             } else if (homepageLayout.getCheckedRadioButtonId() == R.id.radio_default ||
                        isUrlDefaultHomepage(homePageEditTextValue)) {

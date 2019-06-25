@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.regex.Matcher;
 
 /**
@@ -47,7 +48,32 @@ public class BlacklistSingleton {
     }
 
     public static boolean isQwantJuniorHost(String hostTesting) {
-        return RestBlacklistManager.isQwantJuniorHost(hostTesting);
+        return hostTesting.equals(RestBlacklistManager.getQwantJuniorHost()) || hostTesting.equals("qwantjunior.com") || hostTesting.equals("www.qwantjunior.com");
+    }
+
+    public String getWarningUrl() {
+        String l = Locale.getDefault().getLanguage();
+        return "https://" + RestBlacklistManager.getQwantJuniorHost() + "/public/index/warning/" + l;
+    }
+
+    public String getIpUrl() {
+        String l = Locale.getDefault().getLanguage();
+        return "https://" + RestBlacklistManager.getQwantJuniorHost() + "/public/index/ip/" + l;
+    }
+
+    public String getWarningSearchEngineUrl() {
+        String l = Locale.getDefault().getLanguage();
+        return "https://" + RestBlacklistManager.getQwantJuniorHost() + "/public/index/warning-search-engine/" + l;
+    }
+
+    public String getSearchEngineUrl(String searchEngine) {
+        String l = Locale.getDefault().getLanguage();
+        return "https://" + RestBlacklistManager.getQwantJuniorHost() + "/public/index/search-engine/" + l + "/" + searchEngine;
+    }
+
+    public String getTimeoutUrl() {
+        String l = Locale.getDefault().getLanguage();
+        return "https://" + RestBlacklistManager.getQwantJuniorHost() + "/public/index/timeout/" + l;
     }
 
     public static final String md5(final String s) {
@@ -78,7 +104,7 @@ public class BlacklistSingleton {
     private static String hashPath(String path) {
         Log.d("QWANT JUNIOR MOBILE LOG", "[HASH PATH]");
         Log.d("QWANT JUNIOR MOBILE LOG", "path : " + path);
-        String path2 = path.replaceFirst("https://", "").replaceFirst("http://", "").replaceFirst("www.", "");
+        String path2 = path.replaceFirst("https://", "").replaceFirst("http://", "").replaceFirst("www.", "").replaceFirst("ww.", "");
         URL url = null;
         try {
             url = new URL(path);
@@ -115,9 +141,19 @@ public class BlacklistSingleton {
         return url;
     }
 
-    public boolean domainIsBlacklisted(final String domain) {
-        final boolean[] ret = new boolean[1];
+    public interface BlacklistResponse {
+
+        void onResponse(boolean res);
+        void onError();
+        void onTimeout();
+
+    }
+
+    public boolean domainIsBlacklisted(final String domain, final BlacklistResponse response) {
+        final boolean[] ret = new boolean[3];
         ret[0] = false;
+        ret[1] = false;
+        ret[2] = false;
         long before = System.currentTimeMillis();
         blacklistManager.getDomainInBlacklist(domain, new BDBlacklistHighLevelManager.BlacklistBDD.GetListener() {
             @Override
@@ -141,30 +177,40 @@ public class BlacklistSingleton {
 
                         @Override
                         public void onTimeout() {
-                            ret[0] = true;
+                            ret[1] = true;
                         }
 
                         @Override
                         public void onError() {
-                            ret[0] = true;
+                            ret[2] = true;
                         }
                     });
                 }
             }
         });
-        if (ret[0]) {
-            Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
-        } else {
-            Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
-        }
         long after = System.currentTimeMillis();
         Log.d("QWANT JUNIOR MOBILE LOG", "elpased : " + (after - before));
-        return ret[0];
+        if (ret[1])
+            response.onTimeout();
+        else if (ret[2])
+            response.onError();
+        else {
+            if (ret[0]) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
+            }
+            response.onResponse(ret[0]);
+            return ret[0];
+        }
+        return true;
     }
 
-    public boolean domainIsRedirect(final String domain) {
-        final boolean[] ret = new boolean[1];
+    public boolean domainIsRedirect(final String domain, final BlacklistResponse response) {
+        final boolean[] ret = new boolean[3];
         ret[0] = false;
+        ret[1] = false;
+        ret[2] = false;
         long before = System.currentTimeMillis();
         blacklistManager.getDomainInRedirect(domain, new BDBlacklistHighLevelManager.BlacklistBDD.GetListener() {
             @Override
@@ -188,30 +234,40 @@ public class BlacklistSingleton {
 
                         @Override
                         public void onTimeout() {
-                            ret[0] = true;
+                            ret[1] = true;
                         }
 
                         @Override
                         public void onError() {
-                            ret[0] = true;
+                            ret[2] = true;
                         }
                     });
                 }
             }
         });
-        if (ret[0]) {
-            Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
-        } else {
-            Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
-        }
         long after = System.currentTimeMillis();
         Log.d("QWANT JUNIOR MOBILE LOG", "elpased : " + (after - before));
-        return ret[0];
+        if (ret[1])
+            response.onTimeout();
+        else if (ret[2])
+            response.onError();
+        else {
+            if (ret[0]) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
+            }
+            response.onResponse(ret[0]);
+            return ret[0];
+        }
+        return true;
     }
 
-    public boolean urlIsBlacklisted(final String url) {
-        final boolean[] ret = new boolean[1];
+    public boolean urlIsBlacklisted(final String url, final BlacklistResponse response) {
+        final boolean[] ret = new boolean[3];
         ret[0] = false;
+        ret[1] = false;
+        ret[2] = false;
         long before = System.currentTimeMillis();
         final String urlWithoutParameter = removeParameterInUrl(url);
         blacklistManager.getUrlInBlacklist(urlWithoutParameter, new BDBlacklistHighLevelManager.BlacklistBDD.GetListener() {
@@ -236,30 +292,40 @@ public class BlacklistSingleton {
 
                         @Override
                         public void onTimeout() {
-                            ret[0] = true;
+                            ret[1] = true;
                         }
 
                         @Override
                         public void onError() {
-                            ret[0] = true;
+                            ret[2] = true;
                         }
                     });
                 }
             }
         });
-        if (ret[0]) {
-            Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
-        } else {
-            Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
-        }
         long after = System.currentTimeMillis();
         Log.d("QWANT JUNIOR MOBILE LOG", "elpased : " + (after - before));
-        return ret[0];
+        if (ret[1])
+            response.onTimeout();
+        else if (ret[2])
+            response.onError();
+        else {
+            if (ret[0]) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
+            }
+            response.onResponse(ret[0]);
+            return ret[0];
+        }
+        return true;
     }
 
-    public boolean urlIsRedirect(final String url) {
-        final boolean[] ret = new boolean[1];
+    public boolean urlIsRedirect(final String url, final BlacklistResponse response) {
+        final boolean[] ret = new boolean[3];
         ret[0] = false;
+        ret[1] = false;
+        ret[2] = false;
         long before = System.currentTimeMillis();
         final String urlWithoutParameter = removeParameterInUrl(url);
         blacklistManager.getUrlInRedirect(urlWithoutParameter, new BDBlacklistHighLevelManager.BlacklistBDD.GetListener() {
@@ -284,25 +350,33 @@ public class BlacklistSingleton {
 
                         @Override
                         public void onTimeout() {
-                            ret[0] = true;
+                            ret[1] = true;
                         }
 
                         @Override
                         public void onError() {
-                            ret[0] = true;
+                            ret[2] = true;
                         }
                     });
                 }
             }
         });
-        if (ret[0]) {
-            Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
-        } else {
-            Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
-        }
         long after = System.currentTimeMillis();
         Log.d("QWANT JUNIOR MOBILE LOG", "elpased : " + (after - before));
-        return ret[0];
+        if (ret[1])
+            response.onTimeout();
+        else if (ret[2])
+            response.onError();
+        else {
+            if (ret[0]) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "BLACKLIST !");
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "OK GO !");
+            }
+            response.onResponse(ret[0]);
+            return ret[0];
+        }
+        return true;
     }
 
     public boolean isIp(String hostTesting) {
@@ -345,6 +419,9 @@ public class BlacklistSingleton {
 
         SearchEngineContainer.SearchEngine searchEngine = searchEngineContainer.getSearchEngine(searchEngineName);
         if (searchEngine != null) {
+            if (searchEngine.search == null) {
+                return false;
+            }
             if (url.contains(searchEngine.search)) {
                 return true;
             }
@@ -356,6 +433,9 @@ public class BlacklistSingleton {
 
         SearchEngineContainer.SearchEngine searchEngine = searchEngineContainer.getSearchEngine(searchEngineName);
         if (searchEngine != null) {
+            if (searchEngine.search == null) {
+                return false;
+            }
             if (searchEngine.safeSearchUrl != null && url.contains(searchEngine.search)) {
                 return true;
             }
@@ -367,6 +447,9 @@ public class BlacklistSingleton {
 
         SearchEngineContainer.SearchEngine searchEngine = searchEngineContainer.getSearchEngine(searchEngineName);
         if (searchEngine != null) {
+            if (searchEngine.search == null) {
+                return false;
+            }
             if (searchEngine.safeSearchUrl != null && url.contains(searchEngine.search)) {
                 return url.contains(searchEngine.safeSearchUrl);
             }
@@ -378,6 +461,9 @@ public class BlacklistSingleton {
 
         SearchEngineContainer.SearchEngine searchEngine = searchEngineContainer.getSearchEngine(searchEngineName);
         if (searchEngine != null) {
+            if (searchEngine.search == null) {
+                return url;
+            }
             if (searchEngine.safeSearchUrl != null && url.contains(searchEngine.search)) {
                 if (url.contains("?")) {
                     return url + "&" + searchEngine.safeSearchUrl;
@@ -394,6 +480,9 @@ public class BlacklistSingleton {
 
         SearchEngineContainer.SearchEngine searchEngine = searchEngineContainer.getSearchEngine(searchEngineName);
         if (searchEngine != null) {
+            if (searchEngine.search == null) {
+                return false;
+            }
             if (searchEngine.safeSearchRequestType != null && searchEngine.safeSearchRequestUrl != null) {
                 return true;
             }

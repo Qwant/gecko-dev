@@ -11,23 +11,17 @@
                   android:title="@string/pref_category_general"
                   android:enabled="false">
 
-    <org.mozilla.gecko.preferences.SyncPreference android:key="android.not_a_preference.sync"
+    <!-- <org.mozilla.gecko.preferences.SyncPreference android:key="android.not_a_preference.sync"
                                                   android:title="@string/pref_sync"
-                                                  android:persistent="false" />
+                                                  android:persistent="false" /> -->
 
-    <org.mozilla.gecko.preferences.DefaultBrowserPreference
-            android:key="android.not_a_preference.default_browser.link"
-            android:title="@string/pref_default_browser"
-            android:persistent="false"
-            url="https://support.mozilla.org/kb/make-firefox-default-browser-android?utm_source=inproduct&amp;utm_medium=settings&amp;utm_campaign=mobileandroid"/>
-
-    <PreferenceScreen android:key="android.not_a_preference.general_home"
+    <!-- <PreferenceScreen android:key="android.not_a_preference.general_home"
                       android:title="@string/pref_category_home"
                       android:summary="@string/pref_category_home_summary"
                       android:fragment="org.mozilla.gecko.preferences.GeckoPreferenceFragment" >
             <extra android:name="resource"
                    android:value="preferences_home" />
-    </PreferenceScreen>
+    </PreferenceScreen> -->
 
     <PreferenceScreen android:title="@string/pref_category_language"
                       android:summary="@string/pref_category_language_summary"
@@ -36,19 +30,31 @@
                android:value="preferences_locale" />
     </PreferenceScreen>
 
-    <SwitchPreference android:key="browser.chrome.dynamictoolbar"
+    <!-- <SwitchPreference android:key="browser.chrome.dynamictoolbar"
                       android:title="@string/pref_scroll_title_bar2"
                       android:summary="@string/pref_scroll_title_bar_summary" />
+                      -->
 
     <SwitchPreference android:key="android.not_a_preference.tab_queue"
+                      android:id="@+id/qj_persistent_link"
                       android:title="@string/pref_tab_queue_title"
                       android:summary="@string/pref_tab_queue_summary"
                       android:defaultValue="false" />
 
-    <SwitchPreference android:key="qwant.persistentnotification.enabled"
+    <!-- <SwitchPreference android:key="qwant.persistentnotification.enabled"
         android:title="@string/qwant_preferences_persistentnotification"
         android:summary="@string/qwant_preferences_persistentnotification_summary"
-        android:defaultValue="true" />
+        android:defaultValue="true" /> -->
+
+    <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.about.link"
+        android:title="@string/privacy_policy"
+        android:persistent="false"
+        url="https://about.qwant.com/legal/privacy/?client=qwantbrowser" />
+
+    <org.mozilla.gecko.preferences.LinkPreference android:key="android.not_a_preference.about.link"
+        android:title="@string/about3"
+        android:persistent="false"
+        url="https://help.qwant.com/fr/aide/qwant-junior/qwant-junior-mobile" />
 
 </PreferenceScreen>
 

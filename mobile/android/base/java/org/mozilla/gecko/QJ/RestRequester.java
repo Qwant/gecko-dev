@@ -71,7 +71,7 @@ class RestRequester {
             }
         }).start();
 
-        if (!cond.block(500)) {
+        if (!cond.block(60000)) {
             listener.onTimeout();
             return;
         }
@@ -159,7 +159,7 @@ class RestRequester {
             }
         }).start();
 
-        if (!cond.block(500)) {
+        if (!cond.block(60000)) {
             listener.onTimeout();
             return;
         }

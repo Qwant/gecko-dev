@@ -9,14 +9,22 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.mozilla.gecko.QJ.BlacklistSingleton;
+import org.mozilla.gecko.QJ.GameOffline;
 import org.mozilla.gecko.annotation.RobocopTarget;
 import org.mozilla.gecko.db.BrowserDB;
 import org.mozilla.gecko.distribution.PartnerBrowserCustomizationsClient;
@@ -48,6 +56,14 @@ import android.support.annotation.UiThread;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import ch.boye.httpclientandroidlib.HttpHeaders;
 
 
 public class Tabs implements BundleEventListener {
@@ -103,6 +119,11 @@ public class Tabs implements BundleEventListener {
     private Context mAppContext;
     private EventDispatcher mEventDispatcher;
     private GeckoView mGeckoView;
+    private View mWaitingGeckoView;
+    private WebView mOfflineView;
+    private WebView mYoutubeView;
+    private Map<Integer, String> youtubeTab = new HashMap<>();
+    private GeckoApp app;
     private ContentObserver mBookmarksContentObserver;
     private PersistTabsRunnable mPersistTabsRunnable;
     private int mPrivateClearColor;
@@ -184,13 +205,32 @@ public class Tabs implements BundleEventListener {
         mPrivateClearColor = Color.RED;
     }
 
-    public synchronized void attachToContext(Context context, GeckoView geckoView,
+    public synchronized void attachToContext(Context context, GeckoView geckoView, View waitingGeckoView, WebView offlineView, WebView youtubeView,
                                              EventDispatcher eventDispatcher) {
         final Context appContext = context.getApplicationContext();
 
         mAppContext = appContext;
         mEventDispatcher = eventDispatcher;
         mGeckoView = geckoView;
+        mWaitingGeckoView = waitingGeckoView;
+        mOfflineView = offlineView;
+        mYoutubeView = youtubeView;
+        app = (GeckoApp) context;
+        mYoutubeView.getSettings().setJavaScriptEnabled(true);
+        mYoutubeView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mYoutubeView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                Log.d("Youtube view", cm.message() + " -- From line " + cm.lineNumber() + " " + cm.sourceId());
+                return true;
+            }
+        });
+        mYoutubeView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return true;
+            }
+        });
         mPrivateClearColor = ContextCompat.getColor(context, R.color.tabs_tray_grey_pressed);
         mAccountManager = AccountManager.get(appContext);
 
@@ -635,8 +675,220 @@ public class Tabs implements BundleEventListener {
                 Log.i(LOGTAG, "zerdatime " + SystemClock.elapsedRealtime() +
                       " - page load start");
                 final boolean restoring = message.getBoolean("restoring");
+                //Version Qwant Junior
+                Log.d("QWANT JUNIOR MOBILE LOG", "url 3: " + message.getString("uri"));
+
+                ConnectivityManager cm = (ConnectivityManager) getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+                //mOfflineView.setVisibility(mGeckoView.INVISIBLE);
+                /*if (!(netInfo != null && netInfo.isConnectedOrConnecting())) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "No Internet");
+                    GameOffline.sharedInstance.load(getAppContext());
+                    Log.d("QWANT JUNIOR MOBILE LOG", GameOffline.sharedInstance.code);
+                    mOfflineView.getSettings().setJavaScriptEnabled(true);
+                    mOfflineView.setWebChromeClient(new WebChromeClient() {
+                        @Override
+                        public boolean onConsoleMessage(ConsoleMessage cm) {
+                            Log.d("offline game", cm.message() + " -- From line " + cm.lineNumber() + " " + cm.sourceId());
+                            return true;
+                        }
+                    });
+                    mOfflineView.loadData(GameOffline.sharedInstance.code, "text/html", "UTF-8");
+                    mOfflineView.setVisibility(mGeckoView.VISIBLE);
+                    return;
+                }*/
+                Uri url = Uri.parse(message.getString("uri"));
+                mGeckoView.setVisibility(View.VISIBLE);
+                mYoutubeView.setVisibility(View.INVISIBLE);
+                mYoutubeView.loadUrl("https://m.youtube.com/");
+                if (url.getHost() != null && BlacklistSingleton.isQwantJuniorHost(url.getHost())) {
+                    //mGeckoView.setVisibility(View.VISIBLE);
+                    mWaitingGeckoView.setVisibility(View.INVISIBLE);
+                }
+                if (url.getHost() != null && !BlacklistSingleton.isQwantJuniorHost(url.getHost())) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "URL Host : " + url.getHost());
+                    Log.d("QWANT JUNIOR MOBILE LOG", "URL Path : " + url.toString());
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Lang : " + Locale.getDefault().getLanguage());
+
+
+                    if (BlacklistSingleton.sharedInstance.isIp(url.getHost())) {
+                        Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getIpUrl());
+                        return;
+                    }
+
+                    BlacklistSingleton.sharedInstance.loadSearchEnginesFile(getAppContext());
+                    String searchEngine = BlacklistSingleton.sharedInstance.findSearchEngineName(url.getHost());
+                    if (searchEngine != null) {
+
+                        Log.d("QWANT JUNIOR MOBILE LOG", "search engine : " + searchEngine);
+
+                        if (!BlacklistSingleton.sharedInstance.searchEngineHasValidState(searchEngine)) {
+                            Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getWarningSearchEngineUrl());
+                            return;
+                        }
+                        if (BlacklistSingleton.sharedInstance.isFirstSearchEngine(url.getHost())) {
+                            Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getSearchEngineUrl(url.getHost()));
+                            return;
+                        }
+
+                        if (BlacklistSingleton.sharedInstance.searchEngineHasSafeSearchUrlAvailable(searchEngine, url.toString())) {
+                            if (!BlacklistSingleton.sharedInstance.searchEngineHasSafeSearchUrl(searchEngine, url.toString())) {
+                                Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.convertSearchEngineSafeSearchUrl(searchEngine, url.toString()));
+                                return;
+                            }
+                        } else if (BlacklistSingleton.sharedInstance.searchEngineHasSafeSearchRequestAvailable(searchEngine)) {
+                            if (!BlacklistSingleton.sharedInstance.searchEngineHasSafeSearchRequest(url.toString())) {
+                                BlacklistSingleton.sharedInstance.runSearchEngineSafeSearchRequest(searchEngine);
+                                Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.convertSearchEngineSafeSearchRequest(url.toString()));
+                                return;
+                            }
+                        } else {
+                            if (BlacklistSingleton.sharedInstance.searchEngineHasSearch(searchEngine, url.toString())) {
+                                /*if (BlacklistSingleton.sharedInstance.searchInSearchEngineIfBlacklistedResult(searchEngineName: searchEngine!, url: url.absoluteString)) {
+                                    decisionHandler(WKNavigationActionPolicy.cancel)
+                                    webView.load(URLRequest(url: URL(string :"https://qwant-junior-mobile-server2.eu-gb.mybluemix.net/public/warning")!))
+                                    return
+                                }*/
+                                Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getWarningUrl());
+                                return;
+                            }
+                        }
+                    }
+                    //Youtube Safe Search
+                    mYoutubeView.setVisibility(View.INVISIBLE);
+                    mGeckoView.setVisibility(View.VISIBLE);
+                    Pattern youtubeDomainRegex = Pattern.compile("(www\\.)?(m\\.)?youtube(\\.[a-z]+)+");
+                    if (youtubeDomainRegex.matcher(url.getHost()).find()) {
+                        Log.d("QWANT JUNIOR MOBILE LOG", "Youtube safe search");
+
+                        String youtubeUrl = url.toString();
+                        Log.d("QWANT JUNIOR MOBILE LOG", "Youtube url : " + youtubeUrl);
+                        CookieManager.getInstance().setAcceptCookie(true);
+                        CookieManager.getInstance().setCookie(youtubeUrl, "PREF=f1=50000000&f2=8000000");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            CookieManager.getInstance().flush();
+                        }
+                        Map<String, String> extras = new HashMap<String, String>();
+                        extras.put("Cookie", "PREF=f1=50000000&f2=8000000;");
+                        mYoutubeView.loadUrl("https://m.youtube.com/", extras);
+                        mYoutubeView.setVisibility(View.VISIBLE);
+                        mGeckoView.setVisibility(View.INVISIBLE);
+                        return;
+                    }
+                    //Youtube search END
+
+                    final Tab fTab = tab;
+                    final Uri fUrl = url;
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            BlacklistSingleton.BlacklistResponse blbrb = new BlacklistSingleton.BlacklistResponse() {
+                                @Override
+                                public void onResponse(boolean res) {
+                                    if (res)
+                                        app.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getWarningUrl());
+                                            }
+                                        });
+                                }
+
+                                @Override
+                                public void onError() {
+                                    app.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getWarningUrl());
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    app.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getTimeoutUrl());
+                                        }
+                                    });
+                                }
+                            };
+
+                            BlacklistSingleton.BlacklistResponse blbrr = new BlacklistSingleton.BlacklistResponse() {
+                                @Override
+                                public void onResponse(boolean res) {
+                                    if (res)
+                                        app.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                fTab.doStop();
+                                            }
+                                        });
+                                }
+
+                                @Override
+                                public void onError() {
+                                    app.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            fTab.doStop();
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    app.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Tabs.getInstance().loadUrl(BlacklistSingleton.sharedInstance.getTimeoutUrl());
+                                        }
+                                    });
+                                }
+                            };
+
+                            BlacklistSingleton.sharedInstance.loadBlacklistDatabase(getAppContext());
+
+                            app.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //mGeckoView.setVisibility(View.INVISIBLE);
+                                    mWaitingGeckoView.setVisibility(View.VISIBLE);
+                                }
+                            });
+
+                            if (BlacklistSingleton.sharedInstance.domainIsBlacklisted(fUrl.getHost(), blbrb)) {
+                                return;
+                            }
+                            if (BlacklistSingleton.sharedInstance.domainIsRedirect(fUrl.getHost(), blbrr)) {
+                                return;
+                            }
+                            if (BlacklistSingleton.sharedInstance.urlIsBlacklisted(fUrl.toString(), blbrb)) {
+                                return;
+                            }
+                            if (BlacklistSingleton.sharedInstance.urlIsRedirect(fUrl.toString(), blbrr)) {
+                                return;
+                            }
+
+                            app.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //mGeckoView.setVisibility(View.VISIBLE);
+                                    mWaitingGeckoView.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+                        }
+                    }).start();
+                }
+
                 tab.handleDocumentStart(restoring, message.getString("uri"));
-                notifyListeners(tab, Tabs.TabEvents.START);
+                notifyListeners(tab, TabEvents.START);
+
             } else if ((state & GeckoAppShell.WPL_STATE_STOP) != 0) {
                 Log.i(LOGTAG, "zerdatime " + SystemClock.elapsedRealtime() +
                       " - page load stop");
@@ -837,6 +1089,16 @@ public class Tabs implements BundleEventListener {
                     final int color = getTabColor(tab);
                     mGeckoView.getSession().getCompositorController().setClearColor(color);
                     mGeckoView.coverUntilFirstPaint(color);
+                    Log.d("QWANT JUNIOR MOBILE LOG", "youtube test: " + tab.getURL());
+                    mYoutubeView.setVisibility(View.INVISIBLE);
+                    mGeckoView.setVisibility(View.VISIBLE);
+                    Pattern youtubeDomainRegex = Pattern.compile("(www\\.)?(m\\.)?youtube(\\.[a-z]+)+");
+                    if (tab.getURL() != null && youtubeDomainRegex.matcher(tab.getURL()).find()) {
+                        Log.d("QWANT JUNIOR MOBILE LOG", "Youtube safe search : " + mYoutubeView.getUrl());
+                        mYoutubeView.setVisibility(View.VISIBLE);
+                        mGeckoView.setVisibility(View.INVISIBLE);
+                    }
+
                 }
                 queuePersistAllTabs();
                 tab.onChange();
@@ -1324,7 +1586,7 @@ public class Tabs implements BundleEventListener {
         final SharedPreferences preferences = GeckoSharedPrefs.forApp(context);
         final boolean forEveryNewTab = preferences.getBoolean(GeckoPreferences.PREFS_HOMEPAGE_FOR_EVERY_NEW_TAB, true);
 
-        return forEveryNewTab ? getHomepageForStartupTab(context) : "https://www.qwant.com?client=qwantbrowser";
+        return forEveryNewTab ? getHomepageForStartupTab(context) : "https://www.qwantjunior.com?client=qwantjuniorbrowser";
     }
 
     /**
@@ -1339,7 +1601,7 @@ public class Tabs implements BundleEventListener {
     @Nullable
     public static String getHomepage(Context context) {
         final SharedPreferences preferences = GeckoSharedPrefs.forProfile(context);
-        final String homepagePreference = preferences.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwant.com?client=qwantbrowser");
+        final String homepagePreference = preferences.getString(GeckoPreferences.PREFS_HOMEPAGE, "https://www.qwantjunior.com?client=qwantjuniorbrowser");
 
         final boolean readFromPartnerProvider = preferences.getBoolean(
                 GeckoPreferences.PREFS_READ_PARTNER_CUSTOMIZATIONS_PROVIDER, false);

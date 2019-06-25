@@ -69,6 +69,7 @@ import android.os.Parcelable;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
@@ -85,6 +86,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -204,6 +206,9 @@ public abstract class GeckoApp extends GeckoActivity
     protected FormAssistPopup mFormAssistPopup;
 
     protected GeckoView mLayerView;
+    protected View mLayerWaitingView;
+    protected WebView mOfflineView;
+    protected WebView mYoutubeView;
 
     protected boolean mLastSessionCrashed;
     protected boolean mShouldRestore;
@@ -1108,6 +1113,11 @@ public abstract class GeckoApp extends GeckoActivity
         mGeckoLayout = (RelativeLayout) findViewById(R.id.gecko_layout);
         mMainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         mLayerView = (GeckoView) findViewById(R.id.layer_view);
+
+        mLayerWaitingView = findViewById(R.id.layer_waiting_view);
+        mOfflineView = (WebView) findViewById(R.id.offline_layer_view);
+        mYoutubeView = (WebView) findViewById(R.id.youtube_view);
+
         // Disable automatic state staving - we require some special handling that we need to do
         // ourselves.
         mLayerView.setSaveFromParentEnabled(false);
@@ -1122,8 +1132,99 @@ public abstract class GeckoApp extends GeckoActivity
         if (mLayerView.getSession() != null) {
             mLayerView.getSession().close();
         }
+
         mLayerView.setSession(session, GeckoApplication.getRuntime());
         mLayerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        Log.d("QWANT JUNIOR MOBILE LOG", "setNavigationListener");
+
+        // Version Qwant Junior
+        session.setNavigationDelegate(new GeckoSession.NavigationDelegate() {
+            @Override
+            public void onLocationChange(@NonNull GeckoSession session, @Nullable String urlStr) {
+                final Uri uri = Uri.parse(urlStr);
+                if (uri == null) {
+                    // We can't handle this, so deny it.
+                    Log.w("QWANT JUNIOR MOBILE LOG", "Failed to parse URL for navigation: " + urlStr);
+                    return;
+                }
+                //Version Qwant Junior
+                Log.d("QWANT JUNIOR MOBILE LOG", "url 3.3: " + uri.getHost());
+                if (uri.getHost().equals("youporn.com")) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                } else {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+                }
+                return;
+            }
+
+            /* @Override
+            public boolean onLoadUri(GeckoSession session, String urlStr, TargetWindow where) {
+                final Uri uri = Uri.parse(urlStr);
+                if (uri == null) {
+                    // We can't handle this, so deny it.
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Failed to parse URL for navigation: " + urlStr);
+                    return true;
+                }
+                //Version Qwant Junior
+                Log.d("QWANT JUNIOR MOBILE LOG", "url 3.2: " + uri.getHost());
+                if (uri.getHost().equals("youporn.com")) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                } else {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+                }
+                return false;
+            } */
+        });
+
+        /* session.setNavigationListener(new GeckoSession.NavigationListener() {
+            @Override
+            public void onLocationChange(GeckoSession session, String urlStr) {
+                final Uri uri = Uri.parse(urlStr);
+                if (uri == null) {
+                    // We can't handle this, so deny it.
+                    Log.w("QWANT JUNIOR MOBILE LOG", "Failed to parse URL for navigation: " + urlStr);
+                    return;
+                }
+                //Version Qwant Junior
+                Log.d("QWANT JUNIOR MOBILE LOG", "url 3.3: " + uri.getHost());
+                if (uri.getHost().equals("youporn.com")) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                } else {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+                }
+                return;
+            }
+
+            @Override
+            public void onCanGoBack(GeckoSession session, boolean canGoBack) {
+
+            }
+
+            @Override
+            public void onCanGoForward(GeckoSession session, boolean canGoForward) {
+
+            }
+
+            @Override
+            public boolean onLoadUri(GeckoSession session, String urlStr, TargetWindow where) {
+                final Uri uri = Uri.parse(urlStr);
+                if (uri == null) {
+                    // We can't handle this, so deny it.
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Failed to parse URL for navigation: " + urlStr);
+                    return true;
+                }
+                //Version Qwant Junior
+                Log.d("QWANT JUNIOR MOBILE LOG", "url 3.2: " + uri.getHost());
+                if (uri.getHost().equals("youporn.com")) {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                } else {
+                    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+                }
+                return false;
+            }
+        }); */
+
         if (mIsRestoringActivity && !receivedSavedInstanceState) {
             restoreGeckoViewState(getGeckoApplication().getSavedState());
         }
@@ -1148,7 +1249,7 @@ public abstract class GeckoApp extends GeckoActivity
             "ToggleChrome:Show",
             null);
 
-        Tabs.getInstance().attachToContext(this, mLayerView, getAppEventDispatcher());
+        Tabs.getInstance().attachToContext(this, mLayerView, mLayerWaitingView, mOfflineView, mYoutubeView, getAppEventDispatcher());
         Tabs.registerOnTabsChangedListener(this);
 
         // Use global layout state change to kick off additional initialization
@@ -1457,14 +1558,22 @@ public abstract class GeckoApp extends GeckoActivity
 
         if (!mShouldRestore || Intent.ACTION_VIEW.equals(action)) {
             if (Intent.ACTION_WEB_SEARCH.equals(action)) {
-                final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + this.getIntent().getStringExtra(SearchManager.QUERY);
+                final String url = "https://www.qwantjunior.com/?client=qwantbrowser&q=" + this.getIntent().getStringExtra(SearchManager.QUERY);
                 Tabs.getInstance().loadUrl(url, flags);
             } else if (mLastSessionCrashed) {
                 // The Recent Tabs panel no longer exists, but BrowserApp will redirect us
                 // to the Recent Tabs folder of the Combined History panel.
                 Tabs.getInstance().loadUrl(AboutPages.getURLForBuiltinPanelType(PanelType.DEPRECATED_RECENT_TABS), flags);
             } else {
-                Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true&lb=" + Locale.getDefault().getLanguage(), flags);
+                boolean b = false;
+                for (int i = 0; i < Tabs.getInstance().getDisplayCount(); i++) {
+                    if (Tabs.getInstance().getTab(i).getURL().contains("qwantjunior.com")) {
+                        b = true;
+                        break;
+                    }
+                }
+                if (!b)
+                    Tabs.getInstance().loadUrl("https://www.qwantjunior.com/?client=qwantjuniorbrowser&l=" + Locale.getDefault().getLanguage(), flags);
             }
         } else if (GeckoApp.ACTION_QWANT_WIDGET.equals(action)) {
             // We do the widget opening in BrowserApp to be able to hide urlbar, so we notify it now
@@ -1582,7 +1691,7 @@ public abstract class GeckoApp extends GeckoActivity
                         Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
                         // Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
                     } else if (isWebSearchIntent) {
-                        final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getDataString();
+                        final String url = "https://www.qwantjunior.com/?client=qwantbrowser&q=" + intent.getDataString();
                         loadStartupTab(url, intent, getNewTabFlags());
                     } else if (isAboutHomeURL) {
                         // respect the user preferences for about:home from external intent calls
@@ -1714,7 +1823,7 @@ public abstract class GeckoApp extends GeckoActivity
                 JSONArray valid_tabs = new JSONArray();
                 for (int i = 0; i < tabs.length(); i++) {
                     String url = tabs.getJSONObject(i).getJSONArray("entries").getJSONObject(0).getString("url");
-                    if (url != null && !url.equals("null") && !url.startsWith("https://www.qwant.com/?q=null")) {
+                    if (url != null && !url.equals("null") && !url.startsWith("https://www.qwantjunior.com/?q=null")) {
                         valid_tabs.put(tabs.getJSONObject(i));
                     } else {
                         parser.tabsWereSkipped = true;
@@ -1930,7 +2039,7 @@ public abstract class GeckoApp extends GeckoActivity
         } else if (Intent.ACTION_ASSIST.equals(action)) {
             Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         } else if (Intent.ACTION_WEB_SEARCH.equals(action)) {
-            final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getStringExtra(SearchManager.QUERY);
+            final String url = "https://www.qwantjunior.com/?client=qwantbrowser&q=" + intent.getStringExtra(SearchManager.QUERY);
             int flags = Tabs.LOADURL_NEW_TAB | Tabs.LOADURL_USER_ENTERED | Tabs.LOADURL_EXTERNAL;
             if (isFirstTab) {
                 flags |= Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN;

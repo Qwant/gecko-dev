@@ -2244,7 +2244,8 @@ public class BrowserApp extends GeckoApp
      * @return true if this package is the default browser on this device, false otherwise.
      */
     private boolean isDefaultBrowser(String action) {
-        final Intent viewIntent = new Intent(action, Uri.parse("https://www.qwant.com"));
+        //Version Qwant Junior
+        final Intent viewIntent = new Intent(action, Uri.parse("https://www.qwantjunior.com"));
         final ResolveInfo info = getPackageManager().resolveActivity(viewIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (info == null) {
             // No default is set
@@ -2665,8 +2666,15 @@ public class BrowserApp extends GeckoApp
 
         // If the URL doesn't look like a search query, just load it.
         if (!StringUtils.isSearchQuery(url, true)) {
-            Tabs.getInstance().loadUrl(url, Tabs.LOADURL_USER_ENTERED);
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.ACTIONBAR, "user");
+            //Version Qwant Junior
+            Log.d("QWANT JUNIOR MOBILE LOG", "Browser App, url: " + url);
+            //if (url.equals("youporn.com")) {
+            //    Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+            //} else {
+            //    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+                Tabs.getInstance().loadUrl(url, Tabs.LOADURL_USER_ENTERED);
+                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.ACTIONBAR, "user");
+            //}
             return;
         }
 
@@ -3313,6 +3321,18 @@ public class BrowserApp extends GeckoApp
         final MenuItem enterGuestMode = aMenu.findItem(R.id.new_guest_session);
         final MenuItem exitGuestMode = aMenu.findItem(R.id.exit_guest_session);
 
+        //Version Qwant Junior
+        findInPage.setVisible(false);
+        desktopMode.setVisible(false);
+        final MenuItem page = aMenu.findItem(R.id.page);
+        page.setVisible(false);
+        final MenuItem tools = aMenu.findItem(R.id.tools);
+        tools.setVisible(false);
+        final MenuItem help = aMenu.findItem(R.id.help);
+        help.setVisible(false);
+        //findViewById(R.id.pref_header_default_browser).setVisibility(View.INVISIBLE);
+
+
         // Only show the "Quit" menu when capturing a profile, on television devices,
         // or if the user has explicitly enabled the clear on shutdown pref.
         // (We check the pref last to save the pref read.)
@@ -3733,10 +3753,10 @@ public class BrowserApp extends GeckoApp
             return true;
         }
 
-        if (itemId == R.id.qwant_browse_addons) {
+        /* if (itemId == R.id.qwant_browse_addons) {
             Tabs.getInstance().loadUrlInTab("https://www.qwant.com/addons");
             return true;
-        }
+        } */
 
         if (itemId == R.id.logins) {
             Tabs.getInstance().loadUrlInTab(AboutPages.LOGINS);
@@ -4048,6 +4068,14 @@ public class BrowserApp extends GeckoApp
     public void onUrlOpenWithReferrer(final String url, @Nullable final String referrerUri,
             final EnumSet<OnUrlOpenListener.Flags> flags) {
         if (flags.contains(OnUrlOpenListener.Flags.OPEN_WITH_INTENT)) {
+            //Version Qwant Junior
+            Log.d("QWANT JUNIOR MOBILE LOG", "url 5: " + url);
+            if (url.equals("youporn.com/") || url.equals("http://youporn.com/")) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                return;
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
+            }
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
@@ -4061,6 +4089,15 @@ public class BrowserApp extends GeckoApp
                 pageURL = SavedReaderViewHelper.getReaderURLIfCached(this, url);
             } else {
                 pageURL = url;
+            }
+
+            //Version Qwant Junior
+            Log.d("QWANT JUNIOR MOBILE LOG", "url 4: " + url);
+            if (url.equals("youporn.com/") || url.equals("http://youporn.com/")) {
+                Log.d("QWANT JUNIOR MOBILE LOG", "Blacklist");
+                return;
+            } else {
+                Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
             }
 
             if (!maybeSwitchToTab(pageURL, flags)) {

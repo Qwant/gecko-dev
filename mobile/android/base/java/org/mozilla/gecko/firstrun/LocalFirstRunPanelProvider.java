@@ -52,6 +52,22 @@ public class LocalFirstRunPanelProvider implements FirstRunPanelConfigProviderSt
                         resources.getString(R.string.firstrun_efficiency_message),
                         resources.getString(R.string.firstrun_efficiency_subtext),
                         R.drawable.firstrun_efficiency);
+            case WELCOME_QJ:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_welcome2),
+                        resources.getString(R.string.firstrun_welcome3_message),
+                        resources.getString(R.string.firstrun_welcome3_subtext),
+                        R.drawable.firstrun_welcome3);
+            case PRIVACY_QJ:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_privacy2),
+                        resources.getString(R.string.firstrun_privacy3_message),
+                        resources.getString(R.string.firstrun_privacy3_subtext),
+                        R.drawable.firstrun_privacy);
+            case EFFICIENCY_QJ:
+                return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_efficiency),
+                        resources.getString(R.string.firstrun_efficiency3_message),
+                        resources.getString(R.string.firstrun_efficiency3_subtext),
+                        R.drawable.firstrun_efficiency);
+
             default:    // This will also be the case for "WELCOME"
                 return new PanelConfig(type, useLocalValues, resources.getString(R.string.firstrun_panel_title_welcome2),
                         resources.getString(R.string.firstrun_welcome2_message),

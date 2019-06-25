@@ -13,7 +13,7 @@
     <ViewStub android:id="@+id/tabs_panel"
               android:layout="@layout/tabs_panel_view"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"/>
+              android:layout_height="match_parent" />
 
    <view class="org.mozilla.gecko.GeckoApp$MainLayout"
          android:id="@+id/main_layout"
@@ -31,6 +31,27 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              android:scrollbars="none"/>
+
+            <ImageView
+                android:id="@+id/layer_waiting_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                android:visibility="invisible" />
+
+            <WebView
+                android:id="@+id/offline_layer_view"
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+            <WebView
+                android:id="@+id/youtube_view"
+                android:layout_marginTop="@dimen/youtube_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
 
             <org.mozilla.gecko.FormAssistPopup android:id="@+id/form_assist_popup"
                                                android:layout_width="match_parent"
