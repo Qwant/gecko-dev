@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Google",
+    "domain": "(www\\.)?google(\\.[a-z]+)+",
+    "search": "/search",
+    "safe_search_url": "safe=active",
+    "state" : "invalid"
+  },
+  {
+    "name": "Qwant",
+    "domain": "(www\\.)?qwant(\\.[a-z]+)+",
+    "search": "/",
+    "safe_search_url": "s=2",
+    "state" : "invalid"
+  },
+  {
+    "name": "Bing",
+    "domain": "(www\\.)?bing(\\.[a-z]+)+",
+    "search": "/search",
+    "safe_search_url": "safe=active",
+    "state" : "invalid"
+  },
+  {
+    "name": "Ecosia",
+    "domain": "(www\\.)?ecosia(\\.[a-z]+)+",
+    "search": "/search",
+    "safe_search_request_type": "POST",
+    "safe_search_request_url": "https://www.ecosia.org/settings",
+    "safe_search_request_body": "f=y",
+    "state" : "invalid"
+  },
+  {
+    "name": "DuckDuckGo",
+    "domain": "(www\\.)?duckduckgo(\\.[a-z]+)+",
+    "search": "/",
+    "state" : "invalid"
+  },
+  {
+    "name": "Yahoo",
+    "domain": "(www\\.)?([a-z]+\\.)+yahoo(\\.[a-z]+)+",
+    "search": "/search",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Ask.com",
+    "domain" : "(www\\.)?([a-z]+\\.)*ask(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Baidu",
+    "domain" : "(www\\.)?baidu(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Exalead",
+    "domain" : "(www\\.)?exalead(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Startpage",
+    "domain" : "(www\\.)?startpage(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Gigablast",
+    "domain" : "(www\\.)?gigablast(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Kelseek",
+    "domain" : "(www\\.)?kelseek(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Lycos",
+    "domain" : "(www\\.)?lycos(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Mozbot",
+    "domain" : "(www\\.)?mozbot(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Sogou",
+    "domain" : "(www\\.)?sogou(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Sukoga",
+    "domain" : "(www\\.)?sukoga(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Swisscows",
+    "domain" : "(www\\.)?swisscows(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Naver",
+    "domain" : "(www\\.)?naver(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "V9",
+    "domain" : "(www\\.)?v9(\\.[a-z]+)+",
+    "state" : "invalid"
+  },
+  {
+    "name" : "Yandex",
+    "domain" : "(www\\.)?yandex(\\.[a-z]+)+",
+    "state" : "invalid"
+  }
+]
