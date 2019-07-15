@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="1001300"
-      android:versionName="1.0.13"
+      android:versionCode="1001501"
+      android:versionName="1.0.15"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
 #endif
