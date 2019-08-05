@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="17322"
-      android:versionName="3.2.1"
+      android:versionCode="30300006"
+      android:versionName="3.3.0"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
 #endif
@@ -24,7 +24,7 @@
 #include FennecManifest_permissions.xml.in
 
     <application android:label="@string/moz_app_displayname"
-                 android:icon="@mipmap/ic_launcher"
+                 android:icon="@mipmap/ic_launcher_qwant"
                  android:logo="@drawable/logo"
                  android:name="@MOZ_ANDROID_APPLICATION_CLASS@"
                  android:hardwareAccelerated="true"
