@@ -238,7 +238,7 @@ nsHttpHandler::nsHttpHandler()
       mLastUniqueID(NowInSeconds()),
       mSessionStartTime(0),
       mLegacyAppName("QwantMobile"),
-      mLegacyAppVersion("3.0"),
+      mLegacyAppVersion("3.3"),
       mProduct("Gecko"),
       mCompatFirefoxEnabled(false),
       mUserAgentIsDirty(true),
