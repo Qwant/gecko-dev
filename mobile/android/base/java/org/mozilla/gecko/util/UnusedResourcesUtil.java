@@ -61,14 +61,13 @@ final class UnusedResourcesUtil {
     };
 
     public static final int[] USED_IN_SUGGESTEDSITES = {
-            R.drawable.suggestedsites_amazon,
-            R.drawable.suggestedsites_facebook,
-            R.drawable.suggestedsites_restricted_fxsupport,
-            R.drawable.suggestedsites_restricted_mozilla,
-            R.drawable.suggestedsites_twitter,
-            R.drawable.suggestedsites_webmaker,
-            R.drawable.suggestedsites_wikipedia,
-            R.drawable.suggestedsites_youtube,
+            R.drawable.suggestedsites_qwant,
+            R.drawable.suggestedsites_qwantjunior,
+            R.drawable.suggestedsites_qwantmaps,
+            R.drawable.suggestedsites_qwantcoz,
+            R.drawable.suggestedsites_qwantboards,
+            R.drawable.suggestedsites_qwantmusic,
+            R.drawable.suggestedsites_qwanthelp,
     };
 
     public static final int[] USED_IN_BOOKMARKDEFAULTS = {
