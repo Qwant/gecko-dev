@@ -1567,7 +1567,8 @@ public abstract class GeckoApp extends GeckoActivity
             } else {
                 boolean b = false;
                 for (int i = 0; i < Tabs.getInstance().getDisplayCount(); i++) {
-                    if (Tabs.getInstance().getTab(i).getURL().contains("qwantjunior.com")) {
+                    Tab t = Tabs.getInstance().getTab(i);
+                    if (t != null && t.getURL().contains("qwantjunior.com")) {
                         b = true;
                         break;
                     }
