@@ -5,7 +5,7 @@
 MOZ_APP_BASENAME=Qwant
 MOZ_APP_VENDOR=Qwant
 
-MOZ_APP_UA_NAME="Firefox QwantBrowser"
+MOZ_APP_UA_NAME="QwantBrowser Firefox"
 
 BROWSER_CHROME_URL=chrome://browser/content/browser.xul
 
