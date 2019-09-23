@@ -4,7 +4,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="30400004"
+      android:versionCode="30400013"
       android:versionName="3.4"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
@@ -229,13 +229,34 @@
           </intent-filter>
         </receiver>
 
-        <receiver android:name="org.mozilla.gecko.widget.QwantAppWidgetProvider" >
+        <activity
+            android:name="com.qwant.liberty.Assist"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <action android:name="android.intent.action.SEARCH" />
+                <!-- <action android:name="android.intent.action.VOICE_ASSIST" /> -->
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="com.qwant.liberty.WidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/qwant_appwidget_info" />
+        </receiver>
+
+
+
+        <!-- <receiver android:name="org.mozilla.gecko.widget.QwantAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/qwant_appwidget_info" />
-        </receiver>
+        </receiver> -->
 
          <!-- <receiver android:name="org.mozilla.gecko.search.SearchWidgetProvider">
              <intent-filter>

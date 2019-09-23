@@ -1,4 +1,4 @@
-package org.mozilla.gecko.widget;
+package com.qwant.liberty;
 
 import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetManager;
@@ -10,26 +10,19 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.widget.RemoteViews;
 
-import org.mozilla.gecko.AppConstants;
-import org.mozilla.gecko.GeckoApp;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.db.BrowserContract;
 
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
-public class QwantAppWidgetProvider extends AppWidgetProvider {
+public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
-        intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
-        intent.putExtra(BrowserContract.SKIP_TAB_QUEUE_FLAG, true);
-
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.qwant_notification_widget_preview);
-        ComponentName watchWidget = new ComponentName(context, QwantAppWidgetProvider.class);
 
+        final Intent intent = new Intent(context, Assist.class);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.custom_notification_widget_layout, pendingIntent);
 
+        ComponentName watchWidget = new ComponentName(context, WidgetProvider.class);
         appWidgetManager.updateAppWidget(watchWidget, views);
     }
 }
