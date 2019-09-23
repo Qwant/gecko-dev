@@ -83,7 +83,7 @@ public class QwantDistributionCallback implements Distribution.ReadyCallback {
             intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser&topsearch=true"));
             final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.custom_notification_widget);
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.qwant_notification_widget_preview);
 
             final Notification notification = new NotificationCompat.Builder(context)
                     .setContent(contentView)
