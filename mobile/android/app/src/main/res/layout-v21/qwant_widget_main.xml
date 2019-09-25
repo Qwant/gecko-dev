@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintStart_toStartOf="parent"
-    tools:context="com.qwant.liberty.Assist">
+    tools:context="com.qwant.liberty.Assist"
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/widget_search_bar_gradient"
@@ -53,23 +54,25 @@
             android:paddingTop="2dp"
             android:textColor="#5c6f84"
             android:textColorHint="#c8cbd3"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:dropDownAnchor="@id/widget_search_bar_layout"
             android:fontFamily="@font/asap"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             />
 
         <ImageView
-            android:src="@drawable/close"
+            android:src="@drawable/qwant_icon_cross"
             android:id="@+id/widget_search_bar_cross"
-            android:layout_width="18dp"
-            android:layout_marginEnd="10dp"
+            android:layout_width="20dp"
+            android:layout_marginEnd="12dp"
             android:layout_height="match_parent" />
 
         <ImageView
-            android:src="@drawable/icon_search"
+            android:src="@drawable/qwant_icon_search"
             android:id="@+id/widget_search_bar_magnifier"
-            android:layout_width="32dp"
-            android:layout_marginEnd="10dp"
+            android:layout_width="22dp"
+            android:layout_marginEnd="16dp"
             android:layout_height="match_parent" />
     </LinearLayout>
 
@@ -85,4 +88,60 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/widget_search_bar_layout" />
+
+    <LinearLayout
+        android:id="@+id/home_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:gravity="top"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/widget_search_bar_layout">
+
+        <LinearLayout
+            android:id="@+id/clipboard_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/asap_medium"
+                android:paddingLeft="20dp"
+                android:text="PRESSE PAPIER"
+                android:textColor="#c8cbd3"
+                android:textSize="19sp" />
+
+            <LinearLayout
+                android:id="@+id/clipboard_text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:padding="20dp"
+                    android:src="@drawable/qwant_icon_copy" />
+
+                <TextView
+                    android:id="@+id/clipboard_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/asap"
+                    android:gravity="center_vertical"
+                    android:padding="8dp"
+                    android:textColor="#5c6f84"
+                    android:textSize="21sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

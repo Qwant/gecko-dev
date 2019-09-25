@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
-    android:textColor="#5c6f84"
-    android:textSize="20sp"
-    android:gravity="center_vertical"
-    android:padding="8dp"
-    android:layout_marginLeft="40dp"
-    android:drawablePadding="30dp"
-    android:drawableLeft="@drawable/icon_search" />
+    android:layout_width="match_parent" >
+
+    <ImageView
+        android:src="@drawable/qwant_icon_search"
+        android:id="@+id/suggest_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="20dp"
+        />
+
+    <TextView
+        android:id="@+id/suggest_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:fontFamily="@font/asap"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:textColor="#5c6f84"
+        android:textSize="21sp" />
+</LinearLayout>

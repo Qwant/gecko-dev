@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="30400013"
-      android:versionName="3.4"
+      android:versionCode="30401000"
+      android:versionName="3.4.1"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
 #endif
@@ -232,7 +232,9 @@
         <activity
             android:name="com.qwant.liberty.Assist"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:windowSoftInputMode="stateAlwaysVisible"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
                 <action android:name="android.intent.action.SEARCH" />
@@ -247,26 +249,6 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/qwant_appwidget_info" />
         </receiver>
-
-
-
-        <!-- <receiver android:name="org.mozilla.gecko.widget.QwantAppWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/qwant_appwidget_info" />
-        </receiver> -->
-
-         <!-- <receiver android:name="org.mozilla.gecko.search.SearchWidgetProvider">
-             <intent-filter>
-                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-             </intent-filter>
-
-             <meta-data
-                 android:name="android.appwidget.provider"
-                 android:resource="@xml/search_widget_info" />
-         </receiver> -->
 
          <activity android:name="org.mozilla.gecko.search.SearchWidgetConfigurationActivity"
                    android:theme="@style/OverlayActivity">

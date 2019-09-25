@@ -1,43 +1,75 @@
 package com.qwant.liberty;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.GeolocationPermissions;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.mozilla.gecko.BrowserApp;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.db.BrowserContract;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_HTML;
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
+
 
 public class Assist extends Activity {
     private static final String LOGTAG = "QwantAssist";
 
+    public static final int MAX_SUGGEST_TEXT_LENGTH = 30;
+
     AutoCompleteTextView search_text;
     WebView webview;
+    TextView clipboard_text;
+    LinearLayout home_layout;
+    LinearLayout clipboard_layout;
     SuggestAdapter suggest_adapter;
     Intent new_tab_intent;
+    CharSequence clipboard_full_text;
+
+    // Geoloc permission
+    final int QWANT_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
+    private String permission_request_origin;
+    private GeolocationPermissions.Callback permission_request_callback;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOGTAG, "OnCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qwant_widget_main);
 
         search_text = findViewById(R.id.search_text);
+        home_layout = findViewById(R.id.home_layout);
 
         suggest_adapter = new SuggestAdapter(this, R.layout.qwant_widget_suggestlist_item);
 
+        // Intent for opening new tab in firefox
         new_tab_intent = new Intent(this, BrowserApp.class);
         new_tab_intent.setPackage(getPackageName());
         new_tab_intent.setAction(Intent.ACTION_VIEW);
@@ -45,7 +77,17 @@ public class Assist extends Activity {
 
         webview = findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
+
+        // MAPS SETTINGS
+        webview.getSettings().setGeolocationEnabled(true);
+        webview.getSettings().setBuiltInZoomControls(true);
+        // local storage emulation
+        webview.getSettings().setAppCacheEnabled(true);
+        webview.getSettings().setDatabaseEnabled(true);
+        webview.getSettings().setDomStorageEnabled(true);
+
         webview.setWebViewClient(new WebViewClient() {
+            // If we get out of qwant.com, it opens in the browser, else stay in webview
             @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Uri uri = Uri.parse(url);
                 String host = uri.getHost();
@@ -56,22 +98,88 @@ public class Assist extends Activity {
                 startActivity(new_tab_intent);
                 return true;
             }
+            // Show webview and hide home on first user request
+            @Override public void onPageFinished(WebView view, String url) {
+                if (webview.getVisibility() == View.INVISIBLE && !webview.getUrl().contains("preload")) {
+                    webview.setVisibility(View.VISIBLE);
+                    home_layout.setVisibility(View.INVISIBLE);
+                }
+            }
         });
+        webview.setWebChromeClient(new WebChromeClient() {
+            // Geoloc permission prompt for maps
+            public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
+                Log.d(LOGTAG, "GeoLoc show prompt");
+
+                permission_request_origin = null;
+                permission_request_callback = null;
+
+                final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Log.d(LOGTAG, "test GPS");
+                if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    Log.d(LOGTAG, "GPS disabled");
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Assist.this);
+                    builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                        .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                    callback.invoke(origin, false, false);
+                } else {
+                    Log.d(LOGTAG, "GPS ok, check permission");
+                    if (ContextCompat.checkSelfPermission(Assist.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        Log.d(LOGTAG, "permission not ok");
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(Assist.this, Manifest.permission.READ_CONTACTS)) {
+                            Log.d(LOGTAG, "permission show rationale");
+                            new AlertDialog.Builder(Assist.this)
+                                .setMessage("Accept that dumbass !!")
+                                .setNeutralButton("Understood ...", (dialogInterface, i) -> {
+                                    permission_request_origin = origin;
+                                    permission_request_callback = callback;
+                                    ActivityCompat.requestPermissions(Assist.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, QWANT_PERMISSIONS_REQUEST_FINE_LOCATION);
+                                }).show();
+                        } else {
+                            Log.d(LOGTAG, "request permission");
+                            permission_request_origin = origin;
+                            permission_request_callback = callback;
+                            ActivityCompat.requestPermissions(Assist.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 0);
+                        }
+                    } else {
+                        Log.d(LOGTAG, "permission ok");
+                        callback.invoke(origin, true, true);
+                    }
+                }
+            }
+        });
+        // Hide webview and preload SERP for speed of next user request (cache)
+        webview.setVisibility(View.INVISIBLE);
+        webview.loadUrl("https://www.qwant.com/?widget=1&q=a&preload=true");
 
         ImageView cancel_cross = findViewById(R.id.widget_search_bar_cross);
         cancel_cross.setVisibility(View.INVISIBLE);
         cancel_cross.setOnClickListener((e) -> {
-            search_text.setText("");
-            search_text.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+            reset_searchbar();
         });
 
         ImageView img_magnifier = findViewById(R.id.widget_search_bar_magnifier);
         img_magnifier.setOnClickListener((e) -> launch_search());
 
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard_layout = findViewById(R.id.clipboard_layout);
+        clipboard_text = findViewById(R.id.clipboard_text);
+        clipboard.addPrimaryClipChangedListener(() -> reload_clipboard(clipboard));
+        reload_clipboard(clipboard);
+        LinearLayout clipboard_text_layout = findViewById(R.id.clipboard_text_layout);
+        clipboard_text_layout.setOnClickListener(v -> {
+            search_text.setText(clipboard_full_text);
+            search_text.setSelection(search_text.getText().length());
+            launch_search();
+        });
+
         search_text.setAdapter(suggest_adapter);
         search_text.setDropDownBackgroundResource(R.drawable.white_rectangle);
+        // On keyboard validation (button "enter")
         search_text.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 launch_search();
@@ -79,23 +187,104 @@ public class Assist extends Activity {
             }
             return false;
         });
-
-        search_text.setOnItemClickListener((adapterView, view, i, l) -> launch_search());
+        // On click on suggest item
+        search_text.setOnItemClickListener((adapter, view, position, id) -> {
+            SuggestItem selected_item = suggest_adapter.getItem(position);
+            if (selected_item != null) {
+                search_text.setText(selected_item.display_text);
+                search_text.setSelection(search_text.getText().length());
+                launch_search();
+            }
+        });
         search_text.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                cancel_cross.setVisibility((count > 0) ? View.VISIBLE : View.INVISIBLE);
+                if (count == 0) {
+                    cancel_cross.setVisibility(View.INVISIBLE);
+                    webview.setVisibility(View.INVISIBLE);
+                    home_layout.setVisibility(View.VISIBLE); // TODO should handle history too
+                } else {
+                    cancel_cross.setVisibility(View.VISIBLE);
+                }
             }
         });
+        reset_searchbar();
+    }
+
+    // Geoloc permission callback
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == QWANT_PERMISSIONS_REQUEST_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(LOGTAG, "permission granted");
+                permission_request_callback.invoke(permission_request_origin, true, true);
+            } else {
+                Log.d(LOGTAG, "permission refused");
+                permission_request_callback.invoke(permission_request_origin, false, false);
+            }
+        } else {
+            Log.e(LOGTAG, "Rejecting invalid RequestPermissionResult with unknown code: " + requestCode);
+            permission_request_callback.invoke(permission_request_origin, false, false);
+        }
+    }
+
+    // We reset the widget when user comes from a click on the homescreen widget
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        reset_searchbar();
+    }
+
+    @Override public void onBackPressed() {
+        Log.d(LOGTAG, "onBackPressed");
+        if (home_layout.getVisibility() == View.INVISIBLE) {
+            home_layout.setVisibility(View.VISIBLE);
+            reset_searchbar();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    void reset_searchbar() {
+        search_text.setText("");
         search_text.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(search_text, 0);
+    }
+
+    void reload_clipboard(ClipboardManager clipboard) {
+        if (clipboard.hasPrimaryClip() &&
+        (clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN) || clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_HTML))) {
+            ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+            CharSequence clipboard_text = item.getText();
+            if (clipboard_text == null)  {
+                Uri clipboard_uri = item.getUri();
+                if (clipboard_uri != null) {
+                    clipboard_text = clipboard_uri.toString();
+                }
+            }
+            if (clipboard_text != null && clipboard_text.length() > 0) {
+                CharSequence display_text = (clipboard_text.length() > Assist.MAX_SUGGEST_TEXT_LENGTH) ?
+                        clipboard_text.subSequence(0, Assist.MAX_SUGGEST_TEXT_LENGTH) : clipboard_text;
+                this.clipboard_text.setText(display_text);
+                this.clipboard_full_text = clipboard_text;
+                this.clipboard_layout.setVisibility(View.VISIBLE);
+                return ;
+            }
+        }
+        // If we get there, no clipboard value is usable so we hide it
+        Log.d(LOGTAG, "Final clipboard value is null");
+        this.clipboard_layout.setVisibility(View.INVISIBLE);
     }
 
     void launch_search() {
-        webview.loadUrl("https://www.qwant.com/?widget=1&q=" + search_text.getText().toString());
-        search_text.dismissDropDown();
-        // Force hide keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+        String query = search_text.getText().toString();
+        if (query.length() > 0) {
+            webview.loadUrl("https://www.qwant.com/?widget=1&q=" + query);
+            search_text.dismissDropDown();
+            // Force hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+            search_text.clearFocus();
+        }
     }
 }
