@@ -21,7 +21,6 @@
         />
 
         <ImageView
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/custom_notification_widget_separator"
             android:src="@android:drawable/divider_horizontal_textfield"
             android:layout_width="1dp"

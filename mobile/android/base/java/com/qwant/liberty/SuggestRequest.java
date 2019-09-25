@@ -27,9 +27,9 @@ class SuggestRequest {
         return null;
     }
 
-    static ArrayList<String> getSuggestions(String filter_string) {
+    static ArrayList<SuggestItem> getSuggestions(String filter_string) {
         try {
-            ArrayList<String> result = new ArrayList<>();
+            ArrayList<SuggestItem> result = new ArrayList<>();
             InputStream inputStream = getHttpStream(new URL(BASE_URL + filter_string + "&lang=" + Locale.getDefault().toString()));
             if (inputStream != null) {
                 JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -38,7 +38,7 @@ class SuggestRequest {
                     reader.skipValue();
                     reader.beginArray();
                     while (reader.hasNext()) {
-                        result.add(reader.nextString());
+                        result.add(new SuggestItem(SuggestItem.Type.QWANT_SUGGEST, reader.nextString()));
                     }
                     reader.endArray();
                     reader.endArray();
