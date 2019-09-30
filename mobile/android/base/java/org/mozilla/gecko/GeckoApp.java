@@ -142,7 +142,7 @@ public abstract class GeckoApp extends GeckoActivity
     public static final String ACTION_INIT_PW              = "org.mozilla.gecko.INIT_PW";
     public static final String ACTION_SWITCH_TAB           = "org.mozilla.gecko.SWITCH_TAB";
     public static final String ACTION_SHUTDOWN             = "org.mozilla.gecko.SHUTDOWN";
-    public static final String ACTION_QWANT_WIDGET         = "com.qwant.WIDGET";
+    // public static final String ACTION_QWANT_WIDGET         = "com.qwant.WIDGET";
 
     public static final String INTENT_REGISTER_STUMBLER_LISTENER = "org.mozilla.gecko.STUMBLER_REGISTER_LOCAL_LISTENER";
 
@@ -1464,11 +1464,18 @@ public abstract class GeckoApp extends GeckoActivity
                 // to the Recent Tabs folder of the Combined History panel.
                 Tabs.getInstance().loadUrl(AboutPages.getURLForBuiltinPanelType(PanelType.DEPRECATED_RECENT_TABS), flags);
             } else {
-                Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true&lb=" + Locale.getDefault().getLanguage(), flags);
+                boolean tab_already_there = false;
+                for (int i = 0; i < Tabs.getInstance().getDisplayCount(); i++) {
+                    Tab t = Tabs.getInstance().getTab(i);
+                    if (t != null && t.getURL().contains("qwant.com/?client=qwantbrowser") && !t.getURL().contains("&q=")) {
+                        Tabs.getInstance().selectTab(t.getId());
+                        tab_already_there = true;
+                        break;
+                    }
+                }
+                if (!tab_already_there)
+                    Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true&lb=" + Locale.getDefault().getLanguage(), flags);
             }
-        } else if (GeckoApp.ACTION_QWANT_WIDGET.equals(action)) {
-            // We do the widget opening in BrowserApp to be able to hide urlbar, so we notify it now
-            Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         }
     }
 
@@ -1543,9 +1550,8 @@ public abstract class GeckoApp extends GeckoActivity
 
         final boolean intentHasURL = passedUri != null;
         final boolean isAboutHomeURL = intentHasURL && AboutPages.isDefaultHomePage(passedUri);
-        final boolean isAssistIntent = Intent.ACTION_ASSIST.equals(action);
         final boolean isWebSearchIntent = Intent.ACTION_WEB_SEARCH.equals(action);
-        final boolean needsNewForegroundTab = intentHasURL || isAssistIntent;
+        final boolean needsNewForegroundTab = intentHasURL;
 
         // Start migrating as early as possible, can do this in
         // parallel with Gecko load.
@@ -1578,10 +1584,7 @@ public abstract class GeckoApp extends GeckoActivity
             processActionViewIntent(new Runnable() {
                 @Override
                 public void run() {
-                    if (isAssistIntent) {
-                        Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
-                        // Tabs.getInstance().addTab(Tabs.LOADURL_START_EDITING | Tabs.LOADURL_EXTERNAL);
-                    } else if (isWebSearchIntent) {
+                    if (isWebSearchIntent) {
                         final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getDataString();
                         loadStartupTab(url, intent, getNewTabFlags());
                     } else if (isAboutHomeURL) {
@@ -1927,16 +1930,14 @@ public abstract class GeckoApp extends GeckoActivity
                     Tabs.getInstance().loadUrlWithIntentExtras(url, intent, flags);
                 }
             });
-        } else if (Intent.ACTION_ASSIST.equals(action)) {
-            Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         } else if (Intent.ACTION_WEB_SEARCH.equals(action)) {
+            Log.d("QWANTTAB", "M");
             final String url = "https://www.qwant.com/?client=qwantbrowser&q=" + intent.getStringExtra(SearchManager.QUERY);
             int flags = Tabs.LOADURL_NEW_TAB | Tabs.LOADURL_USER_ENTERED | Tabs.LOADURL_EXTERNAL;
             if (isFirstTab) {
                 flags |= Tabs.LOADURL_FIRST_AFTER_ACTIVITY_UNHIDDEN;
             }
             Tabs.getInstance().loadUrlWithIntentExtras(url, intent, flags);
-            // Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
         } else if (ACTION_HOMESCREEN_SHORTCUT.equals(action)) {
             final GeckoBundle data = new GeckoBundle(2);
             data.putString("uri", uri);
@@ -1955,15 +1956,6 @@ public abstract class GeckoApp extends GeckoActivity
             // Copy extras.
             settingsIntent.putExtras(intent.getUnsafe());
             startActivity(settingsIntent);
-        } else if (ACTION_QWANT_WIDGET.equals(action)) {
-            autoHideTabs();
-            processActionViewIntent(new Runnable() {
-                @Override
-                public void run() {
-                    Tabs.getInstance().notifyListeners(Tabs.getInstance().getSelectedTab(), Tabs.TabEvents.OPEN_WIDGET_TAB);
-                }
-            });
-
         }
 
         recordStartupActionTelemetry(passedUri, action);

@@ -444,9 +444,6 @@ public class BrowserApp extends GeckoApp
             case START_EDITING:
                 enterEditingMode();
                 break;
-            case OPEN_WIDGET_TAB:;
-                qwant_openWidgetTab();
-                break;
         }
 
         if (!qwant_tabCreatedFromWidget) {
@@ -465,44 +462,6 @@ public class BrowserApp extends GeckoApp
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
-    }
-
-    private void qwant_openWidgetTab() {
-        /*
-            Commented code allow for showing keyboard without opening a new tab for each use of the widget
-            But this involve (for now) issues with the DynamicToolbar hiding. We need to find something for this.
-         */
-
-        Tabs tabs = Tabs.getInstance();
-        // boolean show_keyboard_delayed = false;
-
-        // Tab t = tabs.getFirstTabForUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true", false);
-        // if (t == null) {
-            qwant_tabCreatedFromWidget = true;
-            Tab t = tabs.loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true", null, null, Tabs.INVALID_TAB_ID, null, Tabs.LOADURL_NONE | Tabs.LOADURL_NEW_TAB);
-        /* } else {
-            show_keyboard_delayed = true;
-        } */
-
-        mBrowserToolbar.cancelEdit();
-        mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
-        mDynamicToolbar.setPinned(false, PinReason.DISABLED);
-        tabs.selectTab(t.getId());
-
-        /* if (show_keyboard_delayed) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("QWANT", "KEYBOARD & TOOLBAR SHOW DELAYED " + mDynamicToolbar.isEnabled());
-                    mDynamicToolbar.setVisible(false, VisibilityTransition.IMMEDIATE);
-                    mDynamicToolbar.setPinned(false, PinReason.DISABLED);
-
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                }
-            }, 1500);
-        } */
     }
 
     private void updateEditingModeForTab(final Tab selectedTab) {

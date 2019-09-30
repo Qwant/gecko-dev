@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.qwant.liberty.Assist;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,18 +47,18 @@ public class QwantDistributionCallback implements Distribution.ReadyCallback {
         final QwantDistributionCallback self = this;
         PrefsHelper.getPref(QwantDistributionCallback.QWANT_DISTRIBUTION_LOADED_PREF, new PrefsHelper.PrefHandlerBase() {
             @Override public void prefValue(String pref, boolean value) {
-                if (!value) {
-                    try {
-                        JSONObject qwant_prefs = distribution.getPreferences(QwantDistributionCallback.QWANT_DISTRIBUTION_PREF_SECTION);
-                        if (qwant_prefs.has(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF)) {
-                            PrefsHelper.setPref(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF, qwant_prefs.getBoolean(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF));
-                        }
-                    } catch (JSONException e) {
-                        Log.e("QWANT", "Unable to completely process Android Preferences JSON: ", e);
+            if (!value) {
+                try {
+                    JSONObject qwant_prefs = distribution.getPreferences(QwantDistributionCallback.QWANT_DISTRIBUTION_PREF_SECTION);
+                    if (qwant_prefs.has(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF)) {
+                        PrefsHelper.setPref(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF, qwant_prefs.getBoolean(QwantDistributionCallback.QWANT_PERSISTANTNOTIFICATION_PREF));
                     }
-                    PrefsHelper.setPref(QwantDistributionCallback.QWANT_DISTRIBUTION_LOADED_PREF, true);
+                } catch (JSONException e) {
+                    Log.e("QWANT", "Unable to completely process Android Preferences JSON: ", e);
                 }
-                self.addObserver();
+                PrefsHelper.setPref(QwantDistributionCallback.QWANT_DISTRIBUTION_LOADED_PREF, true);
+            }
+            self.addObserver();
             }
         });
     }
@@ -78,10 +80,8 @@ public class QwantDistributionCallback implements Distribution.ReadyCallback {
 
     private void initSearchNotification(Context context) {
         if (!this.active) {
-            final Intent intent = new Intent(GeckoApp.ACTION_QWANT_WIDGET);
-            intent.setClassName(AppConstants.ANDROID_PACKAGE_NAME, AppConstants.MOZ_ANDROID_BROWSER_INTENT_CLASS);
-            intent.setData(Uri.parse("https://www.qwant.com?client=qwantbrowser&topsearch=true"));
-            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            final Intent intent = new Intent(context, Assist.class);
+            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.qwant_notification_widget_preview);
 
