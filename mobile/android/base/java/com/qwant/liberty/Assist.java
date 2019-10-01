@@ -100,7 +100,7 @@ public class Assist extends Activity {
             }
             // Show webview and hide home on first user request
             @Override public void onPageFinished(WebView view, String url) {
-                if (webview.getVisibility() == View.INVISIBLE && !webview.getUrl().contains("preload")) {
+                if (webview.getVisibility() == View.INVISIBLE /* && !webview.getUrl().contains("preload") */) {
                     webview.setVisibility(View.VISIBLE);
                     home_layout.setVisibility(View.INVISIBLE);
                 }
@@ -154,7 +154,7 @@ public class Assist extends Activity {
         });
         // Hide webview and preload SERP for speed of next user request (cache)
         webview.setVisibility(View.INVISIBLE);
-        webview.loadUrl("https://www.qwant.com/?widget=1&q=a&preload=true");
+        // webview.loadUrl("https://www.qwant.com/?widget=1&q=a&preload=true");
 
         ImageView cancel_cross = findViewById(R.id.widget_search_bar_cross);
         cancel_cross.setVisibility(View.INVISIBLE);
