@@ -1,8 +1,10 @@
 package com.qwant.liberty;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,34 +19,43 @@ import org.mozilla.gecko.R;
 
 import java.util.ArrayList;
 
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 class SuggestAdapter extends ArrayAdapter<SuggestItem> implements Filterable {
     private final static String LOGTAG = "QwantAssist";
 
-    private ArrayList<SuggestItem> _data;
+    private ArrayList<SuggestItem> suggest_data;
+    private HistoryAdapter history_adapter;
     private Context _context;
 
-    SuggestAdapter(@NonNull Context context, int resource) {
+    SuggestAdapter(@NonNull Context context, int resource, HistoryAdapter history_adapter) {
         super(context, resource);
-        _data = new ArrayList<>();
+        this.suggest_data = new ArrayList<>();
+        this.history_adapter = history_adapter;
         _context = context;
     }
 
     @Override public int getCount() {
-        return _data.size();
+        return suggest_data.size();
     }
     @Override public SuggestItem getItem(int index) {
-        return _data.get(index);
+        return suggest_data.get(index);
     }
+
     @Override public View getView(int position, @Nullable View listItemView, @NonNull ViewGroup parent) {
         if (listItemView == null) {
             listItemView = LayoutInflater.from(_context).inflate(R.layout.qwant_widget_suggestlist_item, parent, false);
         }
 
-        SuggestItem item = _data.get(position);
+        SuggestItem item = suggest_data.get(position);
 
         ImageView image = listItemView.findViewById(R.id.suggest_icon);
-        image.setImageResource(R.drawable.qwant_icon_search);
-        // TODO add icon for history
+        if (item.type == SuggestItem.Type.QWANT_SUGGEST) {
+            image.setImageResource(R.drawable.qwant_icon_search);
+        } else if (item.type == SuggestItem.Type.HISTORY) {
+            image.setImageResource(R.drawable.qwant_icon_clock);
+        } else {
+            Log.w(LOGTAG, "unknown suggest type. Keeping default image");
+        }
 
         TextView name = listItemView.findViewById(R.id.suggest_text);
         String display_text = (item.display_text.length() > Assist.MAX_SUGGEST_TEXT_LENGTH) ? item.display_text.substring(0, Assist.MAX_SUGGEST_TEXT_LENGTH) : item.display_text;
@@ -60,13 +71,13 @@ class SuggestAdapter extends ArrayAdapter<SuggestItem> implements Filterable {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null && constraint.length() > 0) {
                     try {
-                        _data = SuggestRequest.getSuggestions(constraint.toString());
-                        // TODO add history
+                        suggest_data = SuggestRequest.getSuggestions(constraint.toString());
+                        suggest_data.addAll(history_adapter.filter_as_suggestitem(constraint.toString()));
                     } catch(Exception e) {
                         Log.e(LOGTAG, "suggest adapter filtering failed: " + e.getMessage());
                     }
-                    filterResults.values = _data;
-                    filterResults.count = _data.size();
+                    filterResults.values = suggest_data;
+                    filterResults.count = suggest_data.size();
                 }
                 return filterResults;
             }
