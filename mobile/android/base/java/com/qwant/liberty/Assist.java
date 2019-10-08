@@ -10,14 +10,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -34,10 +39,14 @@ import org.mozilla.gecko.BrowserApp;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.db.BrowserContract;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static android.content.ClipDescription.MIMETYPE_TEXT_HTML;
 import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
 
 
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class Assist extends Activity {
     private static final String LOGTAG = "QwantAssist";
 
@@ -49,8 +58,12 @@ public class Assist extends Activity {
     LinearLayout home_layout;
     LinearLayout clipboard_layout;
     SuggestAdapter suggest_adapter;
+    HistoryAdapter history_adapter;
+    LinearLayout history_layout;
+    RecyclerView history_list;
     Intent new_tab_intent;
     CharSequence clipboard_full_text;
+    boolean clipboard_is_url = false;
 
     // Geoloc permission
     final int QWANT_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
@@ -67,7 +80,15 @@ public class Assist extends Activity {
         search_text = findViewById(R.id.search_text);
         home_layout = findViewById(R.id.home_layout);
 
-        suggest_adapter = new SuggestAdapter(this, R.layout.qwant_widget_suggestlist_item);
+        history_list = findViewById(R.id.history_list);
+        history_layout = findViewById(R.id.history_layout);
+        history_adapter = new HistoryAdapter(this, history_layout);
+        history_list.setLayoutManager(new LinearLayoutManager(this));
+        TextView link_erase_history = findViewById(R.id.link_erase_history);
+        link_erase_history.setOnClickListener(v -> history_adapter.clear_history());
+        history_list.setAdapter(history_adapter);
+
+        suggest_adapter = new SuggestAdapter(this, R.layout.qwant_widget_suggestlist_item, history_adapter);
 
         // Intent for opening new tab in firefox
         new_tab_intent = new Intent(this, BrowserApp.class);
@@ -109,11 +130,8 @@ public class Assist extends Activity {
         webview.setWebChromeClient(new WebChromeClient() {
             // Geoloc permission prompt for maps
             public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-                Log.d(LOGTAG, "GeoLoc show prompt");
-
                 permission_request_origin = null;
                 permission_request_callback = null;
-
                 final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 Log.d(LOGTAG, "test GPS");
                 if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -172,9 +190,14 @@ public class Assist extends Activity {
         reload_clipboard(clipboard);
         LinearLayout clipboard_text_layout = findViewById(R.id.clipboard_text_layout);
         clipboard_text_layout.setOnClickListener(v -> {
-            search_text.setText(clipboard_full_text);
-            search_text.setSelection(search_text.getText().length());
-            launch_search();
+            if (clipboard_is_url) {
+                new_tab_intent.setData(Uri.parse(clipboard_full_text.toString()));
+                startActivity(new_tab_intent);
+            } else {
+                search_text.setText(clipboard_full_text);
+                search_text.setSelection(search_text.getText().length());
+                launch_search();
+            }
         });
 
         search_text.setAdapter(suggest_adapter);
@@ -203,9 +226,19 @@ public class Assist extends Activity {
                 if (count == 0) {
                     cancel_cross.setVisibility(View.INVISIBLE);
                     webview.setVisibility(View.INVISIBLE);
-                    home_layout.setVisibility(View.VISIBLE); // TODO should handle history too
+                    home_layout.setVisibility(View.VISIBLE);
                 } else {
                     cancel_cross.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        search_text.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                if (search_text.getText().length() == 0) {
+                    webview.setVisibility(View.INVISIBLE);
+                    home_layout.setVisibility(View.VISIBLE);
+                } else {
+                    search_text.showDropDown();
                 }
             }
         });
@@ -244,6 +277,18 @@ public class Assist extends Activity {
         }
     }
 
+    @Override protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOGTAG, "Save history");
+        history_adapter.write_on_disk();
+    }
+
+    @Override protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(LOGTAG, "Restore history");
+        history_adapter.read_from_disk();
+    }
+
     void reset_searchbar() {
         search_text.setText("");
         search_text.requestFocus();
@@ -252,16 +297,28 @@ public class Assist extends Activity {
     }
 
     void reload_clipboard(ClipboardManager clipboard) {
+        clipboard_is_url = false;
         if (clipboard.hasPrimaryClip() &&
         (clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN) || clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_HTML))) {
             ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-            CharSequence clipboard_text = item.getText();
-            if (clipboard_text == null)  {
-                Uri clipboard_uri = item.getUri();
-                if (clipboard_uri != null) {
-                    clipboard_text = clipboard_uri.toString();
+            Log.d(LOGTAG, "clipboard description data: " + clipboard.getPrimaryClip().getDescription().toString());
+            CharSequence clipboard_text = null;
+            Uri clipboard_uri = item.getUri();
+            if (clipboard_uri != null) {
+                clipboard_is_url = true;
+                clipboard_text = clipboard_uri.toString();
+                Log.d(LOGTAG, "clipboard is url: " + clipboard_text);
+            } else if (item.getText() != null) {
+                clipboard_text = item.getText();
+                try {
+                    URL url = new URL(clipboard_text.toString());
+                    clipboard_is_url = true;
+                    Log.d(LOGTAG, "clipboard is url: " + clipboard_text);
+                } catch (MalformedURLException e) {
+                    Log.d(LOGTAG, "clipboard is text: " + clipboard_text);
                 }
             }
+
             if (clipboard_text != null && clipboard_text.length() > 0) {
                 CharSequence display_text = (clipboard_text.length() > Assist.MAX_SUGGEST_TEXT_LENGTH) ?
                         clipboard_text.subSequence(0, Assist.MAX_SUGGEST_TEXT_LENGTH) : clipboard_text;
@@ -273,18 +330,25 @@ public class Assist extends Activity {
         }
         // If we get there, no clipboard value is usable so we hide it
         Log.d(LOGTAG, "Final clipboard value is null");
-        this.clipboard_layout.setVisibility(View.INVISIBLE);
+        this.clipboard_layout.setVisibility(View.GONE);
     }
 
     void launch_search() {
-        String query = search_text.getText().toString();
+        this.launch_search(search_text.getText().toString());
+    }
+
+    public void launch_search(String query) {
+        search_text.setText(query);
         if (query.length() > 0) {
-            webview.loadUrl("https://www.qwant.com/?widget=1&q=" + query);
+            home_layout.setVisibility(View.INVISIBLE);
+            webview.loadUrl("https://www.qwant.com/?client=qwantbrowser&widget=1&q=" + query);
             search_text.dismissDropDown();
             // Force hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
             search_text.clearFocus();
+            // Record history
+            history_adapter.add_history_item(query);
         }
     }
 }
