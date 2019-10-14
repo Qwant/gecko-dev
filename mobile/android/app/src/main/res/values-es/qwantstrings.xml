@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qwant_widget_recent_search">BUSQUEDAS RECIENTES</string>
+    <string name="qwant_widget_on_this_device">EN ESTE DISPOSITIVO</string>
+    <string name="qwant_widget_clear_history">Borrar</string>
+    <string name="qwant_widget_clipboard">PORTAPAPELES</string>
+</resources>
