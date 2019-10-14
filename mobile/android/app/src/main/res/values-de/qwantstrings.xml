@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qwant_widget_recent_search">Retzte Suchläufe</string>
+    <string name="qwant_widget_on_this_device">auf diesem gerät</string>
+    <string name="qwant_widget_clear_history">Löschen</string>
+    <string name="qwant_widget_clipboard">Zwischenablage</string>
+</resources>

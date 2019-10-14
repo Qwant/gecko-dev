@@ -123,6 +123,10 @@ public class Assist extends Activity {
             @Override public void onPageFinished(WebView view, String url) {
                 if (webview.getVisibility() == View.INVISIBLE /* && !webview.getUrl().contains("preload") */) {
                     webview.setVisibility(View.VISIBLE);
+                    Log.d("QwantFocus", "Clearing focus");
+                    search_text.clearFocus();
+                    search_text.dismissDropDown();
+                    webview.requestFocus();
                     home_layout.setVisibility(View.INVISIBLE);
                 }
             }
@@ -240,6 +244,8 @@ public class Assist extends Activity {
                 } else {
                     search_text.showDropDown();
                 }
+            } else {
+                search_text.dismissDropDown();
             }
         });
         reset_searchbar();
@@ -302,16 +308,16 @@ public class Assist extends Activity {
         (clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN) || clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_HTML))) {
             ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
             Log.d(LOGTAG, "clipboard description data: " + clipboard.getPrimaryClip().getDescription().toString());
-            CharSequence clipboard_text = null;
+            String clipboard_text = null;
             Uri clipboard_uri = item.getUri();
             if (clipboard_uri != null) {
                 clipboard_is_url = true;
                 clipboard_text = clipboard_uri.toString();
                 Log.d(LOGTAG, "clipboard is url: " + clipboard_text);
             } else if (item.getText() != null) {
-                clipboard_text = item.getText();
+                clipboard_text = item.getText().toString().trim();
                 try {
-                    URL url = new URL(clipboard_text.toString());
+                    URL url = new URL(clipboard_text);
                     clipboard_is_url = true;
                     Log.d(LOGTAG, "clipboard is url: " + clipboard_text);
                 } catch (MalformedURLException e) {
@@ -340,15 +346,18 @@ public class Assist extends Activity {
     public void launch_search(String query) {
         search_text.setText(query);
         if (query.length() > 0) {
+            // home_layout.requestFocus(); // While webview is loading. Webview take focus after load
             home_layout.setVisibility(View.INVISIBLE);
             webview.loadUrl("https://www.qwant.com/?client=qwantbrowser&widget=1&q=" + query);
-            search_text.dismissDropDown();
             // Force hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+            Log.d("QwantFocus", "Clearing focus");
             search_text.clearFocus();
+            search_text.dismissDropDown();
+            webview.requestFocus();
             // Record history
-            history_adapter.add_history_item(query);
+            history_adapter.add_history_item(query.trim());
         }
     }
 }
