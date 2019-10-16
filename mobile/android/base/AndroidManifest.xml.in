@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       package="@ANDROID_PACKAGE_NAME@"
       android:installLocation="internalOnly"
-      android:versionCode="30401013"
-      android:versionName="3.4.1"
+      android:versionCode="30402031"
+      android:versionName="3.4.2"
 #ifdef MOZ_ANDROID_SHARED_ID
       android:sharedUserId="@MOZ_ANDROID_SHARED_ID@"
 #endif
@@ -119,11 +119,6 @@
 
             <intent-filter>
                 <action android:name="org.mozilla.gecko.GUEST_SESSION_INPROGRESS" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="org.mozilla.gecko.UPDATE"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -262,12 +257,6 @@
             android:name="com.android.internal.app.ResolverActivity"
             android:targetActivity="@MOZ_ANDROID_BROWSER_INTENT_CLASS@"
             android:exported="true" />
-
-        <receiver android:name="org.mozilla.gecko.GeckoUpdateReceiver">
-            <intent-filter>
-                <action android:name="@ANDROID_PACKAGE_NAME@.CHECK_UPDATE_RESULT" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name="org.mozilla.gecko.GeckoMessageReceiver"
                   android:exported="false">
@@ -428,40 +417,6 @@
                   <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
                              android:resource="@xml/provider_paths" />
         </provider>
-
-        <service
-            android:exported="false"
-            android:name="org.mozilla.gecko.updater.UpdatesApplyService"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
-        </service>
-
-        <service
-            android:exported="false"
-            android:name="org.mozilla.gecko.updater.UpdatesCheckService"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
-        </service>
-
-        <service
-            android:exported="false"
-            android:name="org.mozilla.gecko.updater.UpdatesDownloadService"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
-         </service>
-
-        <service
-            android:exported="false"
-            android:name="org.mozilla.gecko.updater.UpdatesRegisterService"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
-        </service>
-
-        <receiver
-            android:name="org.mozilla.gecko.updater.UpdateServiceReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="@ANDROID_PACKAGE_NAME@.CHECK_FOR_UPDATE"></action>
-                <action android:name="@ANDROID_PACKAGE_NAME@.APPLY_UPDATE"></action>
-                <action android:name="@ANDROID_PACKAGE_NAME@.DOWNLOAD_UPDATE"></action>
-            </intent-filter>
-        </receiver>
 
         <service
             android:exported="false"
