@@ -27,7 +27,6 @@ import org.mozilla.gecko.GeckoActivityMonitor;
 import org.mozilla.gecko.GeckoAppShell;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.mozglue.SafeIntent;
-import org.mozilla.gecko.updater.UpdateServiceHelper;
 import org.mozilla.gecko.util.BitmapUtils;
 import org.mozilla.gecko.util.BundleEventListener;
 import org.mozilla.gecko.util.EventCallback;
@@ -207,11 +206,7 @@ public final class NotificationHelper implements BundleEventListener {
 
     private void initNotificationChannels() {
         final String UPDATER_CHANNEL_TAG = "updater-notification-channel";
-        if (UpdateServiceHelper.isUpdaterEnabled(mContext)) {
-            mDefinedNotificationChannels.put(Channel.UPDATER, UPDATER_CHANNEL_TAG);
-        } else {
-            mDeprecatedNotificationChannels.add(UPDATER_CHANNEL_TAG);
-        }
+        mDeprecatedNotificationChannels.add(UPDATER_CHANNEL_TAG);
 
         final NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

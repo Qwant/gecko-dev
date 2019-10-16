@@ -153,7 +153,7 @@ import org.mozilla.gecko.toolbar.BrowserToolbar.CommitEventSource;
 import org.mozilla.gecko.toolbar.BrowserToolbar.TabEditingState;
 import org.mozilla.gecko.toolbar.PwaConfirm;
 import org.mozilla.gecko.updater.PostUpdateHandler;
-import org.mozilla.gecko.updater.UpdateServiceHelper;
+// import org.mozilla.gecko.updater.UpdateServiceHelper;
 import org.mozilla.gecko.util.ActivityUtils;
 import org.mozilla.gecko.util.ContextUtils;
 import org.mozilla.gecko.util.DrawableUtil;
@@ -676,7 +676,7 @@ public class BrowserApp extends GeckoApp
         // Copying features out the APK races Gecko startup: the first time the profile is read by
         // Gecko, it needs to find the copied features.  `super.onCreate(...)` initiates Gecko
         // startup, so this must come first -- and be synchronous!
-        new PostUpdateHandler().onCreate(this, savedInstanceState);
+        // new PostUpdateHandler().onCreate(this, savedInstanceState);
 
         super.onCreate(savedInstanceState);
 
@@ -896,22 +896,6 @@ public class BrowserApp extends GeckoApp
 
         // Set the maximum bits-per-pixel the favicon system cares about.
         IconDirectoryEntry.setMaxBPP(GeckoAppShell.getScreenDepth());
-
-        // The update service is enabled for RELEASE_OR_BETA, which includes the release and beta channels.
-        // However, no updates are served.  Therefore, we don't trust the update service directly, and
-        // try to avoid prompting unnecessarily. See Bug 1232798.
-        if (!AppConstants.RELEASE_OR_BETA && UpdateServiceHelper.isUpdaterEnabled(this)) {
-            Permissions.from(this)
-                       .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                       .doNotPrompt()
-                       .andFallback(new Runnable() {
-                           @Override
-                           public void run() {
-                               showUpdaterPermissionSnackbar();
-                           }
-                       })
-                      .run();
-        }
 
         for (final BrowserAppDelegate delegate : delegates) {
             delegate.onCreate(this, savedInstanceState);
