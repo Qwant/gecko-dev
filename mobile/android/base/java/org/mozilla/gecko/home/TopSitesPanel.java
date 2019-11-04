@@ -19,7 +19,6 @@ import java.util.concurrent.Future;
 import org.mozilla.gecko.GeckoProfile;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserContract.Thumbnails;
 import org.mozilla.gecko.db.BrowserContract.TopSites;
@@ -172,8 +171,6 @@ public class TopSitesPanel extends HomeFragment {
 
                 final String url = c.getString(c.getColumnIndexOrThrow(TopSites.URL));
 
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, "top_sites");
-
                 // This item is a TwoLinePageRow, so we allow switch-to-tab.
                 mUrlOpenListener.onUrlOpen(url, EnumSet.of(OnUrlOpenListener.Flags.ALLOW_SWITCH_TO_TAB));
             }
@@ -223,8 +220,6 @@ public class TopSitesPanel extends HomeFragment {
                         if (type == TopSites.TYPE_PINNED) {
                             extra += "-pinned";
                         }
-
-                        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, method, extra);
 
                         mUrlOpenListener.onUrlOpen(url, EnumSet.of(OnUrlOpenListener.Flags.NO_READER_VIEW));
                     }
@@ -398,7 +393,6 @@ public class TopSitesPanel extends HomeFragment {
                 }
             });
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.PIN);
             return true;
         }
 
@@ -413,8 +407,6 @@ public class TopSitesPanel extends HomeFragment {
                 }
             });
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.UNPIN);
-
             return true;
         }
 
@@ -423,7 +415,6 @@ public class TopSitesPanel extends HomeFragment {
             mEditPinnedSiteListener.onEditPinnedSite(info.position,
                                                      StringUtils.decodeUserEnteredUrl(info.url));
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.EDIT);
             return true;
         }
 
@@ -515,7 +506,6 @@ public class TopSitesPanel extends HomeFragment {
             final Cursor cursor = mDB.getTopSites(getContext().getContentResolver(), mMaxGridEntries, SEARCH_LIMIT);
             final long end = SystemClock.uptimeMillis();
             final long took = end - start;
-            Telemetry.addToHistogram(TELEMETRY_HISTOGRAM_LOAD_CURSOR, (int) Math.min(took, Integer.MAX_VALUE));
             return cursor;
         }
     }

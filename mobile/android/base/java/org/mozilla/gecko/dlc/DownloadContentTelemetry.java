@@ -10,8 +10,6 @@ import android.support.annotation.StringDef;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.dlc.catalog.DownloadContent;
 import org.mozilla.gecko.dlc.BaseAction.RecoverableDownloadContentException;
 
@@ -53,7 +51,6 @@ public class DownloadContentTelemetry {
             extras.put(EXTRA_RESULT, RESULT_SUCCESS);
             extras.put(EXTRA_CONTENT, content.getId());
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.SERVICE, extras.toString());
         } catch (JSONException e) {
             throw new AssertionError("Should not happen: Can't build telemetry extra JSON", e);
         }
@@ -71,7 +68,6 @@ public class DownloadContentTelemetry {
             extras.put(EXTRA_CONTENT, content.getId());
             extras.put(EXTRA_ERROR, errorType);
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.SERVICE, extras.toString());
         } catch (JSONException e) {
             throw new AssertionError("Should not happen: Can't build telemetry extra JSON", e);
         }
@@ -85,7 +81,6 @@ public class DownloadContentTelemetry {
             extras.put(EXTRA_UPDATED, updated);
             extras.put(EXTRA_ACTION_REQUIRED, actionRequired);
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.SERVICE, extras.toString());
         } catch (JSONException e) {
             throw new AssertionError("Should not happen: Can't build telemetry extra JSON", e);
         }
@@ -102,7 +97,6 @@ public class DownloadContentTelemetry {
             extras.put(EXTRA_RESULT, RESULT_FAILURE);
             extras.put(EXTRA_ERROR, errorType);
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.SERVICE, extras.toString());
         } catch (JSONException e) {
             throw new AssertionError("Should not happen: Can't build telemetry extra JSON", e);
         }

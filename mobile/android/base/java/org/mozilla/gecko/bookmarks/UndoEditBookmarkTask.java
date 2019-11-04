@@ -14,8 +14,6 @@ import android.support.design.widget.Snackbar;
 
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserContract;
 import org.mozilla.gecko.db.BrowserDB;
 import org.mozilla.gecko.util.ThreadUtils;
@@ -56,17 +54,6 @@ public class UndoEditBookmarkTask extends UIAsyncTask.WithoutParams<Integer> {
         } else {
             db.updateBookmark(contentResolver, bookmarkId, url, title, keyword);
         }
-
-        String extras;
-        if (type == BrowserContract.Bookmarks.TYPE_FOLDER) {
-            extras = "bookmark_folder";
-        } else {
-            extras = "bookmark";
-        }
-        if (parentChanged) {
-            extras += "_parent_changed";
-        }
-        Telemetry.sendUIEvent(TelemetryContract.Event.EDIT, TelemetryContract.Method.DIALOG, extras);
 
         return type;
     }

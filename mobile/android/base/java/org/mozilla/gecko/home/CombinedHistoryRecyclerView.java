@@ -13,8 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import org.mozilla.gecko.db.RemoteClient;
 import org.mozilla.gecko.home.CombinedHistoryPanel.OnPanelLevelChangeListener;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.widget.RecyclerViewClickSupport;
 
 import java.util.EnumSet;
@@ -119,14 +117,12 @@ public class CombinedHistoryRecyclerView extends RecyclerView
             case HISTORY:
                 if (mOnUrlOpenListener != null) {
                     final TwoLinePageRow historyItem = (TwoLinePageRow) v;
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, "history");
                     mOnUrlOpenListener.onUrlOpen(historyItem.getUrl(), EnumSet.of(HomePager.OnUrlOpenListener.Flags.ALLOW_SWITCH_TO_TAB));
                 }
                 break;
 
             case CLOSED_TAB:
                 telemetryExtra = ((RecentTabsAdapter) getAdapter()).restoreTabFromPosition(position);
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, telemetryExtra);
                 break;
         }
     }

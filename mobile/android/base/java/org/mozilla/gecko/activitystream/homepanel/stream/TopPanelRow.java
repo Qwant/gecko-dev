@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.homepanel.model.Metadata;
 import org.mozilla.gecko.activitystream.homepanel.model.TopSite;
 import org.mozilla.gecko.activitystream.homepanel.topsites.TopSitesPage;
@@ -49,7 +47,6 @@ public class TopPanelRow extends StreamViewHolder {
                 return;
             }
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.LIST, extra);
             currentPosition = newPosition;
         }
     }

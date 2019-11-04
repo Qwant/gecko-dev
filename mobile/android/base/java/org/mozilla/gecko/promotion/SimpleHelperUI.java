@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 import org.mozilla.gecko.Locales;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 
 /**
  * Generic HelperUI (prompt) that can be populated with an image, title, message and action button.
@@ -115,8 +113,6 @@ public class SimpleHelperUI extends Locales.LocaleAwareActivity {
             public void onClick(View v) {
                 slideOut();
 
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, mTelemetryExtra);
-
                 setResult(i.getIntExtra(EXTRA_RESULTCODE_POSITIVE, -1));
             }
         });
@@ -170,8 +166,6 @@ public class SimpleHelperUI extends Locales.LocaleAwareActivity {
     public void onBackPressed() {
         slideOut();
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.BACK, mTelemetryExtra);
-
         setResult(getIntent().getIntExtra(EXTRA_RESULTCODE_NEGATIVE, -1));
 
     }
@@ -185,7 +179,6 @@ public class SimpleHelperUI extends Locales.LocaleAwareActivity {
 
         // Not really an action triggered by the "back" button but with the same effect: Finishing this
         // activity and going back to the previous one.
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.BACK, mTelemetryExtra);
 
         setResult(getIntent().getIntExtra(EXTRA_RESULTCODE_NEGATIVE, -1));
 

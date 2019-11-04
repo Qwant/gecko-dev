@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 
 /**
  * Base class for our first run pages. We call these FirstrunPanel for consistency
@@ -52,7 +50,6 @@ public class FirstrunPanel extends Fragment {
         root.findViewById(R.id.firstrun_link).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-next");
                 next();
             }
         });

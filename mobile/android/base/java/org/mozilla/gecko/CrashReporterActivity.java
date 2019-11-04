@@ -32,8 +32,6 @@ import java.util.zip.GZIPOutputStream;
 import org.mozilla.gecko.AppConstants.Versions;
 import org.mozilla.gecko.mozglue.GeckoLoader;
 import org.mozilla.gecko.mozglue.MinidumpAnalyzer;
-import org.mozilla.gecko.telemetry.pingbuilders.TelemetryCrashPingBuilder;
-import org.mozilla.gecko.telemetry.TelemetryDispatcher;
 import org.mozilla.gecko.util.INIParser;
 import org.mozilla.gecko.util.INISection;
 import org.mozilla.gecko.util.ProxySelector;
@@ -193,12 +191,6 @@ public class CrashReporterActivity extends AppCompatActivity
                 final String crashId = passedMinidumpName.substring(0, passedMinidumpName.length() - 4);
                 final GeckoProfile profile = GeckoProfile.get(this, profileName, profileDir);
                 final String clientId = profile.getClientId();
-
-                // Assemble and send the crash ping
-                final TelemetryCrashPingBuilder pingBuilder =
-                    new TelemetryCrashPingBuilder(crashId, clientId, mExtrasStringMap);
-                final TelemetryDispatcher dispatcher = new TelemetryDispatcher(profileDir.getPath(), profileName);
-                dispatcher.queuePingForUpload(this, pingBuilder);
             }
         } catch (GeckoProfileDirectories.NoMozillaDirectoryException | IOException e) {
             Log.e(LOGTAG, "Cannot send the crash ping: ", e);

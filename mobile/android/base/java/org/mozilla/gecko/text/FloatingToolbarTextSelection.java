@@ -15,8 +15,6 @@ import android.util.TypedValue;
 import android.view.ActionMode;
 
 import org.mozilla.gecko.EventDispatcher;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.util.ActivityUtils;
 import org.mozilla.gecko.util.BundleEventListener;
 import org.mozilla.gecko.util.EventCallback;
@@ -105,8 +103,6 @@ public class FloatingToolbarTextSelection implements TextSelection, BundleEventL
     public void handleMessage(final String event, final GeckoBundle message,
                               final EventCallback callback) {
         if ("TextSelection:ActionbarInit".equals(event)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.SHOW,
-                TelemetryContract.Method.CONTENT, "text_selection");
 
             selectionID = message.getInt("selectionID");
 

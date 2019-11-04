@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.home.HomeFragment;
 
 /**
@@ -102,19 +100,11 @@ public class ActivityStreamHomeFragment
 
     private void sendPanelHiddenTelemetry() {
         if (isSessionActive) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.PANEL, "as_newtab");
-
-            Telemetry.stopUISession(TelemetryContract.Session.ACTIVITY_STREAM, "newtab");
-
             isSessionActive = false;
         }
     }
 
     private void sendPanelShownTelemetry() {
-        Telemetry.startUISession(TelemetryContract.Session.ACTIVITY_STREAM, "newtab");
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.PANEL, "as_newtab");
-
         isSessionActive = true;
     }
 }

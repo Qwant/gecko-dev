@@ -41,8 +41,6 @@ import org.mozilla.gecko.FormAssistPopup;
 import org.mozilla.gecko.GeckoApplication;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.menu.GeckoMenu;
 import org.mozilla.gecko.menu.GeckoMenuInflater;
 import org.mozilla.gecko.mozglue.SafeIntent;
@@ -181,21 +179,7 @@ public class CustomTabsActivity extends AppCompatActivity
     }
 
     private void sendTelemetry() {
-        final SafeIntent startIntent = new SafeIntent(getIntent());
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "customtab");
-        if (IntentUtil.hasToolbarColor(startIntent)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "customtab-hasToolbarColor");
-        }
-        if (IntentUtil.hasActionButton(startIntent)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "customtab-hasActionButton");
-        }
-        if (IntentUtil.isActionButtonTinted(startIntent)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "customtab-isActionButtonTinted");
-        }
-        if (IntentUtil.hasShareItem(startIntent)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "customtab-hasShareItem");
-        }
     }
 
     private void recordCustomTabUsage(final String host) {
@@ -311,23 +295,18 @@ public class CustomTabsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-home");
                 finish();
                 return true;
             case R.id.share:
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-share");
                 onShareClicked();
                 return true;
             case R.id.custom_tabs_menu_forward:
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-forward");
                 onForwardClicked();
                 return true;
             case R.id.custom_tabs_menu_control:
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-control");
                 onLoadingControlClicked();
                 return true;
             case R.id.custom_tabs_menu_open_in:
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-open-in");
                 onOpenInClicked();
                 return true;
         }
@@ -345,7 +324,6 @@ public class CustomTabsActivity extends AppCompatActivity
      * Called when the menu that's been clicked is added by the client
      */
     private void onCustomMenuItemClicked(PendingIntent intent) {
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-customized-menu");
         performPendingIntent(intent);
     }
 
@@ -515,7 +493,6 @@ public class CustomTabsActivity extends AppCompatActivity
     }
 
     private void onActionButtonClicked() {
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "customtab-action-button");
         PendingIntent pendingIntent = IntentUtil.getActionButtonPendingIntent(new SafeIntent(getIntent()));
         performPendingIntent(pendingIntent);
     }

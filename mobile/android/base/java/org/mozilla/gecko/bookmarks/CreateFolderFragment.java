@@ -25,8 +25,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserContract;
 import org.mozilla.gecko.db.BrowserDB;
 import org.mozilla.gecko.util.ThreadUtils;
@@ -284,9 +282,6 @@ public class CreateFolderFragment extends DialogFragment implements SelectFolder
             final BrowserDB db = BrowserDB.from(context);
             final ContentResolver cr = context.getContentResolver();
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.SAVE,
-                                  TelemetryContract.Method.DIALOG,
-                                  "bookmark_folder");
             final Uri uri = db.addBookmarkFolder(cr, title, parentId);
             return Long.valueOf(uri.getLastPathSegment());
         }

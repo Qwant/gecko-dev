@@ -52,7 +52,6 @@ import org.mozilla.gecko.permissions.Permissions;
 import org.mozilla.gecko.preferences.DistroSharedPrefsImport;
 import org.mozilla.gecko.preferences.GeckoPreferences;
 import org.mozilla.gecko.pwa.PwaUtils;
-import org.mozilla.gecko.telemetry.TelemetryBackgroundReceiver;
 import org.mozilla.gecko.util.ActivityResultHandler;
 import org.mozilla.gecko.util.BitmapUtils;
 import org.mozilla.gecko.util.BundleEventListener;
@@ -372,8 +371,6 @@ public class GeckoApplication extends Application
 
         GlobalPageMetadata.getInstance().init();
 
-        TelemetryBackgroundReceiver.getInstance().init(context);
-
         // We need to set the notification client before launching Gecko, since Gecko could start
         // sending notifications immediately after startup, which we don't want to lose/crash on.
         GeckoAppShell.setNotificationListener(new NotificationClient(context));
@@ -593,10 +590,6 @@ public class GeckoApplication extends Application
                 IntentHelper.openUriExternal(text, "text/plain", "", "",
                                              Intent.ACTION_SEND, title, false);
 
-                // Context: Sharing via chrome list (no explicit session is active)
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHARE,
-                                      TelemetryContract.Method.LIST, "text");
-
             } else if ("Snackbar:Show".equals(event)) {
                 final Activity currentActivity =
                         GeckoActivityMonitor.getInstance().getCurrentActivity();
@@ -768,9 +761,6 @@ public class GeckoApplication extends Application
         shortcutIntent.putExtra("MANIFEST_URL", manifestUrl);
         shortcutIntent.setClassName(AppConstants.ANDROID_PACKAGE_NAME,
                                     LauncherActivity.class.getName());
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION,
-                              TelemetryContract.Method.CONTEXT_MENU,
-                              "pwa_add_to_launcher");
         ShortcutUtils.createHomescreenIcon(shortcutIntent, aTitle, aURI, aIcon);
     }
 

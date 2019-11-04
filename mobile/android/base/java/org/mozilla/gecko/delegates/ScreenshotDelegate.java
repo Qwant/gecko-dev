@@ -18,8 +18,6 @@ import org.mozilla.gecko.ScreenshotObserver;
 import org.mozilla.gecko.SnackbarBuilder;
 import org.mozilla.gecko.Tab;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserDB;
 
 import java.lang.ref.WeakReference;
@@ -42,7 +40,6 @@ public class ScreenshotDelegate extends BrowserAppDelegateWithReference implemen
     @Override
     public void onScreenshotTaken(String screenshotPath, String title) {
         // Treat screenshots as a sharing method.
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHARE, TelemetryContract.Method.BUTTON, "screenshot");
 
         if (!AppConstants.SCREENSHOTS_IN_BOOKMARKS_ENABLED) {
             return;

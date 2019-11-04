@@ -10,10 +10,6 @@ import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.Locales;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.activitystream.ActivityStream;
-import org.mozilla.gecko.activitystream.ActivityStreamTelemetry;
 
 import java.util.Locale;
 
@@ -69,12 +65,6 @@ public class LearnMoreRow extends StreamViewHolder {
     }
 
     private static void sendOnClickTelemetry() {
-        ActivityStreamTelemetry.Extras.Builder extras = ActivityStreamTelemetry.Extras.builder()
-                .set(ActivityStreamTelemetry.Contract.SOURCE_TYPE, ActivityStreamTelemetry.Contract.TYPE_LEARN_MORE);
 
-        Telemetry.sendUIEvent(
-                TelemetryContract.Event.LOAD_URL,
-                TelemetryContract.Method.LIST_ITEM,
-                extras.build());
     }
 }

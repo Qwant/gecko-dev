@@ -17,8 +17,6 @@ import android.view.ViewStub;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.GeckoThread;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.annotation.RobocopTarget;
 import org.mozilla.gecko.distribution.Distribution;
 import org.mozilla.gecko.mma.MmaDelegate;
@@ -147,11 +145,6 @@ public class OnboardingHelper implements MmaDelegate.MmaVariablesChangedListener
 
                 // Ignore trying to show the Onboarding again
                 saveOnboardingShownStatus();
-
-                // We have no intention of stopping this session. The FIRSTRUN session
-                // ends when the browsing session/activity has ended. All events
-                // during firstrun will be tagged as FIRSTRUN.
-                Telemetry.startUISession(TelemetryContract.Session.FIRSTRUN);
             }
         }
     }

@@ -92,8 +92,6 @@ public class ActionBarTextSelection implements TextSelection, BundleEventListene
         if ("TextSelection:ActionbarInit".equals(event)) {
             // Init / Open the action bar. Note the current selectionID,
             // cancel any pending actionBar close.
-            Telemetry.sendUIEvent(TelemetryContract.Event.SHOW,
-                TelemetryContract.Method.CONTENT, "text_selection");
 
             selectionID = message.getInt("selectionID");
             mCurrentItems = null;

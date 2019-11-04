@@ -18,8 +18,6 @@ import android.animation.ObjectAnimator;
 
 import com.booking.rtlviewpager.RtlViewPager;
 
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.fxa.FirefoxAccounts;
 import org.mozilla.gecko.home.HomePager.Decor;
 import org.mozilla.gecko.home.TabMenuStrip;
@@ -105,7 +103,6 @@ public class FirstrunPager extends RtlViewPager {
             @Override
             public void onPageSelected(int i) {
                 mDecor.onPageSelected(i);
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.PANEL, "onboarding." + i);
             }
 
             @Override
@@ -114,8 +111,6 @@ public class FirstrunPager extends RtlViewPager {
 
         animateLoad();
 
-        // Record telemetry for first onboarding panel, for baseline.
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.PANEL, "onboarding.0");
     }
 
     public void cleanup() {

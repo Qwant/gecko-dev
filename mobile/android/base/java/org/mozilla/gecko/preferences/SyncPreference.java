@@ -16,9 +16,6 @@ import com.squareup.picasso.Target;
 
 import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.TelemetryContract.Method;
 import org.mozilla.gecko.fxa.FxAccountConstants;
 import org.mozilla.gecko.fxa.activities.FxAccountWebFlowActivity;
 import org.mozilla.gecko.fxa.activities.PicassoPreferenceIconTarget;
@@ -104,6 +101,5 @@ class SyncPreference extends Preference {
         // Launch the FxA "Get started" activity, which will dispatch to the
         // right location.
         launchFxASetup();
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, Method.SETTINGS, "sync_setup");
     }
 }

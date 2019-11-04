@@ -10,7 +10,6 @@ import java.util.HashMap;
 import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.GeckoProfile;
 import org.mozilla.gecko.GeckoThread;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.mozglue.GeckoLoader;
 import org.mozilla.gecko.sqlite.SQLiteBridge;
 import org.mozilla.gecko.sqlite.SQLiteBridgeException;
@@ -446,8 +445,6 @@ public abstract class SQLiteBridgeContentProvider extends ContentProvider {
         if (histogram == null) {
             return;
         }
-
-        Telemetry.addToHistogram(histogram, op.getBucket());
     }
 
     protected abstract String getDBName();

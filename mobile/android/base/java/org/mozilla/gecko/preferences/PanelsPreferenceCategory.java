@@ -5,9 +5,6 @@
 package org.mozilla.gecko.preferences;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.TelemetryContract.Method;
 import org.mozilla.gecko.home.HomeConfig;
 import org.mozilla.gecko.home.HomeConfig.PanelConfig;
 import org.mozilla.gecko.home.HomeConfig.State;
@@ -169,8 +166,6 @@ public class PanelsPreferenceCategory extends CustomListCategory {
 
         mConfigEditor.setDefault(id);
         mConfigEditor.apply();
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_SET_DEFAULT, Method.DIALOG, id);
     }
 
     @Override
@@ -187,8 +182,6 @@ public class PanelsPreferenceCategory extends CustomListCategory {
         mConfigEditor.uninstall(id);
         mConfigEditor.apply();
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_REMOVE, Method.DIALOG, id);
-
         super.uninstall(pref);
     }
 
@@ -198,8 +191,6 @@ public class PanelsPreferenceCategory extends CustomListCategory {
             final String panelKey = pref.getKey();
             mConfigEditor.moveTo(panelKey, panelIndex - 1);
             final State state = mConfigEditor.apply();
-
-            Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_MOVE, Method.DIALOG, panelKey);
 
             refresh(state, panelKey);
         }
@@ -211,8 +202,6 @@ public class PanelsPreferenceCategory extends CustomListCategory {
             final String panelKey = pref.getKey();
             mConfigEditor.moveTo(panelKey, panelIndex + 1);
             final State state = mConfigEditor.apply();
-
-            Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_MOVE, Method.DIALOG, panelKey);
 
             refresh(state, panelKey);
         }
@@ -229,12 +218,6 @@ public class PanelsPreferenceCategory extends CustomListCategory {
         final String id = pref.getKey();
         mConfigEditor.setDisabled(id, toHide);
         mConfigEditor.apply();
-
-        if (toHide) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_HIDE, Method.DIALOG, id);
-        } else {
-            Telemetry.sendUIEvent(TelemetryContract.Event.PANEL_SHOW, Method.DIALOG, id);
-        }
 
         updateVisibilityPrefsForPanel(id, !toHide);
 
