@@ -72,9 +72,6 @@ import org.mozilla.gecko.Locales;
 import org.mozilla.gecko.PrefsHelper;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.TelemetryContract.Method;
 import org.mozilla.gecko.db.BrowserContract.SuggestedSites;
 import org.mozilla.gecko.mma.MmaDelegate;
 import org.mozilla.gecko.permissions.Permissions;
@@ -412,7 +409,6 @@ public class GeckoPreferences
 
         // If launched from notification, explicitly cancel the notification.
         if (intentExtras != null && intentExtras.containsKey(DataReportingNotification.ALERT_NAME_DATAREPORTING_NOTIFICATION)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LAUNCH, Method.NOTIFICATION, "settings-data-choices");
             NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(DataReportingNotification.ALERT_NAME_DATAREPORTING_NOTIFICATION.hashCode());
         }
@@ -516,8 +512,6 @@ public class GeckoPreferences
         if (NO_TRANSITIONS) {
             overridePendingTransition(0, 0);
         }
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, Method.BACK, "settings");
     }
 
     @Override
@@ -777,7 +771,6 @@ public class GeckoPreferences
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
                             GeckoPreferences.this.restoreDefaultSearchEngines();
-                            Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH_RESTORE_DEFAULTS, Method.LIST_ITEM);
                             return true;
                         }
                     });
@@ -968,7 +961,6 @@ public class GeckoPreferences
         // Generated R.id.* apparently aren't constant expressions, so they can't be switched.
         if (itemId == R.id.restore_defaults) {
             restoreDefaultSearchEngines();
-            Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH_RESTORE_DEFAULTS, Method.MENU);
             return true;
        }
 
@@ -1075,14 +1067,10 @@ public class GeckoPreferences
 
                 if (TextUtils.isEmpty(newValue)) {
                     BrowserLocaleManager.getInstance().resetToSystemLocale(context);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOCALE_BROWSER_RESET);
                 } else {
                     if (null == localeManager.setSelectedLocale(context, newValue)) {
                         localeManager.updateConfiguration(context, Locale.getDefault());
                     }
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOCALE_BROWSER_UNSELECTED, Method.NONE,
-                                          currentLocale == null ? "unknown" : currentLocale);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOCALE_BROWSER_SELECTED, Method.NONE, newValue);
                 }
 
                 ThreadUtils.postToUiThread(new Runnable() {
@@ -1163,7 +1151,6 @@ public class GeckoPreferences
         final JSONArray extras = new JSONArray();
         extras.put(prefName);
         extras.put(value);
-        Telemetry.sendUIEvent(TelemetryContract.Event.EDIT, Method.SETTINGS, extras.toString());
     }
 
     @Override

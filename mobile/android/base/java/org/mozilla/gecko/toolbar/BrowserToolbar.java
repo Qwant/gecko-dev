@@ -18,8 +18,6 @@ import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tab;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.TouchEventInterceptor;
 import org.mozilla.gecko.animation.PropertyAnimator;
 import org.mozilla.gecko.animation.PropertyAnimator.PropertyAnimationListener;
@@ -406,8 +404,6 @@ public abstract class BrowserToolbar extends ThemedRelativeLayout
         // If we exit editing mode during the animation,
         // we're put into an inconsistent state (bug 1017276).
         if (isEditing() && !isAnimating()) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL,
-                                  TelemetryContract.Method.BACK);
             cancelEdit();
             return true;
         }
@@ -847,7 +843,6 @@ public abstract class BrowserToolbar extends ThemedRelativeLayout
      * @return the url that was entered
      */
     public String cancelEdit() {
-        Telemetry.stopUISession(TelemetryContract.Session.AWESOMESCREEN);
         return stopEditing();
     }
 

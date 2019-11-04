@@ -215,7 +215,6 @@ public class FindInPageBar extends LinearLayout
         final int viewId = v.getId();
 
         String extras = getResources().getResourceEntryName(viewId);
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, extras);
 
         if (viewId == R.id.find_prev) {
             findPrevInPage();

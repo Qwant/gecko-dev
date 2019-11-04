@@ -17,8 +17,6 @@ import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
 import org.mozilla.gecko.Tab;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -107,8 +105,6 @@ public class OfflineTabStatusDelegate extends TabsTrayVisibilityAwareDelegate im
         if (activity == null) {
             return;
         }
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.NETERROR, TelemetryContract.Method.TOAST, "usecache");
 
         SnackbarBuilder.builder(activity)
                 .message(R.string.tab_offline_version)

@@ -143,10 +143,6 @@ import org.mozilla.gecko.tabs.TabHistoryController.OnShowTabHistory;
 import org.mozilla.gecko.tabs.TabHistoryFragment;
 import org.mozilla.gecko.tabs.TabHistoryPage;
 import org.mozilla.gecko.tabs.TabsPanel;
-import org.mozilla.gecko.telemetry.TelemetryCorePingDelegate;
-import org.mozilla.gecko.telemetry.TelemetryUploadService;
-import org.mozilla.gecko.telemetry.measurements.SearchCountMeasurements;
-import org.mozilla.gecko.telemetry.TelemetryActivationPingDelegate;
 import org.mozilla.gecko.toolbar.AutocompleteHandler;
 import org.mozilla.gecko.toolbar.BrowserToolbar;
 import org.mozilla.gecko.toolbar.BrowserToolbar.CommitEventSource;
@@ -328,17 +324,11 @@ public class BrowserApp extends GeckoApp
 
     private final DynamicToolbar mDynamicToolbar = new DynamicToolbar();
 
-    private final TelemetryCorePingDelegate mTelemetryCorePingDelegate = new TelemetryCorePingDelegate();
-    private final TelemetryActivationPingDelegate mTelemetryActivationPingDelegate = new TelemetryActivationPingDelegate();
-
     private final List<BrowserAppDelegate> delegates = Collections.unmodifiableList(Arrays.asList(
             new ScreenshotDelegate(),
             new BookmarkStateChangeDelegate(),
             new ReaderViewBookmarkPromotion(),
-            mTelemetryCorePingDelegate,
-            mTelemetryActivationPingDelegate,
-            new OfflineTabStatusDelegate(),
-            new AdjustBrowserAppDelegate(mTelemetryCorePingDelegate)
+            new OfflineTabStatusDelegate()
     ));
 
     @NonNull
@@ -796,7 +786,7 @@ public class BrowserApp extends GeckoApp
         } else if (GuestSession.NOTIFICATION_INTENT.equals(action)) {
             GuestSession.onNotificationIntentReceived(this);
         } else if (TabQueueHelper.LOAD_URLS_ACTION.equals(action)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.NOTIFICATION, "tabqueue");
+
         } else if (NotificationHelper.HELPER_BROADCAST_ACTION.equals(action)) {
             NotificationHelper.getInstance(getApplicationContext()).handleNotificationIntent(safeStartingIntent);
         }
@@ -960,7 +950,6 @@ public class BrowserApp extends GeckoApp
 
         // We want to get an understanding of how our user base is spread (bug 1221646).
         final String installerPackageName = getPackageManager().getInstallerPackageName(getPackageName());
-        Telemetry.sendUIEvent(TelemetryContract.Event.LAUNCH, TelemetryContract.Method.SYSTEM, "installer_" + installerPackageName);
     }
 
     /**
@@ -977,7 +966,6 @@ public class BrowserApp extends GeckoApp
         }
 
         MmaDelegate.track(INTERACT_WITH_SEARCH_WIDGET_URL_AREA);
-        Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH, TelemetryContract.Method.WIDGET);
 
         switch (input) {
             case TEXT:
@@ -1055,7 +1043,7 @@ public class BrowserApp extends GeckoApp
     }
 
     private static void initTelemetryUploader(final boolean isInAutomation) {
-        TelemetryUploadService.setDisabled(isInAutomation);
+
     }
 
     private void showUpdaterPermissionSnackbar() {
@@ -1146,9 +1134,6 @@ public class BrowserApp extends GeckoApp
         ThreadUtils.assertNotOnUiThread();
 
         int queuedTabCount = TabQueueHelper.getTabQueueLength(BrowserApp.this);
-
-        Telemetry.addToHistogram("FENNEC_TABQUEUE_QUEUESIZE", queuedTabCount);
-        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "tabqueue-delayed");
 
         TabQueueHelper.openQueuedUrls(BrowserApp.this, getProfile(), TabQueueHelper.FILE_NAME, false);
 
@@ -1469,8 +1454,6 @@ public class BrowserApp extends GeckoApp
             String text = Clipboard.getText(this);
             if (!TextUtils.isEmpty(text)) {
                 loadUrlOrKeywordSearch(text);
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.CONTEXT_MENU);
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU, "pasteandgo");
             }
             return true;
         }
@@ -1481,7 +1464,6 @@ public class BrowserApp extends GeckoApp
                 enterEditingMode(text);
                 showBrowserSearch();
                 mBrowserSearch.filter(text, null);
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU, "paste");
             }
             return true;
         }
@@ -1514,7 +1496,6 @@ public class BrowserApp extends GeckoApp
                 String url = ReaderModeUtils.stripAboutReaderUrl(tab.getURL());
                 if (url != null) {
                     Clipboard.setText(this, url);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU, "copyurl");
                 }
             }
             return true;
@@ -1545,9 +1526,6 @@ public class BrowserApp extends GeckoApp
                         SnackbarBuilder.builder(BrowserApp.this)
                                 .message(snackbarText)
                                 .buildAndShow();
-
-                        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, // via browser menu.
-                                telemetryExtraBuilder.build());
                     }
                 });
             }
@@ -1573,8 +1551,6 @@ public class BrowserApp extends GeckoApp
                 }
             });
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU,
-                getResources().getResourceEntryName(itemId));
             return true;
         }
 
@@ -1593,8 +1569,6 @@ public class BrowserApp extends GeckoApp
             editor.putString(GeckoPreferences.PREFS_HOMEPAGE, url);
             editor.apply();
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU,
-                getResources().getResourceEntryName(itemId));
             return true;
         }
 
@@ -2087,34 +2061,6 @@ public class BrowserApp extends GeckoApp
                 break;
 
             case "Telemetry:Gather":
-                final BrowserDB db = BrowserDB.from(getProfile());
-                final ContentResolver cr = getContentResolver();
-
-                Telemetry.addToHistogram("PLACES_PAGES_COUNT", db.getCount(cr, "history"));
-                Telemetry.addToHistogram("FENNEC_BOOKMARKS_COUNT", db.getCount(cr, "bookmarks"));
-                Telemetry.addToHistogram("BROWSER_IS_USER_DEFAULT",
-                        (isDefaultBrowser(Intent.ACTION_VIEW) ? 1 : 0));
-                Telemetry.addToHistogram("FENNEC_CUSTOM_HOMEPAGE",
-                        (Tabs.hasHomepage(this) ? 1 : 0));
-
-                final SharedPreferences prefs = GeckoSharedPrefs.forProfile(this);
-                final boolean hasCustomHomepanels =
-                        prefs.contains(HomeConfigPrefsBackend.PREFS_CONFIG_KEY) ||
-                        prefs.contains(HomeConfigPrefsBackend.PREFS_CONFIG_KEY_OLD);
-
-                Telemetry.addToHistogram("FENNEC_HOMEPANELS_CUSTOM", hasCustomHomepanels ? 1 : 0);
-
-                Telemetry.addToHistogram("FENNEC_READER_VIEW_CACHE_SIZE",
-                        SavedReaderViewHelper.getSavedReaderViewHelper(this)
-                                             .getDiskSpacedUsedKB());
-
-                if (Versions.feature16Plus) {
-                    Telemetry.addToHistogram("BROWSER_IS_ASSIST_DEFAULT",
-                            (isDefaultBrowser(Intent.ACTION_ASSIST) ? 1 : 0));
-                }
-
-                Telemetry.addToHistogram("FENNEC_ORBOT_INSTALLED",
-                    ContextUtils.isPackageInstalled(this, "org.torproject.android") ? 1 : 0);
                 break;
 
             case "Website:AppInstalled":
@@ -2128,8 +2074,6 @@ public class BrowserApp extends GeckoApp
                     final Bitmap icon = loadIconResult
                         .getBestBitmap(GeckoAppShell.getPreferredIconSize());
                     GeckoApplication.createAppShortcut(name, startUrl, manifestPath, manifestUrl, icon);
-
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.PAGEACTION, PwaConfirm.TELEMETRY_EXTRA_ADDED);
 
                 } else {
                     Log.e(LOGTAG, "Failed to load icon!");
@@ -2585,7 +2529,6 @@ public class BrowserApp extends GeckoApp
         }
 
         enterEditingMode(url);
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.ACTIONBAR, telemetryMsg);
     }
 
     /**
@@ -2617,7 +2560,6 @@ public class BrowserApp extends GeckoApp
         showHomePagerWithAnimator(panelId, null, animator);
 
         animator.start();
-        Telemetry.startUISession(TelemetryContract.Session.AWESOMESCREEN);
     }
 
     /**
@@ -2627,9 +2569,6 @@ public class BrowserApp extends GeckoApp
         if (!mBrowserToolbar.isEditing()) {
             return false;
         }
-
-        Telemetry.stopUISession(TelemetryContract.Session.AWESOMESCREEN,
-                                TelemetryContract.Reason.COMMIT);
 
         final String url = mBrowserToolbar.commitEdit();
 
@@ -2673,7 +2612,6 @@ public class BrowserApp extends GeckoApp
             //} else {
             //    Log.d("QWANT JUNIOR MOBILE LOG", "Ok Go");
                 Tabs.getInstance().loadUrl(url, Tabs.LOADURL_USER_ENTERED);
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.ACTIONBAR, "user");
             //}
             return;
         }
@@ -2704,7 +2642,6 @@ public class BrowserApp extends GeckoApp
                 if (TextUtils.isEmpty(keywordUrl) ||
                         (!TextUtils.isEmpty(keywordSearch) && !StringUtils.queryExists(keywordUrl))) {
                     Tabs.getInstance().loadUrl(url, Tabs.LOADURL_USER_ENTERED);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.ACTIONBAR, "user");
                     return;
                 }
 
@@ -2715,9 +2652,6 @@ public class BrowserApp extends GeckoApp
                 final String searchUrl = keywordUrl.replace("%s", URLEncoder.encode(keywordSearch)).replace("%S", keywordSearch);
 
                 Tabs.getInstance().loadUrl(searchUrl, Tabs.LOADURL_USER_ENTERED);
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL,
-                                      TelemetryContract.Method.ACTIONBAR,
-                                      "keyword");
             }
         });
     }
@@ -2729,10 +2663,7 @@ public class BrowserApp extends GeckoApp
      */
     private static void recordSearch(@NonNull final SharedPreferences prefs, @NonNull final String engineIdentifier,
             @NonNull final TelemetryContract.Method where) {
-        // We could include the engine identifier as an extra but we'll
-        // just capture that with core ping telemetry (bug 1253319).
-        Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH, where);
-        SearchCountMeasurements.incrementSearch(prefs, engineIdentifier, where.toString());
+
     }
 
     /**
@@ -3057,8 +2988,6 @@ public class BrowserApp extends GeckoApp
         if (!mOnboardingHelper.hideOnboarding()) {
             return false;
         }
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, method, "firstrun-pane");
 
         return true;
     }
@@ -3631,8 +3560,6 @@ public class BrowserApp extends GeckoApp
             extras = "new_tab";
         }
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, extras);
-
         mBrowserToolbar.cancelEdit();
 
         if (itemId == R.id.bookmark) {
@@ -3647,12 +3574,10 @@ public class BrowserApp extends GeckoApp
 
                 final boolean isPrivate = tab.isPrivate();
                 if (item.isChecked()) {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.UNSAVE, TelemetryContract.Method.MENU, extra);
                     tab.removeBookmark();
                     item.setTitle(resolveBookmarkTitleID(false));
                     item.setIcon(resolveBookmarkIconDrawable(false, resolveMenuIconTint(isPrivate)));
                 } else {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.SAVE, TelemetryContract.Method.MENU, extra);
                     tab.addBookmark();
                     item.setTitle(resolveBookmarkTitleID(true));
                     item.setIcon(resolveBookmarkIconDrawable(true, resolveMenuIconTint(isPrivate)));
@@ -3669,7 +3594,6 @@ public class BrowserApp extends GeckoApp
                     url = ReaderModeUtils.stripAboutReaderUrl(url);
 
                     // Context: Sharing via chrome list (no explicit session is active)
-                    Telemetry.sendUIEvent(TelemetryContract.Event.SHARE, TelemetryContract.Method.LIST, "menu");
 
                     IntentHelper.openUriExternal(url, "text/plain", "", "", Intent.ACTION_SEND, tab.getDisplayTitle(), false);
                 }
@@ -3711,13 +3635,11 @@ public class BrowserApp extends GeckoApp
         }
 
         if (itemId == R.id.save_as_pdf) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.SAVE, TelemetryContract.Method.MENU, "pdf");
             EventDispatcher.getInstance().dispatch("SaveAs:PDF", null);
             return true;
         }
 
         if (itemId == R.id.print) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.SAVE, TelemetryContract.Method.MENU, "print");
             PrintHelper.printPDF(this);
             return true;
         }
@@ -3825,8 +3747,6 @@ public class BrowserApp extends GeckoApp
             Tab tab = Tabs.getInstance().getSelectedTab();
             if (tab != null) {
                 tab.doReload(true);
-
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "reload_force");
             }
             return true;
         }
@@ -3963,12 +3883,6 @@ public class BrowserApp extends GeckoApp
 
             // Hide firstrun-pane if the user is loading a URL from an external app.
             hideFirstrunPager(TelemetryContract.Method.NONE);
-
-            if (isBookmarkAction) {
-                // GeckoApp.ACTION_HOMESCREEN_SHORTCUT means we're opening a bookmark that
-                // was added to Android's homescreen.
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.HOMESCREEN);
-            }
         }
 
         showTabQueuePromptIfApplicable(intent);
@@ -3990,7 +3904,6 @@ public class BrowserApp extends GeckoApp
 
         // If the user has clicked the tab queue notification then load the tabs.
         if (TabQueueHelper.TAB_QUEUE_ENABLED && mInitialized && isTabQueueAction) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.NOTIFICATION, "tabqueue");
             ThreadUtils.postToBackgroundThread(new Runnable() {
                 @Override
                 public void run() {
@@ -4145,8 +4058,6 @@ public class BrowserApp extends GeckoApp
         final SnackbarBuilder.SnackbarCallback callback = new SnackbarBuilder.SnackbarCallback() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.TOAST, "switchtab");
-
                 maybeSwitchToTab(newTabId);
             }
         };
@@ -4274,23 +4185,7 @@ public class BrowserApp extends GeckoApp
 
     @Override
     protected void recordStartupActionTelemetry(final String passedURL, final String action) {
-        final TelemetryContract.Method method;
-        if (ACTION_HOMESCREEN_SHORTCUT.equals(action)) {
-            // This action is also recorded via "loadurl.1" > "homescreen".
-            method = TelemetryContract.Method.HOMESCREEN;
-        } else if (passedURL == null) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LAUNCH, TelemetryContract.Method.HOMESCREEN, "launcher");
-            method = TelemetryContract.Method.HOMESCREEN;
-        } else {
-            // This is action is also recorded via "loadurl.1" > "intent".
-            method = TelemetryContract.Method.INTENT;
-        }
 
-        if (GeckoProfile.get(this).inGuestMode()) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LAUNCH, method, "guest");
-        } else if (Restrictions.isRestrictedProfile(this)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LAUNCH, method, "restricted");
-        }
     }
 
     /**

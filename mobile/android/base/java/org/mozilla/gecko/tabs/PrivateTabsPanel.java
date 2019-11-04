@@ -8,8 +8,6 @@ package org.mozilla.gecko.tabs;
 import org.mozilla.gecko.GeckoApp;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.tabs.TabsPanel.CloseAllPanelView;
 import org.mozilla.gecko.tabs.TabsPanel.TabsLayout;
 

@@ -16,7 +16,6 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.activitystream.ranking.HighlightsRanking;
 import org.mozilla.gecko.db.BrowserContract;
 import org.mozilla.gecko.db.BrowserDB;
@@ -97,8 +96,6 @@ import java.util.List;
 
     private void addToPerformanceHistogram(long startTime) {
         final long took = SystemClock.uptimeMillis() - startTime;
-
-        Telemetry.addToHistogram(TELEMETRY_HISTOGRAM_ACTIVITY_STREAM_HIGHLIGHTS, (int) Math.min(took, Integer.MAX_VALUE));
     }
 
     @Override

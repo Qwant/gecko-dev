@@ -6,8 +6,6 @@
 package org.mozilla.gecko.preferences;
 
 import org.mozilla.gecko.EventDispatcher;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.mma.MmaDelegate;
 import org.mozilla.gecko.util.GeckoBundle;
 
@@ -36,8 +34,6 @@ class PrivateDataPreference extends MultiPrefMultiChoicePreference {
         if (!positiveResult) {
             return;
         }
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.SANITIZE, TelemetryContract.Method.DIALOG, "settings");
 
         final Set<String> values = getValues();
         final GeckoBundle data = new GeckoBundle();

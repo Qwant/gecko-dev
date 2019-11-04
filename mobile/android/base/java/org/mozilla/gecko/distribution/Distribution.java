@@ -43,7 +43,6 @@ import org.mozilla.gecko.EventDispatcher;
 import org.mozilla.gecko.GeckoAppShell;
 import org.mozilla.gecko.GeckoApplication;
 import org.mozilla.gecko.GeckoSharedPrefs;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.util.FileUtils;
 import org.mozilla.gecko.util.GeckoBundle;
 import org.mozilla.gecko.util.HardwareUtils;
@@ -412,11 +411,9 @@ public class Distribution {
 
         } catch (IOException e) {
             Log.e(LOGTAG, "Error getting distribution descriptor file.", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return null;
         } catch (JSONException e) {
             Log.e(LOGTAG, "Error parsing preferences.json", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return null;
         }
     }
@@ -444,11 +441,9 @@ public class Distribution {
 
         } catch (IOException e) {
             Log.e(LOGTAG, "Error getting distribution descriptor file.", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return new JSONObject();
         } catch (JSONException e) {
             Log.e(LOGTAG, "Error parsing preferences.json", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return new JSONObject();
         }
     }
@@ -464,11 +459,9 @@ public class Distribution {
             return new JSONArray(FileUtils.readStringFromFile(bookmarks));
         } catch (IOException e) {
             Log.e(LOGTAG, "Error getting bookmarks", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return null;
         } catch (JSONException e) {
             Log.e(LOGTAG, "Error parsing bookmarks.json", e);
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_MALFORMED_DISTRIBUTION);
             return null;
         }
     }
@@ -568,7 +561,6 @@ public class Distribution {
                 long end = SystemClock.uptimeMillis();
                 final long duration = end - start;
                 Log.d(LOGTAG, "Distro fetch took " + duration + "ms; result? " + (distro != null));
-                Telemetry.addToHistogram(HISTOGRAM_DOWNLOAD_TIME_MS, clamp(MAX_DOWNLOAD_TIME_MSEC, duration));
 
                 if (distro == null) {
                     // Nothing to do.
@@ -585,10 +577,8 @@ public class Distribution {
                     }
                 } catch (SecurityException e) {
                     Log.e(LOGTAG, "Security exception copying files. Corrupt or malicious?", e);
-                    Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_POST_FETCH_SECURITY_EXCEPTION);
                 } catch (Exception e) {
                     Log.e(LOGTAG, "Error copying files from distribution.", e);
-                    Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_POST_FETCH_EXCEPTION);
                 } finally {
                     distro.close();
                 }
@@ -630,18 +620,14 @@ public class Distribution {
             value = status / 100;
         }
 
-        Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, value);
-
         if (status != 200) {
             Log.w(LOGTAG, "Got status " + status + " fetching distribution.");
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_NON_SUCCESS_RESPONSE);
             return null;
         }
 
         final String contentType = connection.getContentType();
         if (contentType == null || !contentType.startsWith(EXPECTED_CONTENT_TYPE)) {
             Log.w(LOGTAG, "Malformed response: invalid Content-Type.");
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_INVALID_CONTENT_TYPE);
             return null;
         }
 
@@ -660,28 +646,22 @@ public class Distribution {
     private static void recordFetchTelemetry(final Exception exception) {
         if (exception == null) {
             // Should never happen.
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_EXCEPTION);
             return;
         }
 
         if (exception instanceof UnknownHostException) {
             // Unknown host => we're offline.
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_OFFLINE);
             return;
         }
 
         if (exception instanceof SSLException) {
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_SSL_ERROR);
             return;
         }
 
         if (exception instanceof ProtocolException ||
             exception instanceof SocketException) {
-            Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_SOCKET_ERROR);
             return;
         }
-
-        Telemetry.addToHistogram(HISTOGRAM_CODE_CATEGORY, CODE_CATEGORY_FETCH_EXCEPTION);
     }
 
     /**
@@ -885,7 +865,6 @@ public class Distribution {
         // we're downloading a distribution payload based on intent input.
         if (!content.matches("^[a-zA-Z0-9_-]+$")) {
             Log.e(LOGTAG, "Invalid referrer content: " + content);
-            Telemetry.addToHistogram(HISTOGRAM_REFERRER_INVALID, 1);
             return null;
         }
 

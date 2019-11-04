@@ -23,8 +23,6 @@ import android.widget.TextView;
 
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.util.EventCallback;
 import org.mozilla.gecko.util.GeckoBundle;
 
@@ -120,7 +118,6 @@ public abstract class DoorHanger extends LinearLayout {
         contentStub.inflate();
 
         final String typeExtra = mType.toString().toLowerCase(Locale.US);
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.DOORHANGER, typeExtra);
     }
 
     protected abstract int getContentResource();
@@ -188,8 +185,6 @@ public abstract class DoorHanger extends LinearLayout {
         mLink.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String typeExtra = mType.toString().toLowerCase(Locale.US);
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.DOORHANGER, typeExtra);
                 Tabs.getInstance().loadUrlInTab(url);
             }
         });

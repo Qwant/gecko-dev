@@ -24,8 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.util.GeckoBundle;
 
 import java.util.Locale;
@@ -80,9 +78,6 @@ public class LoginDoorHanger extends DoorHanger {
         return new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String expandedExtra = mType.toString().toLowerCase(Locale.US) + "-" + telemetryExtra;
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DOORHANGER, expandedExtra);
-
                 final GeckoBundle response = new GeckoBundle(1);
                 response.putInt("callback", id);
                 mOnButtonClickListener.onButtonClick(response, LoginDoorHanger.this);

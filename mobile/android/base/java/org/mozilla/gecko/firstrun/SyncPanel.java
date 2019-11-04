@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.fxa.FxAccountConstants;
 import org.mozilla.gecko.fxa.activities.FxAccountWebFlowActivity;
 import org.mozilla.gecko.util.OnboardingResources;
@@ -48,7 +46,6 @@ public class SyncPanel extends FirstrunPanel {
         root.findViewById(R.id.welcome_account).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-sync");
                 showBrowserHint = false;
 
                 final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_GET_STARTED);
@@ -63,7 +60,6 @@ public class SyncPanel extends FirstrunPanel {
         root.findViewById(R.id.welcome_browse).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-browser");
                 close();
             }
         });

@@ -45,8 +45,6 @@ import org.mozilla.gecko.fxa.FxAccountConstants;
 import org.mozilla.gecko.fxa.SyncStatusListener;
 import org.mozilla.gecko.home.CombinedHistoryPanel.OnPanelLevelChangeListener.PanelLevel;
 import org.mozilla.gecko.restrictions.Restrictions;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserDB;
 import org.mozilla.gecko.db.RemoteClient;
 import org.mozilla.gecko.restrictions.Restrictable;
@@ -197,17 +195,6 @@ public class CombinedHistoryPanel extends HomeFragment implements RemoteClientsD
         mRecyclerView.setOnHistoryClickedListener(mUrlOpenListener);
         mRecyclerView.setOnPanelLevelChangeListener(new OnLevelChangeListener());
         mRecyclerView.setHiddenClientsDialogBuilder(new HiddenClientsHelper());
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                final LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if ((mPanelLevel == PARENT) && (llm.findLastCompletelyVisibleItemPosition() == HistoryCursorLoader.HISTORY_LIMIT)) {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.LIST, "history_scroll_max");
-                }
-
-            }
-        });
         registerForContextMenu(mRecyclerView);
     }
 
@@ -244,7 +231,6 @@ public class CombinedHistoryPanel extends HomeFragment implements RemoteClientsD
         syncSetupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "history_syncsetup");
                 // This Activity will redirect to the correct Activity as needed.
                 final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_GET_STARTED);
                 startActivity(intent);
@@ -469,18 +455,13 @@ public class CombinedHistoryPanel extends HomeFragment implements RemoteClientsD
                             final GeckoBundle data = new GeckoBundle(1);
                             data.putBoolean("history", true);
                             EventDispatcher.getInstance().dispatch("Sanitize:ClearData", data);
-
-                            Telemetry.sendUIEvent(TelemetryContract.Event.SANITIZE, TelemetryContract.Method.BUTTON, "history");
                         }
                     });
 
                     dialogBuilder.show();
                     break;
                 case CHILD_RECENT_TABS:
-                    final String telemetryExtra = mRecentTabsAdapter.restoreAllTabs();
-                    if (telemetryExtra != null) {
-                        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.BUTTON, telemetryExtra);
-                    }
+                    mRecentTabsAdapter.restoreAllTabs();
                     break;
             }
         }
@@ -540,7 +521,6 @@ public class CombinedHistoryPanel extends HomeFragment implements RemoteClientsD
         final ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "hint_private_browsing");
                 EventDispatcher.getInstance().dispatch("Menu:Open", null);
             }
         };

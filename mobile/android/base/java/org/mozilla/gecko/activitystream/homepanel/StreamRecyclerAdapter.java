@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.ActivityStreamTelemetry;
 import org.mozilla.gecko.activitystream.homepanel.menu.ActivityStreamContextMenu;
 import org.mozilla.gecko.activitystream.homepanel.model.RowModel;
@@ -302,11 +300,6 @@ public class StreamRecyclerAdapter extends RecyclerView.Adapter<StreamViewHolder
               .set(ActivityStreamTelemetry.Contract.ACTION_POSITION, actionPosition)
               .set(ActivityStreamTelemetry.Contract.COUNT, size);
 
-        Telemetry.sendUIEvent(
-                TelemetryContract.Event.LOAD_URL,
-                TelemetryContract.Method.LIST_ITEM,
-                extras.build()
-        );
 
         // NB: This is hacky. We need to process telemetry data first, otherwise we run a risk of
         // not having a cursor to work with once url is opened and BrowserApp closes A-S home screen
@@ -408,12 +401,6 @@ public class StreamRecyclerAdapter extends RecyclerView.Adapter<StreamViewHolder
                 shouldOverrideWithImageProvider,
                 onUrlOpenListener, onUrlOpenInBackgroundListener,
                 faviconWidth, faviconHeight);
-
-        Telemetry.sendUIEvent(
-                TelemetryContract.Event.SHOW,
-                TelemetryContract.Method.CONTEXT_MENU,
-                extras.build()
-        );
 
     }
 

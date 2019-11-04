@@ -24,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mozilla.gecko.AppConstants;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.annotation.RobocopTarget;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.db.BrowserContract.ActivityStreamBlocklist;
@@ -1998,7 +1997,6 @@ public class LocalBrowserDB extends BrowserDB {
             final long end = SystemClock.uptimeMillis();
             final long took = end - start;
 
-            Telemetry.addToHistogram(mHistogramName, (int) Math.min(took, Integer.MAX_VALUE));
             return cursor;
         }
     }

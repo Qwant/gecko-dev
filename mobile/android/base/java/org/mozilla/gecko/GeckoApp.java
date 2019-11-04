@@ -1063,7 +1063,6 @@ public abstract class GeckoApp extends GeckoActivity
             // In case we have multiple GeckoApp-based activities, this can
             // also happen if we're not the first activity to run within a session.
             mIsRestoringActivity = true;
-            Telemetry.addToHistogram("FENNEC_RESTORING_ACTIVITY", 1);
         } else {
             final String action = intent.getAction();
             final String[] args = GeckoApplication.getDefaultGeckoArgs();
@@ -1269,11 +1268,6 @@ public abstract class GeckoApp extends GeckoActivity
                     boolean wasInBackground =
                             finalSavedInstanceState.getBoolean(SAVED_STATE_IN_BACKGROUND, false);
 
-                    // Don't log OOM-kills if only one activity was destroyed. (For example
-                    // from "Don't keep activities" on ICS)
-                    if (!wasInBackground && !mIsRestoringActivity) {
-                        Telemetry.addToHistogram("FENNEC_WAS_KILLED", 1);
-                    }
 
                     mPrivateBrowsingSession =
                             finalSavedInstanceState.getString(SAVED_STATE_PRIVATE_SESSION);
@@ -1304,16 +1298,12 @@ public abstract class GeckoApp extends GeckoActivity
                             // Since we will also hit this situation regularly during first run though,
                             // we'll only report it in telemetry if we failed to restore despite the
                             // file existing, which means it's very probably damaged.
-                            if (getProfile().sessionFileExists() && !(e instanceof OutOfMemoryError)) {
-                                Telemetry.addToHistogram("FENNEC_SESSIONSTORE_DAMAGED_SESSION_FILE", 1);
-                            }
+
                             try {
                                 restoreMessage = restoreSessionTabs(isExternalURL, true);
-                                Telemetry.addToHistogram("FENNEC_SESSIONSTORE_RESTORING_FROM_BACKUP", 1);
                             } catch (SessionRestoreException | OutOfMemoryError ex) {
                                 if (!mShouldRestore) {
                                     // Restoring only "failed" because the backup copy was deliberately empty, too.
-                                    Telemetry.addToHistogram("FENNEC_SESSIONSTORE_RESTORING_FROM_BACKUP", 1);
                                 } else {
                                     // Restoring the backup failed, too, so do a normal startup.
                                     Log.e(LOGTAG, "An error occurred during restore", ex);
@@ -1325,7 +1315,6 @@ public abstract class GeckoApp extends GeckoActivity
                                         // Except when starting with a fresh profile, we should normally
                                         // always have a session file available, even if it might only
                                         // contain an empty window.
-                                        Telemetry.addToHistogram("FENNEC_SESSIONSTORE_ALL_FILES_DAMAGED", 1);
                                     }
                                 }
                             }
@@ -1359,9 +1348,6 @@ public abstract class GeckoApp extends GeckoActivity
                 localeManager.initialize(getApplicationContext());
 
                 SessionInformation previousSession = SessionInformation.fromSharedPrefs(prefs);
-                if (previousSession.wasKilled()) {
-                    Telemetry.addToHistogram("FENNEC_WAS_KILLED", 1);
-                }
 
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putBoolean(GeckoAppShell.PREFS_OOM_EXCEPTION, false);

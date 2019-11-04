@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.mozilla.gecko.AppConstants.Versions;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.ActivityStream;
 import org.mozilla.gecko.animation.PropertyAnimator;
@@ -573,8 +572,6 @@ public class HomePager extends RtlViewPager implements HomeScreen {
         } else {
             mCurrentPanelSessionSuffix = panelId;
         }
-
-        Telemetry.startUISession(mCurrentPanelSession, mCurrentPanelSessionSuffix);
     }
 
     /**
@@ -582,7 +579,6 @@ public class HomePager extends RtlViewPager implements HomeScreen {
      */
     private void stopCurrentPanelTelemetrySession() {
         if (mCurrentPanelSession != null) {
-            Telemetry.stopUISession(mCurrentPanelSession, mCurrentPanelSessionSuffix);
             mCurrentPanelSession = null;
             mCurrentPanelSessionSuffix = null;
         }

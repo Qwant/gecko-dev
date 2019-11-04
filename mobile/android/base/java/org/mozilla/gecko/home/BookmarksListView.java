@@ -10,8 +10,6 @@ import java.util.List;
 
 import android.util.Log;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserContract;
 import org.mozilla.gecko.db.BrowserContract.Bookmarks;
 import org.mozilla.gecko.home.HomePager.OnUrlOpenListener;
@@ -126,7 +124,6 @@ public class BookmarksListView extends HomeListView
                 // Move to parent _after_ retrieving stack information
                 adapter.moveToParentFolder();
 
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.LIST_ITEM, extra);
                 return;
             }
 
@@ -142,8 +139,6 @@ public class BookmarksListView extends HomeListView
         cursor.moveToPosition(position);
 
         if (adapter.getOpenFolderType() == BookmarksListAdapter.FolderType.SCREENSHOTS) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, "bookmarks-screenshot");
-
             final String fileUrl = "file://" + cursor.getString(cursor.getColumnIndex(BrowserContract.UrlAnnotations.VALUE));
             getOnUrlOpenListener().onUrlOpen(fileUrl, EnumSet.of(OnUrlOpenListener.Flags.ALLOW_SWITCH_TO_TAB));
             return;
@@ -166,7 +161,6 @@ public class BookmarksListView extends HomeListView
             }
 
             final String extra = getTelemetryExtraForFolder(folderId, baseFolderID);
-            Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.LIST_ITEM, extra);
         } else {
             // Otherwise, just open the URL
             final String url = cursor.getString(cursor.getColumnIndexOrThrow(Bookmarks.URL));
@@ -179,9 +173,6 @@ public class BookmarksListView extends HomeListView
             } else {
                 extra = "bookmarks";
             }
-
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, extra);
-            Telemetry.addToHistogram("FENNEC_LOAD_SAVED_PAGE", NetworkUtils.isConnected(getContext()) ? 2 : 3);
 
             // This item is a TwoLinePageRow, so we allow switch-to-tab.
             getOnUrlOpenListener().onUrlOpen(url, EnumSet.of(OnUrlOpenListener.Flags.ALLOW_SWITCH_TO_TAB));

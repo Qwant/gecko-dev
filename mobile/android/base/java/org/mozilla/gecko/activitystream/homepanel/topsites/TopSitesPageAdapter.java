@@ -14,9 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.activitystream.ActivityStreamTelemetry;
 import org.mozilla.gecko.activitystream.homepanel.model.TopSite;
 import org.mozilla.gecko.activitystream.homepanel.stream.TopPanelRow;
 import org.mozilla.gecko.home.HomePager;
@@ -70,19 +67,6 @@ import java.util.List;
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
         final TopSite topSite = topSites.get(position);
-        final int absolutePosition = getTopSiteAbsolutePosition(position);
-
-        ActivityStreamTelemetry.Extras.Builder extras = ActivityStreamTelemetry.Extras.builder()
-                .forTopSite(topSite)
-                .set(ActivityStreamTelemetry.Contract.PAGE_NUMBER, pageNumber)
-                .set(ActivityStreamTelemetry.Contract.ACTION_POSITION, absolutePosition);
-
-        Telemetry.sendUIEvent(
-                TelemetryContract.Event.LOAD_URL,
-                TelemetryContract.Method.LIST_ITEM,
-                extras.build()
-        );
-
         onUrlOpenListener.onUrlOpen(StringUtils.decodeUserEnteredUrl(topSite.getUrl()), EnumSet.noneOf(HomePager.OnUrlOpenListener.Flags.class));
     }
 

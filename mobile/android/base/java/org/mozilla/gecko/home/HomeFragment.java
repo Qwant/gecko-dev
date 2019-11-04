@@ -15,8 +15,6 @@ import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.IntentHelper;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.ActivityStream;
 import org.mozilla.gecko.bookmarks.EditBookmarkCallback;
 import org.mozilla.gecko.bookmarks.BookmarkUtils;
@@ -274,7 +272,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
             // Mask private browsing
             extras = "home_open_new_tab";
         }
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU, extras);
 
         if (itemId == R.id.home_copyurl) {
             if (info.url == null) {
@@ -294,8 +291,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
                 IntentHelper.openUriExternal(info.url, SHARE_MIME_TYPE, "", "",
                                               Intent.ACTION_SEND, info.getDisplayTitle(), false);
 
-                // Context: Sharing via chrome homepage contextmenu list (home session should be active)
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHARE, TelemetryContract.Method.LIST, "home_contextmenu");
                 return true;
             }
         }
@@ -315,7 +310,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
                 }
             });
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU, "home_add_to_launcher");
             return true;
         }
 
@@ -338,8 +332,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
 
             mUrlOpenInBackgroundListener.onUrlOpenInBackground(url, flags);
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.CONTEXT_MENU);
-
             return true;
         }
 
@@ -360,8 +352,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
             final SharedPreferences.Editor editor = prefs.edit();
             editor.putString(GeckoPreferences.PREFS_HOMEPAGE, info.url);
             editor.apply();
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.CONTEXT_MENU,
-                getResources().getResourceEntryName(itemId));
             return true;
         }
 
@@ -609,7 +599,6 @@ public abstract class HomeFragment extends Fragment implements EditBookmarkCallb
                 extra = "bookmark";
             }
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.UNSAVE, TelemetryContract.Method.CONTEXT_MENU, extra);
             db.updateSoftDeleteForBookmarkWithId(cr, info.bookmarkId, true);
 
             if (isReaderViewPage) {

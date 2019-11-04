@@ -13,9 +13,6 @@ import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.LocaleManager;
 import org.mozilla.gecko.PrefsHelper;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.TelemetryContract.Method;
 import org.mozilla.gecko.fxa.AccountLoader;
 import org.mozilla.gecko.fxa.authenticator.AndroidFxAccount;
 import org.mozilla.gecko.util.PackageUtil;
@@ -186,12 +183,6 @@ public class GeckoPreferenceFragment extends PreferenceFragment {
 
     private void loadPreferences() {
         int res = getResource();
-        if (res == R.xml.preferences) {
-            Telemetry.startUISession(TelemetryContract.Session.SETTINGS);
-        } else {
-            final String resourceName = getArguments().getString("resource");
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, Method.SETTINGS, resourceName);
-        }
 
         // Display a menu for Search preferences.
         if (res == R.xml.preferences_search) {
@@ -265,9 +256,6 @@ public class GeckoPreferenceFragment extends PreferenceFragment {
         }
 
         final int res = getResource();
-        if (res == R.xml.preferences) {
-            Telemetry.stopUISession(TelemetryContract.Session.SETTINGS);
-        }
 
         GeckoApplication.watchReference(getActivity(), this);
     }

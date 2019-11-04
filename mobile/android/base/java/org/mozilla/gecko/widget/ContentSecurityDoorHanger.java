@@ -15,8 +15,6 @@ import org.mozilla.gecko.util.GeckoBundle;
 import android.content.Context;
 import android.view.View;
 
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.toolbar.SiteIdentityPopup;
 import org.mozilla.gecko.util.GeckoBundle;
 
@@ -103,7 +101,6 @@ public class ContentSecurityDoorHanger extends DoorHanger {
             @Override
             public void onClick(View v) {
                 final String expandedExtra = mType.toString().toLowerCase(Locale.US) + "-" + telemetryExtra;
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DOORHANGER, expandedExtra);
 
                 final GeckoBundle response = new GeckoBundle(2);
                 if (mType == Type.TRACKING) {
