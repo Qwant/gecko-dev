@@ -19,8 +19,6 @@ import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.Locales;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.preferences.GeckoPreferences;
 import org.mozilla.gecko.Experiments;
 
@@ -34,7 +32,6 @@ public class WhatsNewReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ACTION_NOTIFICATION_CANCELLED.equals(intent.getAction())) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.NOTIFICATION, EXTRA_WHATSNEW_NOTIFICATION);
             return;
         }
 
@@ -76,8 +73,6 @@ public class WhatsNewReceiver extends BroadcastReceiver {
         final int notificationID = EXTRA_WHATSNEW_NOTIFICATION.hashCode();
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notificationID, notificationBuilder.build());
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.NOTIFICATION, EXTRA_WHATSNEW_NOTIFICATION);
     }
 
     private PendingIntent getContentIntent(Context context) {

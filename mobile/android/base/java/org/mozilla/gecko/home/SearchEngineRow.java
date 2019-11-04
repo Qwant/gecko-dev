@@ -7,7 +7,6 @@ package org.mozilla.gecko.home;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.home.BrowserSearch.OnEditSuggestionListener;
 import org.mozilla.gecko.home.BrowserSearch.OnSearchListener;
@@ -105,16 +104,9 @@ class SearchEngineRow extends ThemedRelativeLayout {
                 // search for the term.
                 if (v != mUserEnteredView && !StringUtils.isSearchQuery(suggestion, true)) {
                     if (mUrlOpenListener != null) {
-                        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.SUGGESTION, "url");
-
                         mUrlOpenListener.onUrlOpen(suggestion, EnumSet.noneOf(OnUrlOpenListener.Flags.class));
                     }
                 } else if (mSearchListener != null) {
-                    if (v == mUserEnteredView) {
-                        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.SUGGESTION, "user");
-                    } else {
-                        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.SUGGESTION, (String) v.getTag());
-                    }
                     mSearchListener.onSearch(mSearchEngine, suggestion, TelemetryContract.Method.SUGGESTION);
                 }
             }
@@ -235,7 +227,6 @@ class SearchEngineRow extends ThemedRelativeLayout {
     public void performUserEnteredSearch() {
         String searchTerm = getSuggestionTextFromView(mUserEnteredView);
         if (mSearchListener != null) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.SUGGESTION, "user");
             mSearchListener.onSearch(mSearchEngine, searchTerm, TelemetryContract.Method.SUGGESTION);
         }
     }

@@ -23,8 +23,6 @@ import org.mozilla.gecko.R;
 import org.mozilla.gecko.SnackbarBuilder;
 import org.mozilla.gecko.Tab;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.home.HomeConfig;
 import org.mozilla.gecko.promotion.SimpleHelperUI;
 import org.mozilla.gecko.prompts.Prompt;
@@ -128,7 +126,6 @@ public class BookmarkStateChangeDelegate extends BrowserAppDelegateWithReference
         final SnackbarBuilder.SnackbarCallback callback = new SnackbarBuilder.SnackbarCallback() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.TOAST, "bookmark_options");
                 showBookmarkDialog(browserApp);
             }
         };
@@ -168,15 +165,11 @@ public class BookmarkStateChangeDelegate extends BrowserAppDelegateWithReference
 
                 if (itemId == 0) {
                     final String extrasId = res.getResourceEntryName(R.string.contextmenu_edit_bookmark);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION,
-                            TelemetryContract.Method.DIALOG, extrasId);
 
                     browserApp.showEditBookmarkDialog(tab.getURL());
 
                 } else if (itemId == 1) {
                     final String extrasId = res.getResourceEntryName(R.string.contextmenu_add_page_shortcut);
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION,
-                            TelemetryContract.Method.DIALOG, extrasId);
 
                     final String url = tab.getURL();
                     final String title = tab.getDisplayTitle();

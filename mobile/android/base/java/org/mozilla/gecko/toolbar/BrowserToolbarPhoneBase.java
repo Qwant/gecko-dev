@@ -10,8 +10,6 @@ import java.util.Arrays;
 import android.support.v4.content.ContextCompat;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tab;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.animation.PropertyAnimator;
 import org.mozilla.gecko.animation.ViewHelper;
 import org.mozilla.gecko.widget.themed.ThemedImageButton;
@@ -99,9 +97,6 @@ abstract class BrowserToolbarPhoneBase extends BrowserToolbar {
                 // If we exit editing mode during the animation,
                 // we're put into an inconsistent state (bug 1017276).
                 if (!isAnimating()) {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL,
-                            TelemetryContract.Method.ACTIONBAR,
-                            getResources().getResourceEntryName(editCancel.getId()));
                     cancelEdit();
                 }
             }

@@ -21,8 +21,6 @@ import org.mozilla.gecko.GeckoProfile;
 import org.mozilla.gecko.GeckoService;
 import org.mozilla.gecko.GeckoServicesCreatorService;
 import org.mozilla.gecko.GeckoThread;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.annotation.ReflectionTarget;
 import org.mozilla.gecko.db.BrowserDB;
 import org.mozilla.gecko.fxa.FxAccountConstants;
@@ -239,8 +237,6 @@ public class PushService implements BundleEventListener {
             return;
         }
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.SERVICE, "dom-push-api");
-
         final String profileName = subscription.serviceData.optString("profileName", null);
         final String profilePath = subscription.serviceData.optString("profilePath", null);
         if (profileName == null || profilePath == null) {
@@ -431,8 +427,6 @@ public class PushService implements BundleEventListener {
                     callback.sendError("Got exception handling message [" + event + "]: " + e.toString());
                     return;
                 }
-
-                Telemetry.sendUIEvent(TelemetryContract.Event.SAVE, TelemetryContract.Method.SERVICE, "dom-push-api");
                 callback.sendSuccess(json.toString());
                 return;
             }
@@ -446,7 +440,6 @@ public class PushService implements BundleEventListener {
                 // Fire and forget.  See comments in the function itself.
                 final PushSubscription pushSubscription = pushManager.unsubscribeChannel(channelID);
                 if (pushSubscription != null) {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.UNSAVE, TelemetryContract.Method.SERVICE, "dom-push-api");
                     callback.sendSuccess(null);
                     return;
                 }

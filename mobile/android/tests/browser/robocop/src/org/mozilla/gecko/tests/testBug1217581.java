@@ -6,8 +6,6 @@
 package org.mozilla.gecko.tests;
 
 
-import org.mozilla.gecko.Telemetry;
-
 public class testBug1217581 extends OldBaseTest {
     // Take arbitrary histogram names used by Fennec.
     private static final String TEST_HISTOGRAM_NAME = "FENNEC_SYNC_NUMBER_OF_SYNCS_COMPLETED";
@@ -16,16 +14,5 @@ public class testBug1217581 extends OldBaseTest {
 
 
     public void testBug1217581() {
-        blockForGeckoReady();
-
-        mAsserter.ok(true, "Checking that adding to a keyed histogram then adding to a normal histogram does not cause a crash.", "");
-        Telemetry.addToKeyedHistogram(TEST_KEYED_HISTOGRAM_NAME, TEST_KEY_NAME, 1);
-        Telemetry.addToHistogram(TEST_HISTOGRAM_NAME, 1);
-        mAsserter.ok(true, "Adding to a keyed histogram then to a normal histogram was a success!", "");
-
-        mAsserter.ok(true, "Checking that adding to a normal histogram then adding to a keyed histogram does not cause a crash.", "");
-        Telemetry.addToHistogram(TEST_HISTOGRAM_NAME, 1);
-        Telemetry.addToKeyedHistogram(TEST_KEYED_HISTOGRAM_NAME, TEST_KEY_NAME, 1);
-        mAsserter.ok(true, "Adding to a normal histogram then to a keyed histogram was a success!", "");
     }
 }

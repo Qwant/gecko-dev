@@ -26,7 +26,6 @@ import org.mozilla.gecko.R;
 import org.mozilla.gecko.SuggestClient;
 import org.mozilla.gecko.Tab;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.annotation.RobocopTarget;
 import org.mozilla.gecko.db.BrowserContract;
@@ -286,15 +285,11 @@ public class BrowserSearch extends HomeFragment
         } else {
             updateSearchEngineBar();
         }
-
-        Telemetry.startUISession(TelemetryContract.Session.FRECENCY);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        Telemetry.stopUISession(TelemetryContract.Session.FRECENCY);
     }
 
     @Override
@@ -346,8 +341,6 @@ public class BrowserSearch extends HomeFragment
                 position -= getPrimaryEngineCount();
                 final Cursor c = mAdapter.getCursor(position);
                 final String url = c.getString(c.getColumnIndexOrThrow(URLColumns.URL));
-
-                Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.LIST_ITEM, "frecency");
 
                 // This item is a TwoLinePageRow, so we allow switch-to-tab.
                 mUrlOpenListener.onUrlOpen(url, EnumSet.of(OnUrlOpenListener.Flags.ALLOW_SWITCH_TO_TAB));
@@ -827,7 +820,6 @@ public class BrowserSearch extends HomeFragment
     @Override
     public void onSearchBarClickListener(final SearchEngine searchEngine) {
         final TelemetryContract.Method method = TelemetryContract.Method.LIST_ITEM;
-        Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, method, "searchenginebar");
         mSearchListener.onSearch(searchEngine, mSearchTerm, method);
     }
 
@@ -914,8 +906,6 @@ public class BrowserSearch extends HomeFragment
 
         PrefsHelper.setPref("browser.search.suggest.prompted", true);
         PrefsHelper.setPref(GeckoPreferences.PREFS_SEARCH_SUGGESTIONS_ENABLED, enabled);
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, (enabled ? "suggestions_optin_yes" : "suggestions_optin_no"));
 
         TranslateAnimation slideAnimation = new TranslateAnimation(0, mSuggestionsOptInPrompt.getWidth(), 0, 0);
         slideAnimation.setDuration(ANIMATION_DURATION);

@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.fxa.FxAccountConstants;
 import org.mozilla.gecko.fxa.activities.FxAccountWebFlowActivity;
 
@@ -45,21 +43,25 @@ public class SendTabPanel extends FirstrunPanel {
             }
         }
 
-        root.findViewById(R.id.firstrun_account).setOnClickListener(v -> {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-signup");
-            showBrowserHint = false;
+        root.findViewById(R.id.firstrun_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBrowserHint = false;
 
-            final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_GET_STARTED);
-            intent.putExtra(FxAccountWebFlowActivity.EXTRA_ENDPOINT, entrypoint);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
+                final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_GET_STARTED);
+                intent.putExtra(FxAccountWebFlowActivity.EXTRA_ENDPOINT, entrypoint);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
 
-            close();
+                close();
+            }
         });
 
-        root.findViewById(R.id.firstrun_browse).setOnClickListener(v -> {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-browser");
-            close();
+        root.findViewById(R.id.firstrun_browse).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
         });
 
         return root;

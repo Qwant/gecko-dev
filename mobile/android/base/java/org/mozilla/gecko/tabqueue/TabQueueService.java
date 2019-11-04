@@ -36,8 +36,6 @@ import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.GeckoProfile;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.mozglue.SafeIntent;
 import org.mozilla.gecko.notifications.NotificationHelper;
 import org.mozilla.gecko.preferences.GeckoPreferences;
@@ -163,7 +161,6 @@ public class TabQueueService extends Service {
                     }
                     openNow(safeIntent.getUnsafe());
 
-                    Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "tabqueue-doubletap");
                     stopSelfResult(startId);
                 });
 
@@ -203,7 +200,6 @@ public class TabQueueService extends Service {
             removeView();
             openNow(intent);
 
-            Telemetry.sendUIEvent(TelemetryContract.Event.LOAD_URL, TelemetryContract.Method.INTENT, "tabqueue-now");
             stopSelfResult(startId);
         });
 
@@ -227,7 +223,6 @@ public class TabQueueService extends Service {
 
         executorService.submit(() -> {
             int queuedTabCount = TabQueueHelper.getTabQueueLength(TabQueueService.this);
-            Telemetry.addToHistogram("FENNEC_TABQUEUE_QUEUESIZE", queuedTabCount);
         });
 
     }

@@ -6,8 +6,6 @@
 package org.mozilla.gecko.firstrun;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.home.HomePager;
 
 import android.app.Activity;

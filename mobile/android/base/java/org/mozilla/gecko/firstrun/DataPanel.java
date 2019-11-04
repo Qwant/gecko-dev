@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.PrefsHelper;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 
 public class DataPanel extends FirstrunPanel {
     private boolean isEnabled = false;
@@ -38,7 +36,6 @@ public class DataPanel extends FirstrunPanel {
                     // Default: always load images.
                     PrefsHelper.setPref("browser.image_blocking", 1);
                 }
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "firstrun-datasaving-" + isEnabled);
             }
         });
 

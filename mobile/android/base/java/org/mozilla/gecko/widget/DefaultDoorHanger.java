@@ -12,8 +12,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.prompts.PromptInput;
 import org.mozilla.gecko.util.GeckoBundle;
 
@@ -135,7 +133,6 @@ public class DefaultDoorHanger extends DoorHanger {
             @Override
             public void onClick(View v) {
                 final String expandedExtra = mType.toString().toLowerCase(Locale.US) + "-" + telemetryExtra;
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DOORHANGER, expandedExtra);
 
                 final GeckoBundle response = new GeckoBundle(3);
                 response.putInt("callback", id);

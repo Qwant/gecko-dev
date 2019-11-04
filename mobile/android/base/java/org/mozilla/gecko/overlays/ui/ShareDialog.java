@@ -11,8 +11,6 @@ import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.GeckoProfile;
 import org.mozilla.gecko.Locales;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.db.BrowserContract;
 import org.mozilla.gecko.db.LocalBrowserDB;
 import org.mozilla.gecko.db.RemoteClient;
@@ -248,8 +246,6 @@ public class ShareDialog extends Locales.LocaleAwareActivity implements SendTabT
             ((TextView) findViewById(R.id.title)).setText(subjectText);
         }
 
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHOW, TelemetryContract.Method.SHARE_OVERLAY, telemetryExtras);
-
         title = subjectText;
         url = pageUrl;
 
@@ -374,15 +370,11 @@ public class ShareDialog extends Locales.LocaleAwareActivity implements SendTabT
 
         startService(serviceIntent);
         animateOut(true);
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.SHARE, TelemetryContract.Method.SHARE_OVERLAY, "sendtab");
     }
 
     public void addBookmark() {
         startService(getServiceIntent(ShareMethod.Type.ADD_BOOKMARK));
         animateOut(true);
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.SAVE, TelemetryContract.Method.SHARE_OVERLAY, "bookmark");
     }
 
     public void launchBrowser() {
@@ -475,7 +467,6 @@ public class ShareDialog extends Locales.LocaleAwareActivity implements SendTabT
     @Override
     public void onBackPressed() {
         animateOut(false);
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.SHARE_OVERLAY);
     }
 
     /**
@@ -484,7 +475,6 @@ public class ShareDialog extends Locales.LocaleAwareActivity implements SendTabT
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         animateOut(false);
-        Telemetry.sendUIEvent(TelemetryContract.Event.CANCEL, TelemetryContract.Method.SHARE_OVERLAY);
         return true;
     }
 }

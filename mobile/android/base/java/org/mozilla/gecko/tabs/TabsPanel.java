@@ -10,13 +10,10 @@ import org.mozilla.gecko.GeckoApp;
 import org.mozilla.gecko.GeckoApplication;
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.animation.PropertyAnimator;
 import org.mozilla.gecko.animation.ViewHelper;
 import org.mozilla.gecko.lwt.LightweightTheme;
 import org.mozilla.gecko.lwt.LightweightThemeDrawable;
-import org.mozilla.gecko.mma.MmaDelegate;
 import org.mozilla.gecko.preferences.GeckoPreferences;
 import org.mozilla.gecko.restrictions.Restrictable;
 import org.mozilla.gecko.restrictions.Restrictions;
@@ -217,7 +214,6 @@ public class TabsPanel extends LinearLayout
     }
 
     private void addTab() {
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.ACTIONBAR, "new_tab");
 
         if (mCurrentPanel == Panel.NORMAL_TABS) {
             mActivity.addTab();
@@ -243,8 +239,6 @@ public class TabsPanel extends LinearLayout
 
         if (itemId == R.id.close_all_tabs) {
             if (mCurrentPanel == Panel.NORMAL_TABS) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "close_all_tabs");
-
                 // Disable the menu button so that the menu won't interfere with the tab close animation.
                 mMenuButton.setEnabled(false);
                 ((CloseAllPanelView) mPanelNormal).onCloseAll();
@@ -257,8 +251,6 @@ public class TabsPanel extends LinearLayout
         if (itemId == R.id.close_private_tabs) {
             if (mCurrentPanel == Panel.PRIVATE_TABS) {
                 // Mask private browsing
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.MENU, "close_all_tabs");
-
                 ((CloseAllPanelView) mPanelPrivate).onCloseAll();
             } else {
                 Log.e(LOGTAG, "Close private tabs menu item should only be visible for private tabs panel");

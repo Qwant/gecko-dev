@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import org.mozilla.gecko.annotation.RobocopTarget;
-import org.mozilla.gecko.Telemetry;
 
 import java.util.Map;
 
@@ -88,7 +87,6 @@ public class DBUtils {
             } catch (Exception e) {
                 // We assume that this is a android.database.sqlite.SQLiteDatabaseLockedException.
                 // That class is only available on API 11+.
-                Telemetry.addToHistogram(HISTOGRAM_DATABASE_LOCKED, attempt);
 
                 // Things could get very bad if we don't find a way to unlock the DB.
                 Log.d(LOGTAG, "Database is locked, trying to kill any zombie processes: " + databasePath);
@@ -104,12 +102,6 @@ public class DBUtils {
             Log.w(LOGTAG, "Failed to unlock database.");
             GeckoAppShell.listOfOpenFiles();
             return;
-        }
-
-        // If we needed to retry, but we succeeded, report that in telemetry.
-        // Failures are indicated by a lower frequency of UNLOCKED than LOCKED.
-        if (attempt > 1) {
-            Telemetry.addToHistogram(HISTOGRAM_DATABASE_UNLOCKED, attempt - 1);
         }
     }
 

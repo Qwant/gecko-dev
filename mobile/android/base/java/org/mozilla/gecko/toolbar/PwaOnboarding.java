@@ -17,8 +17,6 @@ import android.widget.RelativeLayout;
 
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.Tabs;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
 
 public class PwaOnboarding extends RelativeLayout {
 
@@ -30,8 +28,6 @@ public class PwaOnboarding extends RelativeLayout {
     private static final String TELEMETRY_EXTRA_SUMO = "pwa_onboarding_sumo";
 
     public static void show(Context context) {
-
-        Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DIALOG, TELEMETRY_EXTRA_SHOW);
 
         if (context instanceof Activity) {
             final ViewGroup contetView = (ViewGroup) ((Activity) context).findViewById(android.R.id.content);
@@ -62,7 +58,6 @@ public class PwaOnboarding extends RelativeLayout {
         final OnClickListener dismiss = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DIALOG, TELEMETRY_EXTRA_CLOSE);
                 dismiss();
             }
         };
@@ -70,7 +65,6 @@ public class PwaOnboarding extends RelativeLayout {
 
             @Override
             public void onClick(View v) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DIALOG, TELEMETRY_EXTRA_SUMO);
                 dismiss();
                 Tabs.getInstance().loadUrlInTab(LINK_PWA_SUMO);
             }
@@ -88,7 +82,6 @@ public class PwaOnboarding extends RelativeLayout {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.DIALOG, TELEMETRY_EXTRA_BACK);
                     dismiss();
                 }
                 return true;

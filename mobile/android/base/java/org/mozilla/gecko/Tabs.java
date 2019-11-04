@@ -990,10 +990,6 @@ public class Tabs implements BundleEventListener {
     public Tab loadUrlWithIntentExtras(final String url, final SafeIntent intent, final int flags) {
         // We can't directly create a listener to tell when the user taps on the "What's new"
         // notification, so we use this intent handling as a signal that they tapped the notification.
-        if (intent.getBooleanExtra(WhatsNewReceiver.EXTRA_WHATSNEW_NOTIFICATION, false)) {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.NOTIFICATION,
-                    WhatsNewReceiver.EXTRA_WHATSNEW_NOTIFICATION);
-        }
 
         // Note: we don't get the URL from the intent so the calling
         // method has the opportunity to change the URL if applicable.

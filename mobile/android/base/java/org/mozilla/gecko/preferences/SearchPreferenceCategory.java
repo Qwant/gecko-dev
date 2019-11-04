@@ -11,9 +11,7 @@ import android.support.v7.util.ListUpdateCallback;
 import android.util.AttributeSet;
 
 import org.mozilla.gecko.EventDispatcher;
-import org.mozilla.gecko.Telemetry;
-import org.mozilla.gecko.TelemetryContract;
-import org.mozilla.gecko.TelemetryContract.Method;
+import org.mozilla.gecko.GeckoAppShell;
 import org.mozilla.gecko.search.SearchEngineDiffCallback;
 import org.mozilla.gecko.util.BundleEventListener;
 import org.mozilla.gecko.util.EventCallback;
@@ -59,9 +57,6 @@ public class SearchPreferenceCategory extends CustomListCategory implements Bund
         super.setDefault(item);
 
         sendGeckoEngineEvent("SearchEngines:SetDefault", item.getTitle().toString());
-
-        final String identifier = ((SearchEnginePreference) item).getIdentifier();
-        Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH_SET_DEFAULT, Method.DIALOG, identifier);
     }
 
     @Override
@@ -71,7 +66,6 @@ public class SearchPreferenceCategory extends CustomListCategory implements Bund
         sendGeckoEngineEvent("SearchEngines:Remove", item.getTitle().toString());
 
         final String identifier = ((SearchEnginePreference) item).getIdentifier();
-        Telemetry.sendUIEvent(TelemetryContract.Event.SEARCH_REMOVE, Method.DIALOG, identifier);
     }
 
     @Override // BundleEventListener

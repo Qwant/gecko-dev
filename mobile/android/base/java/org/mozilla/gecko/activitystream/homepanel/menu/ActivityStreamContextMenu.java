@@ -17,7 +17,6 @@ import org.mozilla.gecko.Clipboard;
 import org.mozilla.gecko.GeckoApplication;
 import org.mozilla.gecko.IntentHelper;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.ActivityStreamTelemetry;
 import org.mozilla.gecko.activitystream.homepanel.model.WebpageModel;
@@ -200,7 +199,6 @@ public abstract class ActivityStreamContextMenu
                 // NB: Generic menu item action event will be sent at the end of this function.
                 // We have a seemingly duplicate telemetry event here because we want to emit
                 // a concrete event in case it is used by other queries to estimate feature usage.
-                Telemetry.sendUIEvent(TelemetryContract.Event.SHARE, TelemetryContract.Method.LIST, "as_contextmenu");
 
                 IntentHelper.openUriExternal(item.getUrl(), "text/plain", "", "", Intent.ACTION_SEND, item.getTitle(), false);
                 break;
@@ -230,7 +228,6 @@ public abstract class ActivityStreamContextMenu
                 // NB: Generic menu item action event will be sent at the end of this function.
                 // We have a seemingly duplicate telemetry event here because we want to emit
                 // a concrete event in case it is used by other queries to estimate feature usage.
-                Telemetry.sendUIEvent(telemetryEvent, TelemetryContract.Method.CONTEXT_MENU, telemetryExtra);
 
                 ThreadUtils.postToBackgroundThread(new Runnable() {
                     @Override
@@ -328,12 +325,6 @@ public abstract class ActivityStreamContextMenu
             default:
                 throw new IllegalArgumentException("Menu item with ID=" + menuItem.getItemId() + " not handled");
         }
-
-        Telemetry.sendUIEvent(
-                TelemetryContract.Event.ACTION,
-                TelemetryContract.Method.CONTEXT_MENU,
-                telemetryExtraBuilder.build()
-        );
 
         dismiss();
         return true;
