@@ -60,14 +60,20 @@
   <string name="firstrun_panel_title_welcome2">&firstrun_panel_title_welcome2;</string>
   <string name="firstrun_welcome2_message">&firstrun_welcome2_message;</string>
   <string name="firstrun_welcome2_subtext">&firstrun_welcome2_subtext;</string>
+  <string name="firstrun_welcome3_message">&firstrun_welcome3_message;</string>
+  <string name="firstrun_welcome3_subtext">&firstrun_welcome3_subtext;</string>
 
   <string name="firstrun_panel_title_privacy2">&firstrun_panel_title_privacy2;</string>
   <string name="firstrun_privacy2_message">&firstrun_privacy2_message;</string>
   <string name="firstrun_privacy2_subtext">&firstrun_privacy2_subtext;</string>
+  <string name="firstrun_privacy3_message">&firstrun_privacy3_message;</string>
+  <string name="firstrun_privacy3_subtext">&firstrun_privacy3_subtext;</string>
 
   <string name="firstrun_panel_title_efficiency">&firstrun_panel_title_efficiency;</string>
   <string name="firstrun_efficiency_message">&firstrun_efficiency_message;</string>
   <string name="firstrun_efficiency_subtext">&firstrun_efficiency_subtext;</string>
+  <string name="firstrun_efficiency3_message">&firstrun_efficiency3_message;</string>
+  <string name="firstrun_efficiency3_subtext">&firstrun_efficiency3_subtext;</string>
 
   <string name="qwant_defaultbrowser_link">&qwant_defaultbrowser_link;</string>
   <string name="qwant_help_link">&qwant_help_link;</string>
@@ -83,6 +89,9 @@
   <string name="qwant_manage_addons">&qwant_manage_addons;</string>
   <string name="qwant_manage_addons_summary">&qwant_manage_addons_summary;</string>
   <string name="qwant_manage_addons_link">&qwant_manage_addons_link;</string>
+
+  <string name="privacy_policy">&privacy_policy;</string>
+  <string name="about3">&about3;</string>
 
   <string name="bookmarks_title">&bookmarks_title;</string>
   <string name="history_title">&history_title;</string>

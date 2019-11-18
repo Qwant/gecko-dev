@@ -39,14 +39,20 @@
 <!ENTITY firstrun_panel_title_welcome2 "Welcome">
 <!ENTITY firstrun_welcome2_message "Welcome to Qwant mobile">
 <!ENTITY firstrun_welcome2_subtext "With Qwant mobile, search the web efficiently with total privacy.">
+<!ENTITY firstrun_welcome3_message "Welcome on board !">
+<!ENTITY firstrun_welcome3_subtext "Qwant Junior Mobile is a fun, safe and fluid browsing experience for kids.">
 
 <!ENTITY firstrun_panel_title_privacy2 "Privacy">
 <!ENTITY firstrun_privacy2_message "Your private life remains private">
 <!ENTITY firstrun_privacy2_subtext "Qwant does not look at your queries or the sites you visit. The search engine you use is neutral and blocks tracking.">
+<!ENTITY firstrun_privacy3_message "Keep your kids safe when surfing the Internet">
+<!ENTITY firstrun_privacy3_subtext "Qwant Junior hides inapropriate content such violence, porn, drugs, hate, and other search engines that may display these contents.">
 
 <!ENTITY firstrun_panel_title_efficiency "Efficiency">
 <!ENTITY firstrun_efficiency_message "Experience fast &amp; efficient searches">
 <!ENTITY firstrun_efficiency_subtext "Qwant gives you the best results instantly in total neutrality. News, music, social network or videos: search everything with total freedom.">
+<!ENTITY firstrun_efficiency3_message "Tracking protection built-in for better privacy and less ads">
+<!ENTITY firstrun_efficiency3_subtext "Qwant Junior neither tracks nor collects any data about your kid. Your kid\'s data will never be used to make money.">
 
 <!ENTITY qwant_defaultbrowser_link "https://help.qwant.com/help/qwant-mobile/make-qwant-the-default-browser-on-android/?client=qwantbrowser">
 <!ENTITY qwant_help_link "https://help.qwant.com/help/qwant-mobile/?client=qwantbrowser">
@@ -63,6 +69,10 @@
 <!ENTITY qwant_manage_addons "My addons">
 <!ENTITY qwant_manage_addons_summary "Manage and configure your addons">
 <!ENTITY qwant_manage_addons_link "about:addons">
+
+<!ENTITY privacy_policy "Privacy Policy">
+<!ENTITY about3 "About Qwant Junior mobile">
+
 
 <!ENTITY pwa_onboarding_sumo "You can easily add this website to your Home screen to have instant access and browse faster with an app-like experience.">
 
