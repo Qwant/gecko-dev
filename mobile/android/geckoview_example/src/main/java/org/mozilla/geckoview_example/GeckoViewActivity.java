@@ -764,6 +764,7 @@ public class GeckoViewActivity extends AppCompatActivity {
             Callback contentPermissionCallback = callback;
             if (PERMISSION_GEOLOCATION == type) {
                 resId = R.string.request_geolocation;
+                return;
             } else if (PERMISSION_DESKTOP_NOTIFICATION == type) {
                 if (mShowNotificationsRejected) {
                     Log.w(LOGTAG, "Desktop notifications already denied by user.");
