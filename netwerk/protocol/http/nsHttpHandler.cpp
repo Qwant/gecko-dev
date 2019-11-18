@@ -939,7 +939,7 @@ void nsHttpHandler::BuildUserAgent() {
     mUserAgent += mAppVersion;
   }
 
-  mUserAgent = "Mozilla/5.0 (Android; Mobile) Gecko/68.0 Firefox/68.0 QwantMobile/3.4";
+  mUserAgent = "Mozilla/5.0 (Android; Mobile) Gecko/68.0 Firefox/68.0 QwantMobileJunior/3.4";
 }
 
 #ifdef XP_WIN
