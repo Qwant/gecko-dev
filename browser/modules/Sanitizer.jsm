@@ -411,13 +411,14 @@ var Sanitizer = {
           )) {
             let currentDocument = currentWindow.document;
 
-            // searchBar.textbox may not exist due to the search bar binding
-            // not having been constructed yet if the search bar is in the
-            // overflow or menu panel. It won't have a value or edit history in
-            // that case.
+            // searchBar may not exist if it's in the customize mode.
             let searchBar = currentDocument.getElementById("searchbar");
-            if (searchBar && searchBar.textbox) {
-              searchBar.textbox.reset();
+            if (searchBar) {
+              let input = searchBar.textbox;
+              input.value = "";
+              try {
+                input.editor.transactionManager.clear();
+              } catch (e) {}
             }
 
             let tabBrowser = currentWindow.gBrowser;
@@ -552,7 +553,7 @@ var Sanitizer = {
           }
         }
 
-        if (windowList.length == 0) {
+        if (!windowList.length) {
           return;
         }
 
@@ -769,8 +770,8 @@ class PrincipalsCollector {
   async getAllPrincipalsInternal(progress) {
     progress.step = "principals-quota-manager";
     let principals = await new Promise(resolve => {
-      quotaManagerService.listInitializedOrigins(request => {
-        progress.step = "principals-quota-manager-listInitializedOrigins";
+      quotaManagerService.listOrigins(request => {
+        progress.step = "principals-quota-manager-listOrigins";
         if (request.resultCode != Cr.NS_OK) {
           // We are probably shutting down. We don't want to propagate the
           // error, rejecting the promise.
@@ -780,7 +781,7 @@ class PrincipalsCollector {
 
         let list = [];
         for (let item of request.result) {
-          let principal = Services.scriptSecurityManager.createCodebasePrincipalFromOrigin(
+          let principal = Services.scriptSecurityManager.createContentPrincipalFromOrigin(
             item.origin
           );
           let uri = principal.URI;
@@ -824,7 +825,7 @@ class PrincipalsCollector {
       // Cookies and permissions are handled by origin/host. Doesn't matter if we
       // use http: or https: schema here.
       principals.push(
-        Services.scriptSecurityManager.createCodebasePrincipalFromOrigin(
+        Services.scriptSecurityManager.createContentPrincipalFromOrigin(
           "https://" + host
         )
       );

@@ -48,18 +48,20 @@ describe("#CachedTargetingGetter", () => {
       global.NewTabUtils.activityStreamProvider.getTopFrecentSites
     );
   });
-  it("should report errors", async () => {
+  it("throws when failing getter", async () => {
     frecentStub.rejects(new Error("fake error"));
     clock.tick(sixHours);
 
     // assert.throws expect a function as the first parameter, try/catch is a
     // workaround
+    let rejected = false;
     try {
       await topsitesCache.get();
-      assert.isTrue(false);
     } catch (e) {
-      assert.calledOnce(global.Cu.reportError);
+      rejected = true;
     }
+
+    assert(rejected);
   });
   it("should check targeted message before message without targeting", async () => {
     const messages = await OnboardingMessageProvider.getUntranslatedMessages();
@@ -78,29 +80,14 @@ describe("#CachedTargetingGetter", () => {
       context,
     });
 
-    assert.equal(stub.callCount, 6);
+    const messageCount = messages.filter(
+      message => message.trigger && message.trigger.id === "firstRun"
+    ).length;
+
+    assert.equal(stub.callCount, messageCount);
     const calls = stub.getCalls().map(call => call.args[0]);
     const lastCall = calls[calls.length - 1];
-    assert.equal(lastCall.id, "FXA_1");
-  });
-  it("should return FxA message (is fallback)", async () => {
-    const messages = (await OnboardingMessageProvider.getUntranslatedMessages()).filter(
-      m => m.id !== "RETURN_TO_AMO_1"
-    );
-    const context = {
-      attributionData: {
-        campaign: "non-fx-button",
-        source: "addons.mozilla.org",
-      },
-    };
-    const result = await ASRouterTargeting.findMatchingMessage({
-      messages,
-      trigger: { id: "firstRun" },
-      context,
-    });
-
-    assert.isDefined(result);
-    assert.equal(result.id, "FXA_1");
+    assert.equal(lastCall.id, "TRAILHEAD_1");
   });
   describe("sortMessagesByPriority", () => {
     it("should sort messages in descending priority order", async () => {
@@ -229,5 +216,93 @@ describe("#CachedTargetingGetter", () => {
       );
       assert.calledOnce(global.Cu.reportError);
     });
+  });
+});
+describe("ASRouterTargeting", () => {
+  let evalStub;
+  let sandbox;
+  let clock;
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    evalStub = sandbox.stub(global.FilterExpressions, "eval");
+    sandbox.replace(ASRouterTargeting, "Environment", {});
+    clock = sinon.useFakeTimers();
+  });
+  afterEach(() => {
+    clock.restore();
+    sandbox.restore();
+  });
+  it("should cache evaluation result", async () => {
+    evalStub.resolves(true);
+
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl1" },
+      {},
+      sandbox.stub(),
+      true
+    );
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl2" },
+      {},
+      sandbox.stub(),
+      true
+    );
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl1" },
+      {},
+      sandbox.stub(),
+      true
+    );
+
+    assert.calledTwice(evalStub);
+  });
+  it("should not cache evaluation result", async () => {
+    evalStub.resolves(true);
+
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      false
+    );
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      false
+    );
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      false
+    );
+
+    assert.calledThrice(evalStub);
+  });
+  it("should expire cache entries", async () => {
+    evalStub.resolves(true);
+
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      true
+    );
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      true
+    );
+    clock.tick(60 * 1000 + 1);
+    await ASRouterTargeting.checkMessageTargeting(
+      { targeting: "jexl" },
+      {},
+      sandbox.stub(),
+      true
+    );
+
+    assert.calledTwice(evalStub);
   });
 });
