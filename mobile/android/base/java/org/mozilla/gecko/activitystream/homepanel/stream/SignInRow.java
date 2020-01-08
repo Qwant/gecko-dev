@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import org.mozilla.gecko.GeckoSharedPrefs;
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.Telemetry;
 import org.mozilla.gecko.TelemetryContract;
 import org.mozilla.gecko.activitystream.homepanel.ActivityStreamPanel;
 import org.mozilla.gecko.fxa.FxAccountConstants;
@@ -37,8 +36,6 @@ public class SignInRow extends StreamViewHolder {
 
         final View signUpButton = itemView.findViewById(R.id.as_signup);
         signUpButton.setOnClickListener(v -> {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "awesomescreen-signup");
-
             final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_SIGN_UP);
             intent.putExtra(FxAccountWebFlowActivity.EXTRA_ENDPOINT, FxAccountConstants.ENDPOINT_AWESOMESCREEN_SIGNUP);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -53,8 +50,6 @@ public class SignInRow extends StreamViewHolder {
         ClickableSpan signInClick = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View view) {
-                Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "awesomescreen-signin");
-
                 final Intent intent = new Intent(FxAccountConstants.ACTION_FXA_GET_STARTED);
                 intent.putExtra(FxAccountWebFlowActivity.EXTRA_ENDPOINT, FxAccountConstants.ENDPOINT_AWESOMESCREEN_SIGNIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -69,7 +64,6 @@ public class SignInRow extends StreamViewHolder {
 
         final View dismissButton = itemView.findViewById(R.id.as_dismiss);
         dismissButton.setOnClickListener(v -> {
-            Telemetry.sendUIEvent(TelemetryContract.Event.ACTION, TelemetryContract.Method.BUTTON, "awesomescreen-signup-dismiss");
             final SharedPreferences sharedPreferences = GeckoSharedPrefs.forProfile(itemView.getContext());
             //Note: In ActivityStreamHomeFragment we have a prefs listener for this value.
             //We commit asap in order to reload our recyclerview as soon as the user dismissed the row.

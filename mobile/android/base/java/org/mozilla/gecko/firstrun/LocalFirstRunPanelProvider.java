@@ -10,8 +10,6 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import org.mozilla.gecko.R;
-import org.mozilla.gecko.fxa.FxAccountConstants;
-import org.mozilla.gecko.util.OnboardingResources;
 
 public class LocalFirstRunPanelProvider implements FirstRunPanelConfigProviderStrategy {
     public PanelConfig getPanelConfig(@NonNull Context context, PanelConfig.TYPE type, final boolean useLocalValues) {

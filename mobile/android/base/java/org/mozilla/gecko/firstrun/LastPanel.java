@@ -25,9 +25,6 @@ public class LastPanel extends FirstrunPanel {
             final int image = args.getInt(FirstrunPagerConfig.KEY_IMAGE);
             final String message = args.getString(FirstrunPagerConfig.KEY_MESSAGE);
             final String subtext = args.getString(FirstrunPagerConfig.KEY_SUBTEXT);
-            if (args.containsKey(FirstrunPagerConfig.KEY_ENTRYPOINT)) {
-                entrypoint = args.getString(FirstrunPagerConfig.KEY_ENTRYPOINT);
-            }
 
             ((ImageView) root.findViewById(R.id.firstrun_image)).setImageDrawable(getResources().getDrawable(image));
             ((TextView) root.findViewById(R.id.firstrun_subtext)).setText(subtext);

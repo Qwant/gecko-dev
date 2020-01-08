@@ -50,8 +50,6 @@ public class PanelConfig {
                 return FirstrunPanel.class.getName();
             case LAST_CUSTOMIZE:
                 return LastPanel.class.getName();
-            case SEND_TAB:
-                return SendTabPanel.class.getName();
             default:    // Return the default Panel, same as for "WELCOME"
                 return FirstrunPanel.class.getName();
         }
