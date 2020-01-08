@@ -1459,7 +1459,7 @@ public abstract class GeckoApp extends GeckoActivity
                     }
                 }
                 if (!tab_already_there)
-                    Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&topsearch=true&lb=" + Locale.getDefault().getLanguage(), flags);
+                    Tabs.getInstance().loadUrl("https://www.qwant.com/?client=qwantbrowser&lb=" + Locale.getDefault().getLanguage(), flags);
             }
         }
     }
